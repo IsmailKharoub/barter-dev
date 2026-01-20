@@ -1,25 +1,31 @@
 import {
+  Header,
   Hero,
   HowItWorks,
   Products,
   TradeTypes,
   Apply,
   Portfolio,
+  FAQ,
   FooterCta,
   Footer,
 } from "@/components/sections";
 
 export default function Home() {
   return (
-    <main>
-      <Hero />
-      <HowItWorks />
-      <Products />
-      <TradeTypes />
-      <Apply />
-      <Portfolio />
-      <FooterCta />
-      <Footer />
-    </main>
+    <>
+      <Header />
+      <main id="main-content">
+        <Hero />
+        <HowItWorks />
+        <Products />
+        <TradeTypes />
+        <Apply />
+        <Portfolio />
+        <FAQ />
+        <FooterCta />
+        <Footer />
+      </main>
+    </>
   );
 }

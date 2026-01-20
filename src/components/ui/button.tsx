@@ -1,59 +1,128 @@
-import { forwardRef } from "react";
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps {
+  children: React.ReactNode;
   variant?: ButtonVariant;
   size?: ButtonSize;
-  asChild?: boolean;
+  className?: string;
+  disabled?: boolean;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 }
 
-const variants: Record<ButtonVariant, string> = {
+const variantStyles: Record<ButtonVariant, string> = {
   primary: `
-    bg-accent-primary text-bg-primary
-    hover:bg-accent-secondary
-    shadow-[0_0_20px_rgba(34,211,238,0.3)]
-    hover:shadow-[0_0_30px_rgba(34,211,238,0.5)]
+    bg-accent-primary text-bg-primary font-semibold
+    shadow-[0_0_24px_rgba(245,158,11,0.35)]
   `,
   secondary: `
     bg-transparent text-fg-primary
     border border-border-default
-    hover:border-accent-primary hover:text-accent-primary
   `,
   ghost: `
     bg-transparent text-fg-secondary
-    hover:text-fg-primary
   `,
 };
 
-const sizes: Record<ButtonSize, string> = {
+const sizeStyles: Record<ButtonSize, string> = {
   sm: "px-4 py-2 text-sm",
   md: "px-6 py-3 text-base",
   lg: "px-8 py-4 text-lg",
 };
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={cn(
-          "inline-flex items-center justify-center gap-2",
-          "font-medium rounded-full",
-          "transition-all duration-300 ease-out",
-          "cursor-pointer",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-          variants[variant],
-          sizes[size],
-          className
-        )}
-        {...props}
-      />
-    );
-  }
-);
+export function Button({
+  children,
+  variant = "primary",
+  size = "md",
+  className,
+  disabled,
+  onClick,
+  type = "button",
+}: ButtonProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.button
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
+      className={cn(
+        "relative inline-flex items-center justify-center gap-2",
+        "font-medium rounded-full overflow-hidden",
+        "cursor-pointer",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
+        // Focus state
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary",
+        variantStyles[variant],
+        sizeStyles[size],
+        className
+      )}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+    >
+      {/* Animated background for primary */}
+      {variant === "primary" && (
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-accent-secondary via-accent-primary to-amber-400"
+          initial={{ x: "-100%" }}
+          animate={{ x: isHovered ? "0%" : "-100%" }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        />
+      )}
+
+      {/* Hover glow effect for primary */}
+      {variant === "primary" && (
+        <motion.div
+          className="absolute inset-0 bg-accent-primary"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: isHovered ? 0 : 1 }}
+          transition={{ duration: 0.3 }}
+        />
+      )}
+
+      {/* Border animation for secondary */}
+      {variant === "secondary" && (
+        <motion.div
+          className="absolute inset-0 rounded-full border border-accent-primary"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
+        />
+      )}
+
+      {/* Content */}
+      <span className={cn(
+        "relative z-10 flex items-center gap-2 transition-colors duration-200",
+        variant === "secondary" && isHovered && "text-accent-primary",
+        variant === "ghost" && isHovered && "text-fg-primary",
+      )}>
+        {children}
+      </span>
+
+      {/* Shine effect for primary on hover */}
+      {variant === "primary" && isHovered && (
+        <motion.div
+          className="absolute inset-0 z-10"
+          initial={{ x: "-100%", opacity: 0 }}
+          animate={{ x: "100%", opacity: [0, 0.3, 0] }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={{
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+          }}
+        />
+      )}
+    </motion.button>
+  );
+}
 
 Button.displayName = "Button";
-

@@ -5,42 +5,169 @@ import { t } from "@/i18n";
 import { ProjectCard } from "./project-card";
 
 export function Portfolio() {
+  const { projects, stats } = t.portfolio;
+
   return (
-    <section id="portfolio" className="py-24 md:py-32 bg-bg-secondary">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section id="portfolio" className="py-24 md:py-32 lg:py-40 bg-bg-secondary relative overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-secondary pointer-events-none" />
+      
+      {/* Horizontal lines pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.025] pointer-events-none"
+        style={{
+          backgroundImage: `repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 80px,
+            var(--fg-primary) 80px,
+            var(--fg-primary) 81px
+          )`,
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+        {/* Header */}
         <motion.div
-          className="text-center mb-16"
+          className="mb-16 lg:mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+        >
+          <motion.p
+            className="text-accent-primary font-medium text-sm tracking-widest uppercase mb-4"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
+            The Work
+          </motion.p>
+          
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
+            <motion.span
+              className="block"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              {t.portfolio.headline}
+            </motion.span>
+          </h2>
+          
+          <motion.p
+            className="text-fg-secondary text-lg md:text-xl max-w-xl"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+          >
+            {t.portfolio.subhead}
+          </motion.p>
+        </motion.div>
+
+        {/* Stats row */}
+        <motion.div
+          className="grid grid-cols-3 gap-4 md:gap-8 mb-12 lg:mb-16 max-w-2xl"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            {t.portfolio.headline}
-          </h2>
-          <p className="text-fg-secondary text-lg">{t.portfolio.subhead}</p>
+          {[
+            { value: stats.years, label: "Years" },
+            { value: stats.products, label: "Products" },
+            { value: stats.stack, label: "Stack" },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              className="text-center md:text-left"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 + i * 0.1 }}
+            >
+              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-primary mb-1">
+                {stat.value}
+              </div>
+              <div className="text-fg-muted text-sm uppercase tracking-wider">
+                {stat.label}
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {t.portfolio.projects.map((project, index) => (
+        {/* Bento grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5 mb-20 lg:mb-24">
+          {projects.map((project, index) => (
             <ProjectCard
-              key={index}
+              key={project.id}
+              id={project.id}
               title={project.title}
-              role={project.role}
+              category={project.category}
+              description={project.description}
+              techHighlights={project.techHighlights}
+              featured={project.featured}
               index={index}
             />
           ))}
         </div>
 
-        <motion.p
-          className="text-center text-fg-secondary text-xl"
+        {/* Closing statement */}
+        <motion.div
+          className="relative"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
         >
-          {t.portfolio.closing}
-        </motion.p>
+          {/* Decorative line */}
+          <motion.div
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-accent-primary/50 via-accent-primary/20 to-transparent hidden lg:block"
+            initial={{ width: 0 }}
+            whileInView={{ width: "15%" }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+          />
+
+          <div className="text-center lg:text-left lg:pl-[20%]">
+            <motion.p
+              className="text-2xl md:text-3xl lg:text-4xl font-semibold text-fg-primary leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <span className="text-fg-secondary">
+                {t.portfolio.closing.split(".")[0]}.
+              </span>
+              <br className="hidden sm:block" />
+              <span className="text-accent-primary">
+                {" "}{t.portfolio.closing.split(".").slice(1).join(".").trim()}
+              </span>
+            </motion.p>
+          </div>
+
+          {/* Decorative element */}
+          <motion.div
+            className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-20 hidden lg:block"
+            initial={{ opacity: 0, scale: 0.5, rotate: -45 }}
+            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5, type: "spring" }}
+          >
+            <div className="w-full h-full rounded-xl bg-gradient-to-br from-accent-primary/10 to-accent-secondary/5 border border-accent-primary/20 flex items-center justify-center">
+              <motion.div
+                className="w-3 h-3 rounded-full bg-accent-primary"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
 }
-

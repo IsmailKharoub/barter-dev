@@ -1,25 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  /* Background */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #111111;
-  --bg-tertiary: #1a1a1a;
+  /* Background - Deep warm tones (not cold black) */
+  --bg-primary: #0C0A09;
+  --bg-secondary: #171412;
+  --bg-tertiary: #211C18;
 
-  /* Foreground */
-  --fg-primary: #fafafa;
-  --fg-secondary: #a1a1a1;
-  --fg-muted: #666666;
+  /* Foreground - Warm off-whites */
+  --fg-primary: #FAF8F5;
+  --fg-secondary: #A8A29E;
+  --fg-muted: #78716C;
 
-  /* Accent */
-  --accent-primary: #22d3ee;
-  --accent-secondary: #06b6d4;
-  --accent-glow: rgba(34, 211, 238, 0.15);
+  /* Accent - Amber/Gold (represents value exchange) */
+  --accent-primary: #F59E0B;
+  --accent-secondary: #D97706;
+  --accent-glow: rgba(245, 158, 11, 0.15);
 
-  /* Borders */
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-default: rgba(255, 255, 255, 0.12);
-  --border-strong: rgba(255, 255, 255, 0.2);
+  /* Success - Emerald (for positive states) */
+  --success: #10B981;
+  --success-glow: rgba(16, 185, 129, 0.15);
+
+  /* Borders - Warm undertones */
+  --border-subtle: rgba(250, 248, 245, 0.06);
+  --border-default: rgba(250, 248, 245, 0.10);
+  --border-strong: rgba(250, 248, 245, 0.18);
 
   /* Spacing */
   --section-padding: clamp(4rem, 10vw, 8rem);
@@ -36,6 +40,8 @@
   --color-accent-primary: var(--accent-primary);
   --color-accent-secondary: var(--accent-secondary);
   --color-accent-glow: var(--accent-glow);
+  --color-success: var(--success);
+  --color-success-glow: var(--success-glow);
   --color-border-subtle: var(--border-subtle);
   --color-border-default: var(--border-default);
   --color-border-strong: var(--border-strong);
@@ -63,6 +69,42 @@ body {
 ::selection {
   background: var(--accent-primary);
   color: var(--bg-primary);
+}
+
+/* Focus states for accessibility */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Reset focus for custom styled elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+  font-weight: 600;
+  z-index: 9999;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: none;
 }
 
 /* Smooth scroll for Lenis */

@@ -1,57 +1,78 @@
 "use client";
 
+import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { HeroContent } from "./hero-content";
 
 const OrbitingShapes = dynamic(
-  () =>
-    import("@/components/three/orbiting-shapes").then(
-      (mod) => mod.OrbitingShapes
-    ),
+  () => import("@/components/three/orbiting-shapes").then((mod) => mod.OrbitingShapes),
   { ssr: false }
 );
+
+// Radial dot pattern
+function DotPattern() {
+  return (
+    <div
+      className="absolute inset-0 opacity-[0.4] pointer-events-none"
+      style={{
+        backgroundImage: `radial-gradient(circle at center, var(--accent-primary) 1px, transparent 1px)`,
+        backgroundSize: "32px 32px",
+        maskImage: "radial-gradient(ellipse 70% 50% at 50% 0%, black 20%, transparent 70%)",
+        WebkitMaskImage: "radial-gradient(ellipse 70% 50% at 50% 0%, black 20%, transparent 70%)",
+      }}
+    />
+  );
+}
+
+// Scroll indicator
+function ScrollIndicator() {
+  return (
+    <motion.button
+      onClick={() => {
+        document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
+      }}
+      className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-fg-muted hover:text-fg-secondary transition-colors cursor-pointer"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.5, duration: 0.5 }}
+    >
+      <span className="text-xs tracking-widest uppercase">Scroll</span>
+      <motion.div
+        animate={{ y: [0, 6, 0] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-current">
+          <path d="M10 4v12m0 0l-4-4m4 4l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </motion.div>
+    </motion.button>
+  );
+}
 
 export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-bg-primary"
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary" />
+      <DotPattern />
 
-      {/* Grid pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: "64px 64px",
-        }}
-      />
-
-      {/* 3D Shapes */}
-      <OrbitingShapes className="absolute inset-0 pointer-events-none" />
-
-      {/* Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-32 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <HeroContent />
-          <div className="hidden lg:block" aria-hidden="true">
-            {/* Space for 3D elements on desktop */}
-          </div>
+      {/* 3D Background - positioned behind content */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-full h-full max-w-4xl max-h-[600px] opacity-60">
+          <OrbitingShapes />
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <div className="w-6 h-10 border-2 border-border-default rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-fg-muted rounded-full mt-2 animate-bounce" />
-        </div>
+      {/* Content overlay */}
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 py-24 lg:py-32">
+        <HeroContent />
       </div>
+
+      <ScrollIndicator />
+      
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-bg-primary to-transparent pointer-events-none" />
     </section>
   );
 }
-

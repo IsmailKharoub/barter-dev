@@ -73,26 +73,32 @@ export interface Translations {
     categories: {
       designCreative: {
         title: string;
+        description: string;
         items: string[];
       };
       professionalServices: {
         title: string;
+        description: string;
         items: string[];
       };
       physicalGoods: {
         title: string;
+        description: string;
         items: string[];
       };
       accessOpportunity: {
         title: string;
+        description: string;
         items: string[];
       };
       skilledLabor: {
         title: string;
+        description: string;
         items: string[];
       };
       hybrid: {
         title: string;
+        description: string;
         items: string[];
       };
     };
@@ -139,10 +145,19 @@ export interface Translations {
     headline: string;
     subhead: string;
     projects: {
+      id: string;
       title: string;
-      role: string;
+      category: string;
+      description: string;
+      techHighlights: string[];
+      featured?: boolean;
     }[];
     closing: string;
+    stats: {
+      years: string;
+      products: string;
+      stack: string;
+    };
   };
   footerCta: {
     headline: string;

@@ -1,17 +1,76 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { t } from "@/i18n";
 import { Button } from "@/components/ui/button";
 
-const OrbitingShapes = dynamic(
-  () =>
-    import("@/components/three/orbiting-shapes").then(
-      (mod) => mod.OrbitingShapes
-    ),
-  { ssr: false }
-);
+// Animated rings - CSS-only alternative to 3D canvas
+function AnimatedRings() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+      {/* Outer ring */}
+      <motion.div
+        className="absolute w-[500px] h-[500px] rounded-full border border-accent-primary/10"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+      />
+      
+      {/* Middle ring */}
+      <motion.div
+        className="absolute w-[400px] h-[400px] rounded-full border border-accent-primary/15"
+        animate={{ rotate: -360 }}
+        transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+      />
+      
+      {/* Inner ring */}
+      <motion.div
+        className="absolute w-[300px] h-[300px] rounded-full border-2 border-accent-primary/20"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+      />
+
+      {/* Glowing center */}
+      <motion.div
+        className="absolute w-32 h-32 rounded-full bg-accent-primary/10 blur-2xl"
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* Orbiting dots */}
+      <motion.div
+        className="absolute w-[350px] h-[350px]"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-primary shadow-lg shadow-accent-primary/50" />
+      </motion.div>
+
+      <motion.div
+        className="absolute w-[450px] h-[450px]"
+        animate={{ rotate: -360 }}
+        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+      >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-accent-secondary shadow-lg shadow-accent-secondary/50" />
+      </motion.div>
+    </div>
+  );
+}
+
+// Background gradient
+function Background() {
+  return (
+    <div className="absolute inset-0 pointer-events-none">
+      {/* Top gradient fade */}
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-bg-secondary to-transparent" />
+      
+      {/* Gradient orbs */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-primary/5 rounded-full blur-[150px]" />
+    </div>
+  );
+}
 
 export function FooterCta() {
   const handleApply = () => {
@@ -23,19 +82,39 @@ export function FooterCta() {
   };
 
   return (
-    <section className="relative py-32 bg-bg-primary overflow-hidden">
-      {/* 3D Background */}
-      <OrbitingShapes className="absolute inset-0 opacity-50 pointer-events-none" />
+    <section className="relative py-32 md:py-40 bg-bg-primary overflow-hidden">
+      <Background />
+      <AnimatedRings />
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-        <motion.h2
-          className="text-5xl md:text-6xl font-bold mb-10"
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
         >
-          {t.footerCta.headline}
-        </motion.h2>
+          {/* Eyebrow */}
+          <motion.p
+            className="text-accent-primary font-mono text-sm tracking-widest uppercase mb-6"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
+            Let&apos;s Build Something
+          </motion.p>
+
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight">
+            <span className="text-fg-primary">{t.footerCta.headline.split(" ")[0]} </span>
+            <span className="bg-gradient-to-r from-accent-primary via-amber-400 to-accent-secondary bg-clip-text text-transparent">
+              {t.footerCta.headline.split(" ").slice(1).join(" ")}
+            </span>
+          </h2>
+
+          <p className="text-fg-secondary text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
+            Got something valuable to offer? Let&apos;s talk about building your next project.
+          </p>
+        </motion.div>
 
         <motion.div
           className="flex flex-col sm:flex-row gap-4 justify-center"
@@ -55,4 +134,3 @@ export function FooterCta() {
     </section>
   );
 }
-

@@ -1,171 +1,135 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { ProjectAnimation } from "./project-animations";
 
 interface ProjectCardProps {
+  id: string;
   title: string;
-  role: string;
+  category: string;
+  description: string;
+  techHighlights: string[];
+  featured?: boolean;
   index: number;
 }
 
-export function ProjectCard({ title, role, index }: ProjectCardProps) {
+export function ProjectCard({
+  id,
+  title,
+  category,
+  description,
+  techHighlights,
+  featured = false,
+  index,
+}: ProjectCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <motion.div
-      className="group relative bg-bg-tertiary rounded-xl overflow-hidden border border-border-subtle hover:border-accent-primary/50 transition-all"
-      initial={{ opacity: 0, y: 30 }}
+    <motion.article
+      className={`group relative bg-bg-tertiary rounded-2xl overflow-hidden border border-border-subtle transition-colors duration-300 ${
+        featured ? "lg:col-span-2 lg:row-span-2" : ""
+      } ${isHovered ? "border-accent-primary/40" : "hover:border-border-default"}`}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -4 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Animation placeholder */}
-      <div className="aspect-video bg-bg-secondary relative overflow-hidden">
-        <ProjectAnimation index={index} />
-        {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-bg-tertiary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      {/* Glow effect on hover */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 via-transparent to-accent-secondary/5 opacity-0 transition-opacity duration-500 pointer-events-none"
+        style={{ opacity: isHovered ? 1 : 0 }}
+      />
+
+      {/* Animation container */}
+      <div
+        className={`relative bg-bg-secondary overflow-hidden ${
+          featured ? "aspect-[16/10]" : "aspect-[16/9]"
+        }`}
+      >
+        <ProjectAnimation projectId={id} isHovered={isHovered} />
+
+        {/* Category badge */}
+        <motion.div
+          className="absolute top-3 left-3 px-2.5 py-1 bg-bg-primary/80 backdrop-blur-sm rounded-full border border-border-subtle"
+          initial={{ opacity: 0, x: -10 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: index * 0.1 + 0.3 }}
+        >
+          <span className="text-[10px] font-medium text-fg-secondary tracking-wide uppercase">
+            {category}
+          </span>
+        </motion.div>
+
+        {/* Featured badge */}
+        {featured && (
+          <motion.div
+            className="absolute top-3 right-3 px-2 py-1 bg-accent-primary/20 backdrop-blur-sm rounded-full border border-accent-primary/30"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.1 + 0.4, type: "spring" }}
+          >
+            <span className="text-[10px] font-bold text-accent-primary tracking-wide uppercase">
+              Featured
+            </span>
+          </motion.div>
+        )}
+
+        {/* Bottom gradient overlay */}
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-bg-tertiary to-transparent pointer-events-none" />
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        <h3 className="text-fg-primary font-medium mb-1 group-hover:text-accent-primary transition-colors">
+      <div className={`p-5 ${featured ? "lg:p-6" : ""}`}>
+        {/* Title */}
+        <motion.h3
+          className={`font-semibold mb-2 text-fg-primary transition-colors duration-300 ${
+            featured ? "text-xl lg:text-2xl" : "text-base"
+          } ${isHovered ? "text-accent-primary" : ""}`}
+        >
           {title}
-        </h3>
-        <p className="text-fg-muted text-sm italic">Role: {role}</p>
+        </motion.h3>
+
+        {/* Description */}
+        <p
+          className={`text-fg-secondary leading-relaxed mb-4 ${
+            featured ? "text-sm lg:text-base" : "text-sm"
+          }`}
+        >
+          {description}
+        </p>
+
+        {/* Tech stack pills */}
+        <div className="flex flex-wrap gap-1.5">
+          {techHighlights.map((tech, i) => (
+            <motion.span
+              key={tech}
+              className="px-2 py-0.5 text-[11px] font-medium text-fg-muted bg-bg-secondary rounded-md border border-border-subtle transition-colors duration-200 hover:border-accent-primary/30 hover:text-fg-secondary"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 + 0.4 + i * 0.05 }}
+            >
+              {tech}
+            </motion.span>
+          ))}
+        </div>
       </div>
-    </motion.div>
+
+      {/* Hover border gradient effect */}
+      <motion.div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          background: isHovered
+            ? "linear-gradient(135deg, rgba(245,158,11,0.1) 0%, transparent 50%, rgba(217,119,6,0.1) 100%)"
+            : "transparent",
+        }}
+        transition={{ duration: 0.3 }}
+      />
+    </motion.article>
   );
 }
-
-function ProjectAnimation({ index }: { index: number }) {
-  const animations = [
-    // Fintech dashboard
-    <div key={0} className="w-full h-full p-4 flex flex-col gap-2">
-      <div className="flex gap-2">
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            className="flex-1 h-8 bg-accent-primary/20 rounded"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-          />
-        ))}
-      </div>
-      <motion.div
-        className="flex-1 bg-border-subtle/30 rounded"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.3 }}
-      />
-    </div>,
-    // Logistics tracker
-    <div key={1} className="w-full h-full p-4 relative">
-      <div className="absolute inset-4 bg-border-subtle/20 rounded" />
-      {[0, 1, 2].map((i) => (
-        <motion.div
-          key={i}
-          className="absolute w-2 h-2 bg-accent-primary rounded-full"
-          style={{ left: `${20 + i * 30}%`, top: "50%" }}
-          animate={{ x: [0, 20, 0], opacity: [1, 0.5, 1] }}
-          transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-        />
-      ))}
-    </div>,
-    // Healthcare portal
-    <div key={2} className="w-full h-full p-4 flex gap-2">
-      <div className="w-1/3 bg-border-subtle/30 rounded p-2 space-y-1">
-        {[0, 1, 2, 3].map((i) => (
-          <motion.div
-            key={i}
-            className="h-3 bg-fg-muted/10 rounded"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-          />
-        ))}
-      </div>
-      <div className="flex-1 bg-border-subtle/20 rounded" />
-    </div>,
-    // E-commerce admin
-    <div key={3} className="w-full h-full p-4 grid grid-cols-4 gap-1">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="bg-border-subtle/30 rounded"
-          initial={{ scale: 0 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.05, type: "spring" }}
-        />
-      ))}
-    </div>,
-    // Publishing platform
-    <div key={4} className="w-full h-full p-4 flex gap-2">
-      <div className="flex-1 bg-border-subtle/20 rounded p-2">
-        <motion.div
-          className="h-2 w-3/4 bg-fg-muted/20 rounded mb-1"
-          initial={{ width: 0 }}
-          whileInView={{ width: "75%" }}
-          viewport={{ once: true }}
-        />
-        <motion.div
-          className="h-1 w-full bg-fg-muted/10 rounded"
-          initial={{ width: 0 }}
-          whileInView={{ width: "100%" }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        />
-      </div>
-      <div className="w-8 space-y-1">
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            className="w-full aspect-square bg-accent-primary/30 rounded"
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 + i * 0.1 }}
-          />
-        ))}
-      </div>
-    </div>,
-    // SaaS dashboard
-    <div key={5} className="w-full h-full p-4 flex flex-col gap-2">
-      <div className="flex gap-1">
-        {[0, 1, 2, 3].map((i) => (
-          <motion.div
-            key={i}
-            className="w-6 h-6 bg-border-subtle/40 rounded-full"
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-          />
-        ))}
-      </div>
-      <motion.div
-        className="flex-1 bg-border-subtle/20 rounded flex items-end p-2 gap-1"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-      >
-        {[60, 40, 80, 30, 70].map((h, i) => (
-          <motion.div
-            key={i}
-            className="flex-1 bg-accent-primary/30 rounded-t"
-            initial={{ height: 0 }}
-            whileInView={{ height: `${h}%` }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 + i * 0.1 }}
-          />
-        ))}
-      </motion.div>
-    </div>,
-  ];
-
-  return animations[index % animations.length];
-}
-

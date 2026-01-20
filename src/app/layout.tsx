@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Outfit, JetBrains_Mono } from "next/font/google";
 import { t } from "@/i18n";
-import { LenisProvider } from "@/components/providers";
+import { LenisProvider, PageTransitionProvider } from "@/components/providers";
+import { StructuredData } from "@/components/seo";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+const outfit = Outfit({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
@@ -16,9 +17,137 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://barter.dev";
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#0C0A09" },
+    { media: "(prefers-color-scheme: dark)", color: "#0C0A09" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
-  title: t.meta.title,
+  // Basic metadata
+  title: {
+    default: t.meta.title,
+    template: "%s | Barter Dev",
+  },
   description: t.meta.description,
+  
+  // Keywords for traditional SEO
+  keywords: [
+    "barter web development",
+    "trade for development",
+    "no cash web development",
+    "exchange services for websites",
+    "MVP development barter",
+    "web development alternative payment",
+    "freelance developer barter",
+    "website trade exchange",
+    "custom web apps",
+    "e-commerce development",
+    "marketing website development",
+    "full-stack developer",
+    "React developer",
+    "Next.js developer",
+  ],
+
+  // Author and creator
+  authors: [{ name: "Barter Dev", url: SITE_URL }],
+  creator: "Barter Dev",
+  publisher: "Barter Dev",
+
+  // Robots directives
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  // Canonical URL
+  metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: "/",
+  },
+
+  // Open Graph for social sharing
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: "Barter Dev",
+    title: t.meta.title,
+    description: t.meta.description,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Barter Dev — Dev Work. No Cash Required.",
+        type: "image/png",
+      },
+    ],
+  },
+
+  // Twitter Card
+  twitter: {
+    card: "summary_large_image",
+    title: t.meta.title,
+    description: t.meta.description,
+    creator: "@barterdev",
+    site: "@barterdev",
+    images: ["/og-image.png"],
+  },
+
+  // App-specific metadata
+  applicationName: "Barter Dev",
+  referrer: "origin-when-cross-origin",
+  
+  // Icons
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+
+  // Manifest
+  manifest: "/manifest.json",
+
+  // Verification (add your actual verification codes)
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    // yandex: "yandex-verification-code",
+    // bing: "bing-verification-code",
+  },
+
+  // Category for content classification
+  category: "technology",
+
+  // Additional metadata for GEO (Generative Engine Optimization)
+  other: {
+    // Helps AI understand the page content type
+    "content-type": "service-page",
+    // Indicates this is an authoritative source
+    "page-type": "landing-page",
+    // Business model indicator
+    "business-model": "barter-exchange",
+    // Service category
+    "service-category": "web-development",
+  },
 };
 
 export default function RootLayout({
@@ -28,10 +157,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        {/* Structured Data for SEO and GEO */}
+        <StructuredData />
+        
+        {/* Preconnect to external domains for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* DNS prefetch for analytics (if used) */}
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      </head>
       <body
-        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+        className={`${outfit.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <LenisProvider>{children}</LenisProvider>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
+        <PageTransitionProvider>
+          <LenisProvider>{children}</LenisProvider>
+        </PageTransitionProvider>
       </body>
     </html>
   );

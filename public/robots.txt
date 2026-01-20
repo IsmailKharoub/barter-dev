@@ -1,0 +1,40 @@
+# robots.txt for Barter Dev
+# https://barter.dev
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://barter.dev/sitemap.xml
+
+# AI Crawlers - Allow for GEO (Generative Engine Optimization)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Disallow admin/api routes (if any)
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Crawl delay for polite crawling
+Crawl-delay: 1
+

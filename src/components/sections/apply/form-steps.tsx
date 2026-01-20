@@ -2,73 +2,275 @@
 
 import { motion } from "framer-motion";
 import { t } from "@/i18n";
+import type { LucideIcon } from "lucide-react";
+import {
+  Globe,
+  Smartphone,
+  ShoppingCart,
+  FileText,
+  HelpCircle,
+  Briefcase,
+  Package,
+  Shuffle,
+  Clock,
+  Mail,
+  User as UserIcon,
+  Link2,
+  MessageSquare,
+  DollarSign,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 
 interface StepProps {
   data: Record<string, string>;
   onChange: (field: string, value: string) => void;
 }
 
+// Project type icons
+const projectTypeIcons: Record<string, LucideIcon> = {
+  "Marketing Site": Globe,
+  "Web App": Smartphone,
+  "E-Commerce": ShoppingCart,
+  "CMS/Content": FileText,
+  "Other": HelpCircle,
+};
+
+// Trade type icons
+const tradeTypeIcons: Record<string, LucideIcon> = {
+  "Services": Briefcase,
+  "Physical Goods": Package,
+  "Hybrid (Cash + Trade)": Shuffle,
+  "Other": HelpCircle,
+};
+
+// Timeline icons
+const timelineIcons: Record<string, LucideIcon> = {
+  "< 1 month": Clock,
+  "1-3 months": Clock,
+  "3-6 months": Clock,
+  "Flexible": Clock,
+};
+
+// Reusable selection button component
+function SelectionButton({
+  label,
+  isSelected,
+  onClick,
+  icon: Icon,
+}: {
+  label: string;
+  isSelected: boolean;
+  onClick: () => void;
+  icon?: LucideIcon;
+}) {
+  return (
+    <motion.button
+      type="button"
+      onClick={onClick}
+      className={`
+        relative flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium
+        transition-all duration-300 ease-out
+        ${isSelected
+          ? "bg-accent-primary text-bg-primary shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+          : "bg-bg-tertiary text-fg-secondary hover:text-fg-primary border border-border-subtle hover:border-accent-primary/30"
+        }
+      `}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      {Icon && <Icon className="w-4 h-4" />}
+      <span>{label}</span>
+      {isSelected && (
+        <motion.div
+          className="absolute -top-1 -right-1 w-4 h-4 bg-bg-primary rounded-full flex items-center justify-center"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 25 }}
+        >
+          <CheckCircle2 className="w-3 h-3 text-accent-primary" />
+        </motion.div>
+      )}
+    </motion.button>
+  );
+}
+
+// Reusable input component with icon
+function InputField({
+  label,
+  type = "text",
+  value,
+  onChange,
+  placeholder,
+  icon: Icon,
+  prefix,
+}: {
+  label: string;
+  type?: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  icon?: LucideIcon;
+  prefix?: string;
+}) {
+  return (
+    <div className="space-y-2">
+      <label className="flex items-center gap-2 text-fg-primary font-medium text-sm">
+        {Icon && <Icon className="w-4 h-4 text-fg-muted" />}
+        {label}
+      </label>
+      <div className="relative group">
+        {prefix && (
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-muted font-mono">
+            {prefix}
+          </span>
+        )}
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={`
+            w-full bg-bg-tertiary border border-border-subtle rounded-xl
+            ${prefix ? "pl-8" : "pl-4"} pr-4 py-3.5
+            text-fg-primary placeholder:text-fg-muted/50
+            focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/10
+            transition-all duration-200
+          `}
+        />
+        <div className="absolute inset-0 rounded-xl bg-accent-primary/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
+      </div>
+    </div>
+  );
+}
+
+// Reusable textarea component
+function TextareaField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  rows = 3,
+  icon: Icon,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  rows?: number;
+  icon?: LucideIcon;
+}) {
+  return (
+    <div className="space-y-2">
+      <label className="flex items-center gap-2 text-fg-primary font-medium text-sm">
+        {Icon && <Icon className="w-4 h-4 text-fg-muted" />}
+        {label}
+      </label>
+      <div className="relative group">
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          rows={rows}
+          className={`
+            w-full bg-bg-tertiary border border-border-subtle rounded-xl
+            px-4 py-3.5
+            text-fg-primary placeholder:text-fg-muted/50
+            focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/10
+            transition-all duration-200 resize-none
+          `}
+        />
+        <div className="absolute inset-0 rounded-xl bg-accent-primary/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
+      </div>
+    </div>
+  );
+}
+
+// Section header for grouping fields
+function FieldSection({ 
+  title, 
+  children 
+}: { 
+  title: string; 
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      className="space-y-4"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <h4 className="text-sm font-medium text-fg-muted uppercase tracking-wider">
+        {title}
+      </h4>
+      {children}
+    </motion.div>
+  );
+}
+
 export function StepWhatYouNeed({ data, onChange }: StepProps) {
   const step = t.apply.steps.whatYouNeed;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <label className="block text-fg-primary font-medium mb-3">
-          {step.projectType}
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {step.projectTypes.map((type) => (
-            <button
+    <div className="space-y-8">
+      {/* Project Type Selection */}
+      <FieldSection title={step.projectType}>
+        <div className="flex flex-wrap gap-3">
+          {step.projectTypes.map((type, i) => (
+            <motion.div
               key={type}
-              type="button"
-              onClick={() => onChange("projectType", type)}
-              className={`px-4 py-2 rounded-full text-sm transition-all ${
-                data.projectType === type
-                  ? "bg-accent-primary text-bg-primary"
-                  : "bg-bg-tertiary text-fg-secondary hover:text-fg-primary border border-border-subtle"
-              }`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
             >
-              {type}
-            </button>
+              <SelectionButton
+                label={type}
+                isSelected={data.projectType === type}
+                onClick={() => onChange("projectType", type)}
+                icon={projectTypeIcons[type]}
+              />
+            </motion.div>
           ))}
         </div>
-      </div>
+      </FieldSection>
 
-      <div>
-        <label className="block text-fg-primary font-medium mb-2">
-          {step.description}
-        </label>
-        <textarea
+      {/* Project Description */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <TextareaField
+          label={step.description}
           value={data.projectDescription || ""}
-          onChange={(e) => onChange("projectDescription", e.target.value)}
+          onChange={(value) => onChange("projectDescription", value)}
           placeholder={step.descriptionPlaceholder}
-          rows={3}
-          className="w-full bg-bg-tertiary border border-border-subtle rounded-lg px-4 py-3 text-fg-primary placeholder:text-fg-muted focus:outline-none focus:border-accent-primary transition-colors resize-none"
+          rows={4}
+          icon={MessageSquare}
         />
-      </div>
+      </motion.div>
 
-      <div>
-        <label className="block text-fg-primary font-medium mb-3">
-          {step.timeline}
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {step.timelineOptions.map((option) => (
-            <button
+      {/* Timeline Selection */}
+      <FieldSection title={step.timeline}>
+        <div className="flex flex-wrap gap-3">
+          {step.timelineOptions.map((option, i) => (
+            <motion.div
               key={option}
-              type="button"
-              onClick={() => onChange("timeline", option)}
-              className={`px-4 py-2 rounded-full text-sm transition-all ${
-                data.timeline === option
-                  ? "bg-accent-primary text-bg-primary"
-                  : "bg-bg-tertiary text-fg-secondary hover:text-fg-primary border border-border-subtle"
-              }`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.05 }}
             >
-              {option}
-            </button>
+              <SelectionButton
+                label={option}
+                isSelected={data.timeline === option}
+                onClick={() => onChange("timeline", option)}
+                icon={timelineIcons[option]}
+              />
+            </motion.div>
           ))}
         </div>
-      </div>
+      </FieldSection>
     </div>
   );
 }
@@ -77,58 +279,64 @@ export function StepWhatYouOffer({ data, onChange }: StepProps) {
   const step = t.apply.steps.whatYouOffer;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <label className="block text-fg-primary font-medium mb-3">
-          {step.tradeType}
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {step.tradeTypes.map((type) => (
-            <button
+    <div className="space-y-8">
+      {/* Trade Type Selection */}
+      <FieldSection title={step.tradeType}>
+        <div className="flex flex-wrap gap-3">
+          {step.tradeTypes.map((type, i) => (
+            <motion.div
               key={type}
-              type="button"
-              onClick={() => onChange("tradeType", type)}
-              className={`px-4 py-2 rounded-full text-sm transition-all ${
-                data.tradeType === type
-                  ? "bg-accent-primary text-bg-primary"
-                  : "bg-bg-tertiary text-fg-secondary hover:text-fg-primary border border-border-subtle"
-              }`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
             >
-              {type}
-            </button>
+              <SelectionButton
+                label={type}
+                isSelected={data.tradeType === type}
+                onClick={() => onChange("tradeType", type)}
+                icon={tradeTypeIcons[type]}
+              />
+            </motion.div>
           ))}
         </div>
-      </div>
+      </FieldSection>
 
-      <div>
-        <label className="block text-fg-primary font-medium mb-2">
-          {step.description}
-        </label>
-        <textarea
+      {/* Offer Description */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <TextareaField
+          label={step.description}
           value={data.offerDescription || ""}
-          onChange={(e) => onChange("offerDescription", e.target.value)}
+          onChange={(value) => onChange("offerDescription", value)}
           placeholder={step.descriptionPlaceholder}
-          rows={3}
-          className="w-full bg-bg-tertiary border border-border-subtle rounded-lg px-4 py-3 text-fg-primary placeholder:text-fg-muted focus:outline-none focus:border-accent-primary transition-colors resize-none"
+          rows={4}
+          icon={MessageSquare}
         />
-      </div>
+      </motion.div>
 
-      <div>
-        <label className="block text-fg-primary font-medium mb-2">
-          {step.estimatedValue}
-        </label>
-        <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-muted">
-            $
-          </span>
-          <input
-            type="text"
-            value={data.estimatedValue || ""}
-            onChange={(e) => onChange("estimatedValue", e.target.value)}
-            className="w-full bg-bg-tertiary border border-border-subtle rounded-lg pl-8 pr-4 py-3 text-fg-primary focus:outline-none focus:border-accent-primary transition-colors"
-          />
-        </div>
-      </div>
+      {/* Estimated Value */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <InputField
+          label={step.estimatedValue}
+          type="text"
+          value={data.estimatedValue || ""}
+          onChange={(value) => onChange("estimatedValue", value)}
+          placeholder="5,000"
+          icon={DollarSign}
+          prefix="$"
+        />
+        <p className="mt-2 text-xs text-fg-muted flex items-center gap-1.5">
+          <AlertCircle className="w-3 h-3" />
+          Estimate the market value of what you&apos;re offering
+        </p>
+      </motion.div>
     </div>
   );
 }
@@ -138,55 +346,127 @@ export function StepAboutYou({ data, onChange }: StepProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <label className="block text-fg-primary font-medium mb-2">
-          {step.name}
-        </label>
-        <input
-          type="text"
-          value={data.name || ""}
-          onChange={(e) => onChange("name", e.target.value)}
-          className="w-full bg-bg-tertiary border border-border-subtle rounded-lg px-4 py-3 text-fg-primary focus:outline-none focus:border-accent-primary transition-colors"
-        />
+      {/* Name & Email in a grid on larger screens */}
+      <div className="grid gap-6 sm:grid-cols-2">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0 }}
+        >
+          <InputField
+            label={step.name}
+            value={data.name || ""}
+            onChange={(value) => onChange("name", value)}
+            placeholder="Your full name"
+            icon={UserIcon}
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <InputField
+            label={step.email}
+            type="email"
+            value={data.email || ""}
+            onChange={(value) => onChange("email", value)}
+            placeholder="you@example.com"
+            icon={Mail}
+          />
+        </motion.div>
       </div>
 
-      <div>
-        <label className="block text-fg-primary font-medium mb-2">
-          {step.email}
-        </label>
-        <input
-          type="email"
-          value={data.email || ""}
-          onChange={(e) => onChange("email", e.target.value)}
-          className="w-full bg-bg-tertiary border border-border-subtle rounded-lg px-4 py-3 text-fg-primary focus:outline-none focus:border-accent-primary transition-colors"
-        />
-      </div>
-
-      <div>
-        <label className="block text-fg-primary font-medium mb-2">
-          {step.website}
-        </label>
-        <input
+      {/* Website */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <InputField
+          label={step.website}
           type="url"
           value={data.website || ""}
-          onChange={(e) => onChange("website", e.target.value)}
+          onChange={(value) => onChange("website", value)}
           placeholder={step.websitePlaceholder}
-          className="w-full bg-bg-tertiary border border-border-subtle rounded-lg px-4 py-3 text-fg-primary placeholder:text-fg-muted focus:outline-none focus:border-accent-primary transition-colors"
+          icon={Link2}
         />
-      </div>
+      </motion.div>
 
-      <div>
-        <label className="block text-fg-primary font-medium mb-2">
-          {step.anything}
-        </label>
-        <textarea
+      {/* Additional info */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <TextareaField
+          label={step.anything}
           value={data.anything || ""}
-          onChange={(e) => onChange("anything", e.target.value)}
+          onChange={(value) => onChange("anything", value)}
+          placeholder="Any context that might help me evaluate your application..."
           rows={3}
-          className="w-full bg-bg-tertiary border border-border-subtle rounded-lg px-4 py-3 text-fg-primary focus:outline-none focus:border-accent-primary transition-colors resize-none"
+          icon={MessageSquare}
         />
-      </div>
+      </motion.div>
     </div>
+  );
+}
+
+// Checkbox component
+function Checkbox({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label: string;
+}) {
+  return (
+    <label className="flex items-start gap-3 cursor-pointer group">
+      <div className="relative mt-0.5">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+          className="sr-only"
+        />
+        <motion.div
+          className={`
+            w-5 h-5 rounded-md border-2 flex items-center justify-center
+            transition-colors duration-200
+            ${checked
+              ? "bg-accent-primary border-accent-primary"
+              : "bg-bg-tertiary border-border-default group-hover:border-accent-primary/50"
+            }
+          `}
+          whileTap={{ scale: 0.9 }}
+        >
+          <motion.svg
+            className="w-3 h-3 text-bg-primary"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={3}
+            initial={false}
+            animate={{
+              pathLength: checked ? 1 : 0,
+              opacity: checked ? 1 : 0,
+            }}
+          >
+            <motion.path
+              d="M5 13l4 4L19 7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </motion.svg>
+        </motion.div>
+      </div>
+      <span className={`text-sm leading-relaxed transition-colors ${checked ? "text-fg-primary" : "text-fg-secondary"}`}>
+        {label}
+      </span>
+    </label>
   );
 }
 
@@ -197,45 +477,100 @@ export function StepConfirmation({
   const step = t.apply.steps.confirmation;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h4 className="text-fg-primary font-medium mb-4">{step.reviewLabel}</h4>
-        <div className="bg-bg-tertiary rounded-lg p-4 space-y-2 text-sm">
-          <p>
-            <span className="text-fg-muted">Project:</span>{" "}
-            <span className="text-fg-primary">{data.projectType}</span>
-          </p>
-          <p>
-            <span className="text-fg-muted">Trade:</span>{" "}
-            <span className="text-fg-primary">{data.tradeType}</span>
-          </p>
-          <p>
-            <span className="text-fg-muted">Value:</span>{" "}
-            <span className="text-accent-primary">${data.estimatedValue}</span>
-          </p>
-          <p>
-            <span className="text-fg-muted">Contact:</span>{" "}
-            <span className="text-fg-primary">{data.email}</span>
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        {step.checkboxes.map((text, i) => (
-          <label key={i} className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={!!data[`checkbox${i}`]}
-              onChange={(e) =>
-                onChange(`checkbox${i}`, e.target.checked.toString())
-              }
-              className="mt-1 w-4 h-4 rounded border-border-default bg-bg-tertiary checked:bg-accent-primary"
+    <div className="space-y-8">
+      {/* Application summary */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h4 className="text-sm font-medium text-fg-muted uppercase tracking-wider mb-4">
+          {step.reviewLabel}
+        </h4>
+        <div className="bg-bg-tertiary rounded-2xl border border-border-subtle overflow-hidden">
+          {/* Summary grid */}
+          <div className="grid gap-px bg-border-subtle">
+            <SummaryRow 
+              label="Project Type" 
+              value={data.projectType as string} 
+              icon={projectTypeIcons[data.projectType as string] || FileText}
             />
-            <span className="text-fg-secondary text-sm">{text}</span>
-          </label>
+            <SummaryRow 
+              label="Timeline" 
+              value={data.timeline as string}
+              icon={Clock}
+            />
+            <SummaryRow 
+              label="Trade Type" 
+              value={data.tradeType as string}
+              icon={tradeTypeIcons[data.tradeType as string] || Package}
+            />
+            <SummaryRow 
+              label="Estimated Value" 
+              value={data.estimatedValue ? `$${data.estimatedValue}` : "Not specified"}
+              icon={DollarSign}
+              highlight
+            />
+            <SummaryRow 
+              label="Contact" 
+              value={data.email as string}
+              icon={Mail}
+            />
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Checkboxes */}
+      <motion.div
+        className="space-y-4"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <h4 className="text-sm font-medium text-fg-muted uppercase tracking-wider">
+          Before you submit
+        </h4>
+        {step.checkboxes.map((text, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 + i * 0.1 }}
+          >
+            <Checkbox
+              checked={data[`checkbox${i}`] === "true"}
+              onChange={(checked) => onChange(`checkbox${i}`, checked.toString())}
+              label={text}
+            />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }
 
+// Summary row component
+function SummaryRow({
+  label,
+  value,
+  icon: Icon,
+  highlight,
+}: {
+  label: string;
+  value: string | undefined;
+  icon: LucideIcon;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-4 px-4 py-3.5 bg-bg-tertiary">
+      <div className="w-8 h-8 rounded-lg bg-bg-secondary flex items-center justify-center shrink-0">
+        <Icon className="w-4 h-4 text-fg-muted" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-fg-muted">{label}</p>
+        <p className={`text-sm font-medium truncate ${highlight ? "text-accent-primary" : "text-fg-primary"}`}>
+          {value || "—"}
+        </p>
+      </div>
+    </div>
+  );
+}

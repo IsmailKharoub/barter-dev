@@ -16,6 +16,21 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  return <AdminDashboard />;
+  return (
+    <>
+      {/* Quick Link to Logs */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Link
+          href="/admin/logs"
+          className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-stone-950 px-4 py-3 rounded-lg shadow-lg transition-colors font-medium"
+        >
+          <FileText className="w-5 h-5" />
+          View Logs
+        </Link>
+      </div>
+      
+      <AdminDashboard />
+    </>
+  );
 }
 

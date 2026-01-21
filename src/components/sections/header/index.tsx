@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-
 import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { LanguagePicker } from "@/components/ui/language-picker";
+import posthog from "posthog-js";
 
 function Logo() {
   return (
@@ -27,10 +28,15 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
     { href: "#portfolio", label: t.portfolio.headline },
   ];
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, label: string) => {
     e.preventDefault();
     const element = document.querySelector(href);
     if (element) {
+      posthog.capture('navigation_link_clicked', {
+        link_href: href,
+        link_label: label,
+        location: 'header_desktop',
+      });
       element.scrollIntoView({ behavior: "smooth" });
       onNavigate?.();
     }
@@ -42,7 +48,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
         <motion.a
           key={link.href}
           href={link.href}
-          onClick={(e) => handleClick(e, link.href)}
+          onClick={(e) => handleClick(e, link.href, link.label)}
           className="relative text-sm font-medium text-fg-secondary hover:text-fg-primary transition-colors py-2"
           whileHover="hover"
         >
@@ -140,6 +146,11 @@ function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
                       href={link.href}
                       onClick={(e) => {
                         e.preventDefault();
+                        posthog.capture('navigation_link_clicked', {
+                          link_href: link.href,
+                          link_label: link.label,
+                          location: 'header_mobile',
+                        });
                         document.querySelector(link.href)?.scrollIntoView({ behavior: "smooth" });
                         onClose();
                       }}
@@ -220,7 +231,20 @@ export function Header() {
   });
 
   const handleApply = () => {
+    posthog.capture('cta_button_clicked', {
+      button_text: t.nav.apply,
+      button_type: 'apply',
+      location: 'header',
+    });
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleMenuToggle = () => {
+    const newState = !isMenuOpen;
+    posthog.capture('mobile_menu_toggled', {
+      action: newState ? 'opened' : 'closed',
+    });
+    setIsMenuOpen(newState);
   };
 
   return (
@@ -263,7 +287,7 @@ export function Header() {
               </Button>
               <HamburgerButton
                 isOpen={isMenuOpen}
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={handleMenuToggle}
               />
             </div>
           </motion.div>

@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { applicationSchema } from "@/lib/validations/application";
-import { 
-  createApplication, 
-  getRecentApplicationsByEmail, 
-  initializeIndexes 
+import {
+  createApplication,
+  getRecentApplicationsByEmail,
+  initializeIndexes
 } from "@/lib/db/mongodb";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export const runtime = "nodejs";
 
@@ -91,7 +92,25 @@ export async function POST(request: NextRequest) {
 
     const appId = applicationId;
     console.log("[API] Application saved with ID:", appId);
-    
+
+    // Track server-side application received event
+    const posthog = getPostHogClient();
+    const distinctId = request.headers.get("x-posthog-distinct-id") || data.email;
+
+    posthog.capture({
+      distinctId,
+      event: 'application_received',
+      properties: {
+        application_id: appId,
+        project_type: data.projectType,
+        trade_type: data.tradeType,
+        timeline: data.timeline,
+        source: 'api',
+        ip_address: ip,
+        referrer,
+      },
+    });
+
     // Send simple Slack notification
     const webhookUrl = process.env.SLACK_WEBHOOK_URL;
     if (webhookUrl) {

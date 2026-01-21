@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useLocale } from "@/components/providers/locale-provider";
+import posthog from "posthog-js";
 
 function FAQItem({ 
   question, 
@@ -67,6 +68,17 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const { t } = useLocale();
 
+  const handleFaqToggle = (index: number, question: string) => {
+    const isOpening = openIndex !== index;
+    setOpenIndex(isOpening ? index : null);
+
+    posthog.capture('faq_item_toggled', {
+      faq_index: index,
+      faq_question: question,
+      action: isOpening ? 'expanded' : 'collapsed',
+    });
+  };
+
   return (
     <section id="faq" className="py-24 md:py-32 bg-bg-primary">
       <div className="max-w-3xl mx-auto px-6 lg:px-8">
@@ -103,7 +115,7 @@ export function FAQ() {
               question={faq.question}
               answer={faq.answer}
               isOpen={openIndex === index}
-              onToggle={() => setOpenIndex(openIndex === index ? null : index)}
+              onToggle={() => handleFaqToggle(index, faq.question)}
               index={index}
             />
           ))}

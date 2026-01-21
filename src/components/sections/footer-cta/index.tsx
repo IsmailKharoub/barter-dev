@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { useReducedEffects } from "@/lib/hooks";
+import posthog from "posthog-js";
 
 // Animated rings - CSS-only alternative to 3D canvas
 function AnimatedRings({ reducedEffects }: { reducedEffects: boolean }) {
@@ -95,10 +96,20 @@ export function FooterCta() {
   const reducedEffects = useReducedEffects();
   
   const handleApply = () => {
+    posthog.capture('cta_button_clicked', {
+      button_text: t.footerCta.buttons[0],
+      button_type: 'apply',
+      location: 'footer_cta',
+    });
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleHowItWorks = () => {
+    posthog.capture('cta_button_clicked', {
+      button_text: t.footerCta.buttons[1],
+      button_type: 'how_it_works',
+      location: 'footer_cta',
+    });
     document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
   };
 

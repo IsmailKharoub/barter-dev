@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/components/providers";
 import type { Locale } from "@/i18n";
+import posthog from "posthog-js";
 
 export function LanguagePicker() {
   const { locale, setLocale, locales, supportedLocales } = useLocale();
@@ -37,8 +38,16 @@ export function LanguagePicker() {
   }, [isOpen]);
 
   const handleSelect = (newLocale: Locale) => {
+    const previousLocale = locale;
     setLocale(newLocale);
     setIsOpen(false);
+
+    posthog.capture('language_changed', {
+      from_language: previousLocale,
+      to_language: newLocale,
+      from_language_name: locales[previousLocale].nativeName,
+      to_language_name: locales[newLocale].nativeName,
+    });
   };
 
   const currentConfig = locales[locale];

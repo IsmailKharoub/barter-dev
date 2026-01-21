@@ -6,6 +6,7 @@ import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { useReducedEffects } from "@/lib/hooks";
 import type { ApplicationFormData } from "@/lib/validations/application";
+import posthog from "posthog-js";
 import {
   StepWhatYouNeed,
   StepWhatYouOffer,
@@ -418,7 +419,26 @@ export function Apply() {
       }
       setSubmitError(null);
       setDirection(isRTL ? -1 : 1);
-      setCurrentStep((prev) => prev + 1);
+
+      const nextStep = currentStep + 1;
+
+      // Track application started when moving from step 0 to step 1
+      if (currentStep === 0) {
+        posthog.capture('application_started', {
+          project_type: formData.projectType,
+          timeline: formData.timeline,
+        });
+      }
+
+      // Track step completion
+      posthog.capture('application_step_completed', {
+        step_number: currentStep + 1,
+        step_name: steps[currentStep].key,
+        project_type: formData.projectType,
+        trade_type: formData.tradeType,
+      });
+
+      setCurrentStep(nextStep);
     }
   };
 
@@ -511,13 +531,39 @@ export function Apply() {
           json?.error ||
           (isRTL ? "משהו השתבש. נסו שוב." : "Something went wrong. Please try again.");
         setSubmitError(msg);
+
+        // Track submission failure
+        posthog.capture('application_submission_failed', {
+          error_message: msg,
+          project_type: projectType,
+          trade_type: tradeType,
+          status_code: res.status,
+        });
         return;
       }
+
+      // Track successful submission
+      posthog.capture('application_submitted', {
+        project_type: projectType,
+        trade_type: tradeType,
+        timeline: timeline,
+        application_id: json?.applicationId,
+      });
 
       setSubmitted(true);
     } catch (e) {
       console.error("Submit failed:", e);
-      setSubmitError(isRTL ? "שגיאת רשת. נסו שוב." : "Network error. Please try again.");
+      const errorMsg = isRTL ? "שגיאת רשת. נסו שוב." : "Network error. Please try again.";
+      setSubmitError(errorMsg);
+
+      // Track network error
+      posthog.captureException(e instanceof Error ? e : new Error(String(e)));
+      posthog.capture('application_submission_failed', {
+        error_message: errorMsg,
+        error_type: 'network_error',
+        project_type: projectType,
+        trade_type: tradeType,
+      });
     } finally {
       setIsSubmitting(false);
     }

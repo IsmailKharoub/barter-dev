@@ -29,7 +29,7 @@ export async function notifySlackNewApplication(
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (!webhookUrl) return { success: false, skipped: true as const };
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://barter.dev";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://barter-dev.com";
   const id = Number(applicationId);
   const title = `New trade application #${id}`;
 

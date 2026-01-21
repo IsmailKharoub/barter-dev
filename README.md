@@ -31,7 +31,7 @@ Environment variables:
 - **`FROM_EMAIL`**: optional (defaults to `notifications@barter.dev`)
 - **`NOTIFICATION_EMAIL`**: optional (defaults to `hello@barter.dev`)
 - **`SLACK_WEBHOOK_URL`**: optional — when set, new applications are posted to Slack
-- **`NEXT_PUBLIC_SITE_URL`**: optional (used in the Slack message; defaults to `https://barter.dev`)
+- **`NEXT_PUBLIC_SITE_URL`**: optional (used in the Slack message; defaults to `https://barter-dev.com`)
 
 ## Learn More
 

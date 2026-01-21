@@ -4,22 +4,36 @@ let client: MongoClient | null = null;
 let db: Db | null = null;
 
 export async function connectToDatabase() {
-  if (db) return db;
+  if (db) {
+    console.log("[MongoDB] Using existing connection");
+    return db;
+  }
 
   const uri = process.env.MONGODB_URI;
   if (!uri) {
+    console.error("[MongoDB] ❌ MONGODB_URI not set!");
     throw new Error("MONGODB_URI environment variable is not set");
   }
 
   console.log("[MongoDB] Connecting to database...");
+  console.log("[MongoDB] URI prefix:", uri.substring(0, 30) + "...");
   
-  client = new MongoClient(uri);
-  await client.connect();
-  
-  db = client.db("barter-dev");
-  console.log("[MongoDB] Connected successfully");
-  
-  return db;
+  try {
+    client = new MongoClient(uri);
+    console.log("[MongoDB] MongoClient created, connecting...");
+    await client.connect();
+    console.log("[MongoDB] Client connected, selecting database...");
+    
+    db = client.db("barter-dev");
+    console.log("[MongoDB] ✅ Connected successfully to barter-dev database");
+    
+    return db;
+  } catch (error) {
+    console.error("[MongoDB] ❌ Connection failed:");
+    console.error("[MongoDB] Error:", error instanceof Error ? error.message : String(error));
+    console.error("[MongoDB] Stack:", error instanceof Error ? error.stack : "no stack");
+    throw error;
+  }
 }
 
 export interface Application {

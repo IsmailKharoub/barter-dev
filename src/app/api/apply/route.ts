@@ -134,7 +134,11 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Application submission error:", error);
+    console.error("[API] ❌ Application submission error:");
+    console.error("[API] Error name:", error instanceof Error ? error.name : typeof error);
+    console.error("[API] Error message:", error instanceof Error ? error.message : String(error));
+    console.error("[API] Error stack:", error instanceof Error ? error.stack : "no stack");
+    console.error("[API] Full error:", error);
     
     return NextResponse.json(
       {

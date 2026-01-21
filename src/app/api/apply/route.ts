@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { applicationSchema } from "@/lib/validations/application";
 import { createApplication, getRecentApplicationsByEmail, initDb } from "@/lib/db";
-import { sendAdminNotification, sendApplicantConfirmation } from "@/lib/email";
-import { notifySlackNewApplication } from "@/lib/slack";
 
 export const runtime = "nodejs";
 
@@ -90,28 +88,38 @@ export async function POST(request: NextRequest) {
 
     const appId = applicationId ?? 0;
     console.log("[API] Application saved with ID:", appId);
-    console.log("[API] Calling Slack notification...");
     
-    // Slack must be awaited in serverless environments; otherwise execution may end before it runs.
-    const slackResult = await notifySlackNewApplication(data, appId, { ip, userAgent, referrer });
-    
-    console.log("[API] Slack result:", slackResult);
-    
-    if (!slackResult.success) {
-      if ("skipped" in slackResult && slackResult.skipped) {
-        console.warn("[API] ⚠️ Slack notification skipped (missing SLACK_WEBHOOK_URL).");
-      } else {
-        console.error("[API] ❌ Slack notification failed:", slackResult);
+    // Send simple Slack notification
+    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+    if (webhookUrl) {
+      console.log("[API] Sending Slack notification...");
+      try {
+        const slackMessage = {
+          text: `🆕 New Application #${appId}`,
+          blocks: [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `*New Application #${appId}*\n\n*Name:* ${data.name}\n*Email:* ${data.email}\n*Project:* ${data.projectType}\n*Trade:* ${data.tradeType}\n*Value:* $${data.estimatedValue.toLocaleString()}\n\n${data.projectDescription.substring(0, 200)}...`
+              }
+            }
+          ]
+        };
+        
+        const res = await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(slackMessage),
+        });
+        
+        console.log("[API] Slack response:", res.status, await res.text());
+      } catch (e) {
+        console.error("[API] Slack failed:", e);
       }
     } else {
-      console.log("[API] ✅ Slack notification sent successfully!");
+      console.warn("[API] No SLACK_WEBHOOK_URL configured");
     }
-
-    // Email can remain best-effort, but we still await so failures show up in logs reliably.
-    await Promise.allSettled([
-      sendAdminNotification(data, appId),
-      sendApplicantConfirmation(data, appId),
-    ]);
 
     return NextResponse.json(
       {

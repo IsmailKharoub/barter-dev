@@ -43,7 +43,6 @@ export interface Application {
   timeline: string;
   tradeType: string;
   tradeDescription: string;
-  estimatedValue: number;
   name: string;
   email: string;
   website?: string | null;

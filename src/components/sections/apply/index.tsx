@@ -360,9 +360,6 @@ export function Apply() {
     const name = (formData.name || "").trim();
     const email = (formData.email || "").trim();
 
-    const estimatedValueRaw = (formData.estimatedValue || "").replace(/[,\s]/g, "");
-    const estimatedValue = Number(estimatedValueRaw);
-
     if (stepIndex === 0) {
       if (!formData.projectType) {
         return isRTL ? "בחרו סוג פרויקט." : "Select a project type.";
@@ -385,15 +382,6 @@ export function Apply() {
         return isRTL
           ? "תיאור ההצעה חייב להיות לפחות 20 תווים."
           : "Trade description must be at least 20 characters.";
-      }
-      if (!Number.isFinite(estimatedValue)) {
-        return isRTL ? "הכניסו ערך מספרי תקין." : "Enter a valid numeric value.";
-      }
-      if (estimatedValue < 500) {
-        return isRTL ? "ערך מינימלי הוא $500." : "Minimum value is $500.";
-      }
-      if (estimatedValue > 100000) {
-        return isRTL ? "ערך מקסימלי הוא $100,000." : "Maximum value is $100,000.";
       }
     }
 
@@ -493,16 +481,12 @@ export function Apply() {
             ? "3-6-months"
             : "flexible";
 
-    const estimatedValueRaw = (formData.estimatedValue || "").replace(/[,\s]/g, "");
-    const estimatedValue = Number(estimatedValueRaw);
-
     const payload: ApplicationFormData = {
       projectType,
       projectDescription: formData.projectDescription || "",
       timeline,
       tradeType,
       tradeDescription: formData.tradeDescription || "",
-      estimatedValue,
       name: formData.name || "",
       email: formData.email || "",
       website: formData.website || "",

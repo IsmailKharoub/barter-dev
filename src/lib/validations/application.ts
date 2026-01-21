@@ -47,10 +47,6 @@ export const applicationSchema = z.object({
     .string()
     .min(20, "Please provide at least 20 characters describing your offer")
     .max(1000, "Description must be less than 1000 characters"),
-  estimatedValue: z
-    .number()
-    .min(500, "Minimum trade value is $500")
-    .max(100000, "Maximum trade value is $100,000"),
 
   // Step 3: About you
   name: z
@@ -83,7 +79,6 @@ export const step1Schema = applicationSchema.pick({
 export const step2Schema = applicationSchema.pick({
   tradeType: true,
   tradeDescription: true,
-  estimatedValue: true,
 });
 
 export const step3Schema = applicationSchema.pick({

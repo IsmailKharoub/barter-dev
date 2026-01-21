@@ -339,28 +339,6 @@ export function StepWhatYouOffer({ data, onChange }: StepProps) {
           required
         />
       </motion.div>
-
-      {/* Estimated Value */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <InputField
-          label={step.estimatedValue}
-          type="text"
-          value={data.estimatedValue || ""}
-          onChange={(value) => onChange("estimatedValue", value)}
-          placeholder="5,000"
-          icon={DollarSign}
-          prefix="$"
-          required
-        />
-        <p className="mt-2 text-xs text-fg-muted flex items-center gap-1.5">
-          <AlertCircle className="w-3 h-3" />
-          {isRTL ? "העריכו את שווי השוק של מה שאתם מציעים" : "Estimate the market value of what you're offering"}
-        </p>
-      </motion.div>
     </div>
   );
 }
@@ -531,12 +509,6 @@ export function StepConfirmation({
               label="Trade Type" 
               value={data.tradeType as string}
               icon={tradeTypeIcons[data.tradeType as string] || Package}
-            />
-            <SummaryRow 
-              label="Estimated Value" 
-              value={data.estimatedValue ? `$${data.estimatedValue}` : "Not specified"}
-              icon={DollarSign}
-              highlight
             />
             <SummaryRow 
               label="Contact" 

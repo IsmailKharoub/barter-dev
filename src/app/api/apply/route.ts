@@ -80,7 +80,6 @@ export async function POST(request: NextRequest) {
       timeline: data.timeline,
       tradeType: data.tradeType,
       tradeDescription: data.tradeDescription,
-      estimatedValue: data.estimatedValue,
       name: data.name,
       email: data.email,
       website: data.website || null,
@@ -105,7 +104,7 @@ export async function POST(request: NextRequest) {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `*New Application #${appId}*\n\n*Name:* ${data.name}\n*Email:* ${data.email}\n*Project:* ${data.projectType}\n*Trade:* ${data.tradeType}\n*Value:* $${data.estimatedValue.toLocaleString()}\n\n${data.projectDescription.substring(0, 200)}...`
+                text: `*New Application #${appId}*\n\n*Name:* ${data.name}\n*Email:* ${data.email}\n*Project:* ${data.projectType}\n*Trade:* ${data.tradeType}\n\n${data.projectDescription.substring(0, 200)}...`
               }
             }
           ]

@@ -260,8 +260,7 @@ export const en: Translations = {
         ],
         description: "Describe your offer (be specific):",
         descriptionPlaceholder:
-          "Example: “50 hours of product photography + editing” or “Custom home office desk + delivery”",
-        estimatedValue: "Estimated market value of your offer:",
+          "Example: "50 hours of product photography + editing" or "Custom home office desk + delivery"",
       },
       aboutYou: {
         title: "About You",

@@ -168,7 +168,6 @@ export interface Translations {
         tradeTypes: string[];
         description: string;
         descriptionPlaceholder: string;
-        estimatedValue: string;
       };
       aboutYou: {
         title: string;

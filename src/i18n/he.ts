@@ -261,7 +261,6 @@ export const he: Translations = {
         description: "תיאור ההצעה (כדאי להיות ספציפיים):",
         descriptionPlaceholder:
           'דוגמה: "50 שעות צילום מוצר + עריכה" או "שולחן עבודה מותאם אישית + אספקה"',
-        estimatedValue: "ערך שוק משוער של ההצעה:",
       },
       aboutYou: {
         title: "פרטים",

@@ -5,8 +5,8 @@
 I've successfully added the admin panel environment variables to your Amplify app using AWS CLI:
 
 ```bash
-✅ ADMIN_TOTP_SECRET=WskQPoSRlmWeWtUuZZMSxRlvNngFEGzIZ8D6FinvBfg=
-✅ ADMIN_JWT_SECRET=nFMtTmpVfB2haIkYNJbI2PJ6gjtMpRdb2Oql+Yh4yrA=
+✅ ADMIN_TOTP_SECRET=RZUACII63W7Q6M2QWFWKYQTMOT7KNUDN
+✅ ADMIN_JWT_SECRET=985a709ca924c01bdef29b18bb914b6001dc7acda87c989e6c68fd00c2ea5419
 ```
 
 **App ID**: `d2c1w3ga1c6ojg`  
@@ -24,7 +24,7 @@ I've successfully added the admin panel environment variables to your Amplify ap
 
 **Visit this URL to see the QR code:**
 ```
-https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=otpauth://totp/Barter%20Admin:barter-dev.com?secret=WskQPoSRlmWeWtUuZZMSxRlvNngFEGzIZ8D6FinvBfg%3D%26issuer=barter-dev.com
+https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=otpauth://totp/Barter%20Admin:barter-dev.com?secret=RZUACII63W7Q6M2QWFWKYQTMOT7KNUDN%26issuer=barter-dev.com
 ```
 
 ### Option 2: Manual Entry
@@ -36,7 +36,7 @@ If you can't scan the QR code:
 3. Enter these details:
    - **Account name**: Barter Admin
    - **Your email/account**: barter-dev.com
-   - **Key**: `WskQPoSRlmWeWtUuZZMSxRlvNngFEGzIZ8D6FinvBfg=`
+   - **Key**: `RZUACII63W7Q6M2QWFWKYQTMOT7KNUDN`
    - **Time based**: Yes
 
 ---
@@ -86,7 +86,7 @@ Once your authenticator is set up:
 **IMPORTANT**: Save this secret securely!
 
 ```
-ADMIN_TOTP_SECRET=WskQPoSRlmWeWtUuZZMSxRlvNngFEGzIZ8D6FinvBfg=
+ADMIN_TOTP_SECRET=RZUACII63W7Q6M2QWFWKYQTMOT7KNUDN
 ```
 
 Store it in:
@@ -119,8 +119,8 @@ If you lose your phone or can't access your authenticator:
 
 ### Environment Variables in Amplify
 ```bash
-ADMIN_TOTP_SECRET=WskQPoSRlmWeWtUuZZMSxRlvNngFEGzIZ8D6FinvBfg=
-ADMIN_JWT_SECRET=nFMtTmpVfB2haIkYNJbI2PJ6gjtMpRdb2Oql+Yh4yrA=
+ADMIN_TOTP_SECRET=RZUACII63W7Q6M2QWFWKYQTMOT7KNUDN
+ADMIN_JWT_SECRET=985a709ca924c01bdef29b18bb914b6001dc7acda87c989e6c68fd00c2ea5419
 
 # Your existing variables (already set):
 MONGODB_URI=<your_mongodb_uri>

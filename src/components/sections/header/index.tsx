@@ -2,15 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
-import { t } from "@/i18n";
+import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
-
-const navLinks = [
-  { href: "#how-it-works", label: "How It Works" },
-  { href: "#products", label: "Products" },
-  { href: "#trade-types", label: "Trade Types" },
-  { href: "#portfolio", label: "Portfolio" },
-];
+import { LanguagePicker } from "@/components/ui/language-picker";
 
 function Logo() {
   return (
@@ -38,6 +32,15 @@ function Logo() {
 }
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  const { t } = useLocale();
+  
+  const navLinks = [
+    { href: "#how-it-works", label: t.nav.howItWorks },
+    { href: "#products", label: t.nav.products },
+    { href: "#trade-types", label: t.tradeTypes.headline },
+    { href: "#portfolio", label: t.portfolio.headline },
+  ];
+
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const element = document.querySelector(href);
@@ -59,7 +62,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
         >
           {link.label}
           <motion.span
-            className="absolute bottom-0 left-0 h-0.5 bg-accent-primary"
+            className="absolute bottom-0 start-0 h-0.5 bg-accent-primary"
             initial={{ width: 0 }}
             variants={{
               hover: { width: "100%" },
@@ -73,6 +76,15 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { t, isRTL } = useLocale();
+  
+  const navLinks = [
+    { href: "#how-it-works", label: t.nav.howItWorks },
+    { href: "#products", label: t.nav.products },
+    { href: "#trade-types", label: t.tradeTypes.headline },
+    { href: "#portfolio", label: t.portfolio.headline },
+  ];
+
   // Close on escape
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -108,10 +120,10 @@ function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
 
           {/* Menu panel */}
           <motion.div
-            className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-bg-secondary border-l border-border-subtle z-50 flex flex-col"
-            initial={{ x: "100%" }}
+            className="fixed top-0 end-0 bottom-0 w-full max-w-sm bg-bg-secondary border-s border-border-subtle z-50 flex flex-col"
+            initial={{ x: isRTL ? "-100%" : "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            exit={{ x: isRTL ? "-100%" : "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
           >
             {/* Header */}
@@ -121,7 +133,7 @@ function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
                 onClick={onClose}
                 className="flex items-center gap-2 text-sm text-fg-secondary hover:text-fg-primary transition-colors"
               >
-                <span>Close</span>
+                <span>{isRTL ? "סגור" : "Close"}</span>
                 <kbd className="px-2 py-0.5 text-xs bg-bg-tertiary rounded border border-border-subtle">
                   ESC
                 </kbd>
@@ -134,7 +146,7 @@ function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
                 {navLinks.map((link, i) => (
                   <motion.li
                     key={link.href}
-                    initial={{ opacity: 0, x: 20 }}
+                    initial={{ opacity: 0, x: isRTL ? -20 : 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 + i * 0.05 }}
                   >
@@ -154,10 +166,15 @@ function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
               </ul>
             </nav>
 
+            {/* Language picker in mobile */}
+            <div className="px-6 py-4 border-t border-border-subtle">
+              <LanguagePicker />
+            </div>
+
             {/* Footer */}
             <div className="p-6 border-t border-border-subtle">
               <Button onClick={handleApply} className="w-full" size="lg">
-                Apply for a Trade
+                {t.howItWorks.cta}
               </Button>
               <p className="mt-4 text-center text-sm text-fg-muted">
                 {t.footer.tagline}
@@ -206,22 +223,13 @@ function HamburgerButton({ isOpen, onClick }: { isOpen: boolean; onClick: () => 
 }
 
 export function Header() {
+  const { t } = useLocale();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    
-    // Show/hide based on scroll direction
-    if (latest > previous && latest > 150) {
-      setIsHidden(true);
-    } else {
-      setIsHidden(false);
-    }
-
-    // Background on scroll
+    // Background and slim mode on scroll
     setIsScrolled(latest > 50);
   });
 
@@ -232,18 +240,22 @@ export function Header() {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-          isScrolled ? "bg-bg-primary/90 backdrop-blur-md border-b border-border-subtle" : ""
+        className={`fixed top-0 start-0 end-0 z-50 transition-all duration-300 ${
+          isScrolled ? "bg-bg-primary/95 backdrop-blur-md border-b border-border-subtle" : ""
         }`}
         initial={{ y: -100 }}
-        animate={{ y: isHidden ? -100 : 0 }}
+        animate={{ y: 0 }}
         transition={{ duration: 0.3 }}
       >
         {/* Progress bar */}
         <ScrollProgress />
 
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+          <motion.div 
+            className="flex items-center justify-between"
+            animate={{ height: isScrolled ? 56 : 80 }}
+            transition={{ duration: 0.3 }}
+          >
             <Logo />
 
             {/* Desktop nav */}
@@ -251,21 +263,24 @@ export function Header() {
               <NavLinks />
             </nav>
 
-            {/* CTA + Hamburger */}
-            <div className="flex items-center gap-4">
+            {/* CTA + Language + Hamburger */}
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="hidden sm:block">
+                <LanguagePicker />
+              </div>
               <Button
                 onClick={handleApply}
                 size="sm"
                 className="hidden sm:flex"
               >
-                Apply
+                {t.nav.apply}
               </Button>
               <HamburgerButton
                 isOpen={isMenuOpen}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               />
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.header>
 
@@ -279,9 +294,8 @@ function ScrollProgress() {
 
   return (
     <motion.div
-      className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-accent-primary to-accent-secondary origin-left"
+      className="absolute bottom-0 start-0 h-0.5 bg-gradient-to-r from-accent-primary to-accent-secondary origin-[start]"
       style={{ scaleX: scrollYProgress }}
     />
   );
 }
-

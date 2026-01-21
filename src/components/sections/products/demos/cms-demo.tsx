@@ -38,20 +38,20 @@ export function CmsDemo() {
   return (
     <div ref={containerRef} className="w-full h-full p-4 md:p-6 relative">
       <motion.div
-        className="w-full h-full bg-[#1a1a2e] rounded-lg border border-indigo-500/20 overflow-hidden shadow-2xl"
+        className="w-full h-full bg-[#0a0a0a] rounded-lg border border-white/10 overflow-hidden shadow-2xl"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={isInView ? { opacity: 1, scale: 1 } : {}}
         transition={{ duration: 0.5 }}
       >
         {/* Editor header */}
         <motion.div
-          className="h-8 bg-[#16162a] border-b border-indigo-500/10 px-3 flex items-center justify-between"
+          className="h-8 bg-[#111] border-b border-white/5 px-3 flex items-center justify-between"
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.2 }}
         >
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-gradient-to-br from-indigo-400 to-purple-500" />
+            <div className="w-4 h-4 rounded bg-white" />
             <div className="h-1.5 w-14 bg-white/20 rounded" />
           </div>
           
@@ -60,8 +60,8 @@ export function CmsDemo() {
             className={`px-2 py-1 rounded text-[8px] font-medium transition-colors ${
               phase >= 7 
                 ? phase >= 8 
-                  ? "bg-green-500 text-white" 
-                  : "bg-indigo-500 text-white"
+                  ? "bg-white text-black" 
+                  : "bg-white/80 text-black"
                 : "bg-white/10 text-white/50"
             }`}
             animate={phase === 8 ? { scale: [1, 0.95, 1] } : {}}
@@ -73,17 +73,17 @@ export function CmsDemo() {
         <div className="flex h-[calc(100%-2rem)]">
           {/* Block sidebar */}
           <motion.div
-            className="w-14 bg-[#12122a] border-r border-indigo-500/10 p-2 space-y-2"
+            className="w-14 bg-[#0f0f0f] border-r border-white/5 p-2 space-y-2"
             initial={{ x: -60, opacity: 0 }}
             animate={phase >= 1 ? { x: 0, opacity: 1 } : {}}
             transition={{ duration: 0.4 }}
           >
             <div className="text-[6px] text-white/30 text-center mb-2">BLOCKS</div>
             {[
-              { icon: "H", label: "Heading", color: "indigo" },
-              { icon: "¶", label: "Text", color: "purple" },
-              { icon: "▢", label: "Image", color: "pink" },
-              { icon: "◐", label: "Button", color: "amber" },
+              { icon: "H", label: "Heading", color: "white" },
+              { icon: "¶", label: "Text", color: "white" },
+              { icon: "▢", label: "Image", color: "white" },
+              { icon: "◐", label: "Button", color: "white" },
             ].map((block, i) => (
               <motion.div
                 key={i}
@@ -92,7 +92,7 @@ export function CmsDemo() {
                 animate={phase >= 1 ? { opacity: 1, scale: 1 } : {}}
                 transition={{ delay: 0.1 + i * 0.08 }}
               >
-                <div className={`w-full aspect-square rounded bg-${block.color}-500/20 border border-${block.color}-500/30 flex items-center justify-center cursor-grab hover:bg-${block.color}-500/30 transition-colors`}>
+                <div className="w-full aspect-square rounded bg-white/10 border border-white/20 flex items-center justify-center cursor-grab hover:bg-white/20 transition-colors">
                   <span className="text-[10px] text-white/70 font-bold">{block.icon}</span>
                 </div>
                 
@@ -123,11 +123,11 @@ export function CmsDemo() {
                 {/* Empty state placeholder */}
                 {contentBlocks.length === 0 && (
                   <motion.div
-                    className="h-16 border-2 border-dashed border-indigo-500/20 rounded-lg flex items-center justify-center"
+                    className="h-16 border-2 border-dashed border-white/10 rounded-lg flex items-center justify-center"
                     animate={{ opacity: [0.3, 0.6, 0.3] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <span className="text-[8px] text-indigo-400/50">Drag blocks here</span>
+                    <span className="text-[8px] text-white/30">Drag blocks here</span>
                   </motion.div>
                 )}
               </div>
@@ -135,7 +135,7 @@ export function CmsDemo() {
 
             {/* Live preview */}
             <motion.div
-              className="w-1/2 bg-[#0a0a14] border-l border-indigo-500/10 p-3"
+              className="w-1/2 bg-[#080808] border-l border-white/5 p-3"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -190,7 +190,7 @@ export function CmsDemo() {
                   {["📧", "🐦", "📱"].map((icon, i) => (
                     <motion.div
                       key={i}
-                      className="w-6 h-6 bg-indigo-500/20 rounded-full flex items-center justify-center"
+                      className="w-6 h-6 bg-white/10 rounded-full flex items-center justify-center"
                       initial={{ scale: 0, rotate: -180 }}
                       animate={{ scale: 1, rotate: 0 }}
                       transition={{ delay: i * 0.15, type: "spring" }}
@@ -212,7 +212,7 @@ export function CmsDemo() {
         animate={isInView ? { opacity: 0.4 } : {}}
         transition={{ delay: 0.5, duration: 1 }}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-indigo-500/20 rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-white/10 rounded-full" />
       </motion.div>
     </div>
   );
@@ -221,7 +221,7 @@ export function CmsDemo() {
 function DragIndicator() {
   return (
     <motion.div
-      className="absolute inset-0 border-2 border-indigo-400 rounded bg-indigo-400/20"
+      className="absolute inset-0 border-2 border-white rounded bg-white/20"
       initial={{ opacity: 0 }}
       animate={{ 
         opacity: [0, 1, 1, 0],
@@ -237,9 +237,9 @@ function ContentBlock({ type, phase, index }: { type: string; phase: number; ind
   const showTyping = phase >= 5;
   
   const blockStyles: Record<string, { bg: string; border: string }> = {
-    heading: { bg: "bg-indigo-500/10", border: "border-indigo-500/30" },
-    text: { bg: "bg-purple-500/10", border: "border-purple-500/30" },
-    image: { bg: "bg-pink-500/10", border: "border-pink-500/30" },
+    heading: { bg: "bg-white/5", border: "border-white/20" },
+    text: { bg: "bg-white/5", border: "border-white/15" },
+    image: { bg: "bg-white/5", border: "border-white/10" },
   };
   
   const style = blockStyles[type] || blockStyles.heading;
@@ -252,7 +252,7 @@ function ContentBlock({ type, phase, index }: { type: string; phase: number; ind
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       <div className="flex items-center gap-1 mb-1">
-        <div className="w-1 h-3 bg-indigo-400/50 rounded" />
+        <div className="w-1 h-3 bg-white/30 rounded" />
         <span className="text-[7px] text-white/40 uppercase">{type}</span>
       </div>
       
@@ -271,7 +271,7 @@ function ContentBlock({ type, phase, index }: { type: string; phase: number; ind
       )}
       
       {type === "image" && (
-        <div className="aspect-video bg-gradient-to-br from-pink-500/30 to-purple-500/30 rounded flex items-center justify-center">
+        <div className="aspect-video bg-gradient-to-br from-white/10 to-white/5 rounded flex items-center justify-center">
           <div className="w-4 h-4 border border-white/20 rounded" />
         </div>
       )}
@@ -301,7 +301,7 @@ function PreviewBlock({ type, phase, index }: { type: string; phase: number; ind
       )}
       
       {type === "image" && (
-        <div className="aspect-video bg-gradient-to-br from-pink-200 to-purple-200 rounded" />
+        <div className="aspect-video bg-gradient-to-br from-neutral-200 to-neutral-300 rounded" />
       )}
     </motion.div>
   );
@@ -310,7 +310,7 @@ function PreviewBlock({ type, phase, index }: { type: string; phase: number; ind
 function Cursor() {
   return (
     <motion.span
-      className="inline-block w-0.5 h-3 bg-indigo-400 ml-0.5 align-middle"
+      className="inline-block w-0.5 h-3 bg-white ml-0.5 align-middle"
       animate={{ opacity: [1, 0] }}
       transition={{ duration: 0.5, repeat: Infinity }}
     />

@@ -21,7 +21,7 @@ function PatientQueueItem({
 }) {
   const statusColors = {
     completed: { bg: "rgba(16,185,129,0.15)", border: "rgba(16,185,129,0.4)", dot: "#10B981" },
-    current: { bg: "rgba(245,158,11,0.15)", border: "rgba(245,158,11,0.5)", dot: "#F59E0B" },
+    current: { bg: "rgba(255,255,255,0.1)", border: "rgba(255,255,255,0.5)", dot: "#FFFFFF" },
     waiting: { bg: "rgba(120,113,108,0.1)", border: "rgba(120,113,108,0.3)", dot: "#78716C" },
   };
   const colors = statusColors[patient.status as keyof typeof statusColors];
@@ -140,7 +140,7 @@ function ConnectionStatus({ isHovered }: { isHovered: boolean }) {
         <div className="flex items-center gap-1.5 mb-2">
           <motion.div
             className="w-2 h-2 rounded-full"
-            style={{ backgroundColor: isOnline ? "#10B981" : "#F59E0B" }}
+            style={{ backgroundColor: isOnline ? "#FFFFFF" : "#666666" }}
             animate={{ opacity: [1, 0.5, 1] }}
             transition={{ duration: isOnline ? 2 : 0.8, repeat: Infinity }}
           />

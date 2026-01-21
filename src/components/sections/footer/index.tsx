@@ -2,16 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { t } from "@/i18n";
+import { useLocale } from "@/components/providers";
 import { ArrowRight } from "lucide-react";
-
-const navLinks = [
-  { href: "#how-it-works", label: "How It Works" },
-  { href: "#products", label: "Products" },
-  { href: "#trade-types", label: "Trade Types" },
-  { href: "#portfolio", label: "Portfolio" },
-  { href: "#apply", label: "Apply" },
-];
 
 const socialLinks = [
   {
@@ -43,7 +35,7 @@ const socialLinks = [
   },
 ];
 
-function NewsletterForm() {
+function NewsletterForm({ isRTL }: { isRTL: boolean }) {
   const [email, setEmail] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -59,7 +51,7 @@ function NewsletterForm() {
   return (
     <div className="w-full max-w-md">
       <p className="text-sm text-fg-secondary mb-3">
-        Get notified when I open new trade slots.
+        {isRTL ? "קבלו התראה כשאפתח משבצות החלפה חדשות." : "Get notified when I open new trade slots."}
       </p>
       
       {isSubmitted ? (
@@ -71,7 +63,7 @@ function NewsletterForm() {
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          <span className="text-sm">You&apos;re on the list!</span>
+          <span className="text-sm">{isRTL ? "אתם ברשימה!" : "You're on the list!"}</span>
         </motion.div>
       ) : (
         <form onSubmit={handleSubmit} className="relative">
@@ -81,18 +73,19 @@ function NewsletterForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your@email.com"
             required
-            className="w-full px-4 py-3 pr-32 bg-bg-tertiary border border-border-default rounded-full text-fg-primary placeholder:text-fg-muted focus:outline-none focus:border-accent-primary transition-colors"
+            dir="ltr"
+            className="w-full px-4 py-3 pe-32 bg-bg-tertiary border border-border-default rounded-full text-fg-primary placeholder:text-fg-muted focus:outline-none focus:border-accent-primary transition-colors"
           />
           <motion.button
             type="submit"
-            className="absolute right-1.5 top-1.5 px-4 py-1.5 bg-accent-primary text-bg-primary font-medium rounded-full flex items-center gap-1.5 text-sm"
+            className="absolute end-1.5 top-1.5 px-4 py-1.5 bg-accent-primary text-bg-primary font-medium rounded-full flex items-center gap-1.5 text-sm"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <span>Notify Me</span>
-            <motion.span animate={{ x: isHovered ? 2 : 0 }}>
+            <span>{isRTL ? "עדכנו אותי" : "Notify Me"}</span>
+            <motion.span animate={{ x: isHovered ? (isRTL ? -2 : 2) : 0 }} className={isRTL ? "rotate-180" : ""}>
               <ArrowRight className="w-4 h-4" />
             </motion.span>
           </motion.button>
@@ -131,6 +124,16 @@ function FooterLogo() {
 }
 
 export function Footer() {
+  const { t, isRTL } = useLocale();
+  
+  const navLinks = [
+    { href: "#how-it-works", label: t.nav.howItWorks },
+    { href: "#products", label: t.nav.products },
+    { href: "#trade-types", label: t.tradeTypes.headline },
+    { href: "#portfolio", label: t.portfolio.headline },
+    { href: "#apply", label: t.nav.apply },
+  ];
+
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
@@ -145,15 +148,16 @@ export function Footer() {
           <div className="lg:col-span-2 space-y-6">
             <FooterLogo />
             <p className="text-fg-secondary max-w-md leading-relaxed">
-              I build websites, MVPs, and internal tools in exchange for real value. 
-              No agencies, no invoices — just fair trades between people who deliver.
+              {isRTL 
+                ? "אני בונה אתרים, MVPs וכלים פנימיים בתמורה לערך אמיתי. בלי סוכנויות, בלי חשבוניות — רק החלפות הוגנות בין אנשים שמספקים."
+                : "I build websites, MVPs, and internal tools in exchange for real value. No agencies, no invoices — just fair trades between people who deliver."}
             </p>
-            <NewsletterForm />
+            <NewsletterForm isRTL={isRTL} />
           </div>
 
           {/* Navigation */}
           <div>
-            <h4 className="font-semibold text-fg-primary mb-4">Navigation</h4>
+            <h4 className="font-semibold text-fg-primary mb-4">{isRTL ? "ניווט" : "Navigation"}</h4>
             <ul className="space-y-3">
               {navLinks.map((link) => (
                 <li key={link.href}>
@@ -171,7 +175,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold text-fg-primary mb-4">Contact</h4>
+            <h4 className="font-semibold text-fg-primary mb-4">{isRTL ? "יצירת קשר" : "Contact"}</h4>
             <ul className="space-y-3">
               <li>
                 <a
@@ -185,7 +189,7 @@ export function Footer() {
                 </a>
               </li>
               <li className="pt-2">
-                <p className="text-xs text-fg-muted mb-2">Social</p>
+                <p className="text-xs text-fg-muted mb-2">{isRTL ? "רשתות חברתיות" : "Social"}</p>
                 <div className="flex items-center gap-3">
                   {socialLinks.map((social) => (
                     <motion.a

@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit, JetBrains_Mono } from "next/font/google";
+import { Outfit, JetBrains_Mono, Heebo } from "next/font/google";
 import { t } from "@/i18n";
-import { LenisProvider, PageTransitionProvider } from "@/components/providers";
+import { LenisProvider, PageTransitionProvider, LocaleProvider } from "@/components/providers";
 import { StructuredData } from "@/components/seo";
+import { AnnouncerProvider } from "@/components/ui/announcer";
+import { EasterEgg } from "@/components/ui/easter-egg";
+import { ConsoleInit } from "@/components/ui/console-init";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -17,12 +20,19 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+// Hebrew-optimized font
+const heebo = Heebo({
+  variable: "--font-hebrew",
+  subsets: ["latin", "hebrew"],
+  display: "swap",
+});
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://barter.dev";
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#0C0A09" },
-    { media: "(prefers-color-scheme: dark)", color: "#0C0A09" },
+    { media: "(prefers-color-scheme: light)", color: "#000000" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -156,7 +166,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" dir="ltr" className="scroll-smooth" suppressHydrationWarning>
       <head>
         {/* Structured Data for SEO and GEO */}
         <StructuredData />
@@ -169,14 +179,20 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
       </head>
       <body
-        className={`${outfit.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+        className={`${outfit.variable} ${jetbrainsMono.variable} ${heebo.variable} font-sans antialiased`}
       >
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
-        <PageTransitionProvider>
-          <LenisProvider>{children}</LenisProvider>
-        </PageTransitionProvider>
+        <ConsoleInit />
+        <EasterEgg />
+        <LocaleProvider>
+          <AnnouncerProvider>
+            <PageTransitionProvider>
+              <LenisProvider>{children}</LenisProvider>
+            </PageTransitionProvider>
+          </AnnouncerProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

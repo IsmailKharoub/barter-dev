@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { t } from "@/i18n";
+import { useLocale } from "@/components/providers";
 import { ProjectCard } from "./project-card";
 
 export function Portfolio() {
+  const { t, isRTL } = useLocale();
   const { projects, stats } = t.portfolio;
 
   return (
@@ -36,13 +37,13 @@ export function Portfolio() {
           transition={{ duration: 0.7 }}
         >
           <motion.p
-            className="text-accent-primary font-medium text-sm tracking-widest uppercase mb-4"
-            initial={{ opacity: 0, x: -20 }}
+            className="text-white/70 font-medium text-sm tracking-widest uppercase mb-4"
+            initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            The Work
+            {isRTL ? "העבודה" : "The Work"}
           </motion.p>
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
@@ -89,7 +90,7 @@ export function Portfolio() {
               viewport={{ once: true }}
               transition={{ delay: 0.5 + i * 0.1 }}
             >
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-accent-primary mb-1">
+              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-1">
                 {stat.value}
               </div>
               <div className="text-fg-muted text-sm uppercase tracking-wider">
@@ -125,7 +126,7 @@ export function Portfolio() {
         >
           {/* Decorative line */}
           <motion.div
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-accent-primary/50 via-accent-primary/20 to-transparent hidden lg:block"
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-white/50 via-white/20 to-transparent hidden lg:block"
             initial={{ width: 0 }}
             whileInView={{ width: "15%" }}
             viewport={{ once: true }}
@@ -144,7 +145,7 @@ export function Portfolio() {
                 {t.portfolio.closing.split(".")[0]}.
               </span>
               <br className="hidden sm:block" />
-              <span className="text-accent-primary">
+              <span className="text-white">
                 {" "}{t.portfolio.closing.split(".").slice(1).join(".").trim()}
               </span>
             </motion.p>
@@ -158,9 +159,9 @@ export function Portfolio() {
             viewport={{ once: true }}
             transition={{ delay: 0.5, type: "spring" }}
           >
-            <div className="w-full h-full rounded-xl bg-gradient-to-br from-accent-primary/10 to-accent-secondary/5 border border-accent-primary/20 flex items-center justify-center">
+            <div className="w-full h-full rounded-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center">
               <motion.div
-                className="w-3 h-3 rounded-full bg-accent-primary"
+                className="w-3 h-3 rounded-full bg-white"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />

@@ -10,7 +10,7 @@ const sourceCurrencies = [
 
 const destCurrencies = [
   { symbol: "£", name: "GBP", color: "#8B5CF6" },
-  { symbol: "¥", name: "JPY", color: "#F59E0B" },
+  { symbol: "¥", name: "JPY", color: "#FFFFFF" },
 ];
 
 function CurrencyNode({ 
@@ -67,7 +67,7 @@ function ConnectionPath({ isHovered }: { isHovered: boolean }) {
       <defs>
         <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#10B981" stopOpacity="0.5" />
-          <stop offset="50%" stopColor="#F59E0B" stopOpacity="0.8" />
+          <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.8" />
           <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.5" />
         </linearGradient>
       </defs>
@@ -92,7 +92,7 @@ function ConnectionPath({ isHovered }: { isHovered: boolean }) {
         <motion.circle
           key={`particle-${i}`}
           r="3"
-          fill="#F59E0B"
+          fill="#FFFFFF"
           initial={{ opacity: 0 }}
           animate={{
             opacity: [0, 1, 1, 0],

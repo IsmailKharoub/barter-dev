@@ -3,33 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-
-const faqs = [
-  {
-    question: "What is barter-based web development?",
-    answer: "Barter-based web development is a service model where software development work is exchanged for goods, services, or other non-cash value instead of traditional payment. This includes trading development work for professional services (legal, accounting, marketing), physical goods (equipment, inventory), creative work (design, photography), or hybrid arrangements combining partial cash with trade.",
-  },
-  {
-    question: "What types of projects can be built through barter?",
-    answer: "I build four main types of projects: Marketing websites (valued at $3,000-$8,000), Web applications like dashboards and booking systems ($8,000-$20,000), E-commerce stores with full catalog and checkout ($10,000-$25,000), and CMS platforms for content management ($4,000-$12,000). All projects include clear scope, milestones, and timelines.",
-  },
-  {
-    question: "What can I trade for web development work?",
-    answer: "Accepted trade categories include: Design & Creative services (graphic design, photography, videography, copywriting), Professional Services (legal consultation, accounting, marketing, business coaching), Physical Goods (furniture, electronics, equipment), Access & Opportunity (introductions, speaking engagements, partnerships), Skilled Labor (carpentry, renovation, catering), and Hybrid arrangements combining partial cash with any of the above.",
-  },
-  {
-    question: "How long does the process take?",
-    answer: "Applications are reviewed within 48 hours. Project timelines vary based on scope: marketing sites typically take 2-4 weeks, web applications 1-3 months, e-commerce stores 2-4 months, and CMS platforms 3-6 weeks. We agree on specific milestones and deadlines before starting.",
-  },
-  {
-    question: "Do you accept equity or revenue share?",
-    answer: "No. I don't accept equity, vague promises, or future commitments. Only tangible value that can be delivered now or within the project timeline is accepted. This ensures fair, clear exchanges for both parties and avoids the complications that come with equity arrangements.",
-  },
-  {
-    question: "How do you determine trade value?",
-    answer: "Trade value is determined by the market rate of what you're offering. For services, this is typically your hourly or project rate. For goods, it's the fair market value. We align on this during the scoping phase before any work begins, so both parties know exactly what's being exchanged.",
-  },
-];
+import { useLocale } from "@/components/providers/locale-provider";
 
 function FAQItem({ 
   question, 
@@ -91,6 +65,7 @@ function FAQItem({
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const { t } = useLocale();
 
   return (
     <section id="faq" className="py-24 md:py-32 bg-bg-primary">
@@ -109,20 +84,20 @@ export function FAQ() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            Common Questions
+            {t.faq.label}
           </motion.p>
           
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-            <span className="text-fg-primary">Frequently Asked </span>
-            <span className="bg-gradient-to-r from-accent-primary to-amber-400 bg-clip-text text-transparent">
-              Questions
+            <span className="text-fg-primary">{t.faq.headlinePrimary} </span>
+            <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              {t.faq.headlineAccent}
             </span>
           </h2>
         </motion.div>
 
         {/* FAQ list */}
         <div className="border-t border-border-subtle">
-          {faqs.map((faq, index) => (
+          {t.faq.items.map((faq, index) => (
             <FAQItem
               key={index}
               question={faq.question}
@@ -143,7 +118,7 @@ export function FAQ() {
           transition={{ delay: 0.3 }}
         >
           <p className="text-fg-secondary mb-4">
-            Still have questions?
+            {t.faq.cta.prompt}
           </p>
           <a
             href="#apply"
@@ -153,7 +128,7 @@ export function FAQ() {
               document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" });
             }}
           >
-            Get in touch through the application form →
+            {t.faq.cta.linkText}
           </a>
         </motion.div>
       </div>

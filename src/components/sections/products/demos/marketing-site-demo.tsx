@@ -42,7 +42,7 @@ function TypewriterText({
       {displayedText}
       {started && displayedText.length < text.length && (
         <motion.span 
-          className="inline-block w-0.5 h-[1em] bg-accent-primary ml-0.5 align-middle"
+          className="inline-block w-0.5 h-[1em] bg-white ml-0.5 align-middle"
           animate={{ opacity: [1, 0] }}
           transition={{ duration: 0.5, repeat: Infinity }}
         />
@@ -141,7 +141,7 @@ export function MarketingSiteDemo() {
               animate={phase >= 2 ? { opacity: 1 } : {}}
               transition={{ delay: 0.1 }}
             >
-              <div className="w-5 h-5 rounded bg-gradient-to-br from-amber-400 to-orange-500" />
+              <div className="w-5 h-5 rounded bg-white" />
               <div className="h-2 w-12 bg-white/80 rounded-sm" />
             </motion.div>
 
@@ -176,7 +176,7 @@ export function MarketingSiteDemo() {
                     />
                   )}
                 </div>
-                <div className="text-[10px] md:text-sm font-bold text-amber-400 leading-tight">
+                <div className="text-[10px] md:text-sm font-bold text-white/90 leading-tight">
                   {phase >= 3 && (
                     <TypewriterText 
                       text="Remarkable" 
@@ -206,7 +206,7 @@ export function MarketingSiteDemo() {
 
             {/* CTA Button */}
             <motion.div
-              className="w-16 h-5 bg-gradient-to-r from-amber-500 to-orange-500 rounded flex items-center justify-center"
+              className="w-16 h-5 bg-white rounded flex items-center justify-center"
               initial={{ scale: 0, opacity: 0 }}
               animate={phase >= 5 ? { scale: 1, opacity: 1 } : {}}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
@@ -216,7 +216,7 @@ export function MarketingSiteDemo() {
 
             {/* Hero image placeholder */}
             <motion.div
-              className="mt-4 aspect-video max-h-20 bg-gradient-to-br from-amber-500/20 to-orange-500/10 rounded-lg border border-amber-500/20 overflow-hidden relative"
+              className="mt-4 aspect-video max-h-20 bg-gradient-to-br from-white/10 to-white/5 rounded-lg border border-white/10 overflow-hidden relative"
               initial={{ opacity: 0, y: 20 }}
               animate={phase >= 6 ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6 }}
@@ -229,8 +229,8 @@ export function MarketingSiteDemo() {
               />
               {/* Placeholder content */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-6 h-6 border-2 border-amber-500/30 rounded-full flex items-center justify-center">
-                  <div className="w-0 h-0 border-l-[6px] border-l-amber-500/50 border-y-[4px] border-y-transparent ml-0.5" />
+                <div className="w-6 h-6 border-2 border-white/30 rounded-full flex items-center justify-center">
+                  <div className="w-0 h-0 border-l-[6px] border-l-white/50 border-y-[4px] border-y-transparent ml-0.5" />
                 </div>
               </div>
             </motion.div>
@@ -250,7 +250,7 @@ export function MarketingSiteDemo() {
                     damping: 20
                   }}
                 >
-                  <div className="w-3 h-3 rounded bg-amber-500/30 mb-1" />
+                  <div className="w-3 h-3 rounded bg-white/20 mb-1" />
                   <div className="h-1 w-full bg-white/20 rounded-sm" />
                   <div className="h-1 w-2/3 bg-white/10 rounded-sm mt-0.5" />
                 </motion.div>
@@ -266,7 +266,7 @@ export function MarketingSiteDemo() {
           animate={phase >= 8 ? { opacity: [0, 1, 0] } : {}}
           transition={{ duration: 1, ease: "easeOut" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/5 to-transparent" />
         </motion.div>
       </motion.div>
 
@@ -277,7 +277,7 @@ export function MarketingSiteDemo() {
         animate={isInView ? { opacity: 0.5 } : {}}
         transition={{ delay: 0.5, duration: 1 }}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-amber-500/20 rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-white/10 rounded-full" />
       </motion.div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { t } from "@/i18n";
+import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 
 const container: Variants = {
@@ -23,6 +23,8 @@ const item: Variants = {
 
 // Trust badge
 function TrustBadge() {
+  const { isRTL } = useLocale();
+  
   return (
     <motion.div
       variants={item}
@@ -33,38 +35,15 @@ function TrustBadge() {
         <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
       </span>
       <span className="text-sm text-fg-secondary">
-        Accepting new trades
+        {isRTL ? "מקבל החלפות חדשות" : "Accepting new trades"}
       </span>
     </motion.div>
   );
 }
 
-// Social proof
-function SocialProof() {
-  return (
-    <motion.div 
-      variants={item}
-      className="flex flex-wrap items-center justify-center gap-6 sm:gap-8"
-    >
-      {[
-        { value: "47+", label: "Products shipped" },
-        { value: "12yr", label: "Experience" },
-        { value: "$0", label: "Invoices" },
-      ].map((stat, i) => (
-        <div key={i} className="text-center">
-          <div className="text-2xl font-bold text-fg-primary tabular-nums">
-            {stat.value}
-          </div>
-          <div className="text-xs text-fg-muted">
-            {stat.label}
-          </div>
-        </div>
-      ))}
-    </motion.div>
-  );
-}
-
 export function HeroContent() {
+  const { t, isRTL } = useLocale();
+  
   const handleScroll = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -82,11 +61,11 @@ export function HeroContent() {
         variants={item}
         className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl"
       >
-        <span className="block bg-gradient-to-r from-accent-primary to-amber-300 bg-clip-text text-transparent">
-          Dev Work.
+        <span className="block bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          {t.hero.headline[0]}
         </span>
         <span className="block text-fg-primary">
-          No Cash Required.
+          {t.hero.headline[1]}
         </span>
       </motion.h1>
 
@@ -105,20 +84,53 @@ export function HeroContent() {
           onClick={() => handleScroll("apply")} 
           size="lg"
         >
-          Apply for a Trade
+          {t.howItWorks.cta}
         </Button>
         <Button 
           onClick={() => handleScroll("how-it-works")} 
           variant="secondary"
           size="lg"
         >
-          See How It Works
+          {t.hero.cta.replace(" ↓", "")}
         </Button>
       </motion.div>
 
       <motion.div variants={item} className="pt-4">
-        <SocialProof />
+        <SocialProof isRTL={isRTL} />
       </motion.div>
+    </motion.div>
+  );
+}
+
+// Social proof
+function SocialProof({ isRTL }: { isRTL: boolean }) {
+  const stats = isRTL
+    ? [
+        { value: "50+", label: "פרויקטים" },
+        { value: "12", label: "שנות ניסיון" },
+        { value: "$0", label: "מראש" },
+      ]
+    : [
+        { value: "50+", label: "Builds shipped" },
+        { value: "12yr", label: "Experience" },
+        { value: "$0", label: "Upfront" },
+      ];
+
+  return (
+    <motion.div 
+      variants={item}
+      className="flex flex-wrap items-center justify-center gap-6 sm:gap-8"
+    >
+      {stats.map((stat, i) => (
+        <div key={i} className="text-center">
+          <div className="text-2xl font-bold text-fg-primary tabular-nums">
+            {stat.value}
+          </div>
+          <div className="text-xs text-fg-muted">
+            {stat.label}
+          </div>
+        </div>
+      ))}
     </motion.div>
   );
 }

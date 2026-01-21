@@ -11,9 +11,9 @@ let mouseY = 0;
 
 // Brand colors from CSS variables
 const COLORS = {
-  primary: "#F59E0B",    // Amber gold
-  secondary: "#D97706",  // Dark amber
-  glow: "#F59E0B",
+  primary: "#FFFFFF",    // White
+  secondary: "#888888",  // Gray
+  glow: "#FFFFFF",
 };
 
 // Torus ring component - clean and simple
@@ -102,7 +102,7 @@ function FlowingParticles() {
       </bufferGeometry>
       <pointsMaterial
         size={0.05}
-        color="#F59E0B"
+        color="#FFFFFF"
         transparent
         opacity={0.9}
         sizeAttenuation
@@ -127,9 +127,9 @@ function CenterGlow() {
     <mesh ref={meshRef}>
       <sphereGeometry args={[1, 16, 16]} />
       <meshBasicMaterial
-        color="#F59E0B"
+        color="#FFFFFF"
         transparent
-        opacity={0.12}
+        opacity={0.1}
         depthWrite={false}
       />
     </mesh>
@@ -154,18 +154,18 @@ function ExchangeRings() {
   return (
     <Float speed={1.2} rotationIntensity={0.08} floatIntensity={0.2}>
       <group ref={groupRef}>
-        {/* Ring 1 - warm amber (what you offer) */}
+        {/* Ring 1 - white (what you offer) */}
         <Ring
-          color="#F59E0B"
-          emissive="#F59E0B"
+          color="#FFFFFF"
+          emissive="#FFFFFF"
           rotation={[Math.PI / 2, 0, 0]}
           scale={1.2}
           orbitSpeed={0.25}
         />
-        {/* Ring 2 - deeper gold (what you get) */}
+        {/* Ring 2 - gray (what you get) */}
         <Ring
-          color="#D97706"
-          emissive="#D97706"
+          color="#AAAAAA"
+          emissive="#AAAAAA"
           rotation={[0, 0, Math.PI / 3]}
           scale={1}
           orbitSpeed={0.35}
@@ -179,14 +179,14 @@ function ExchangeRings() {
   );
 }
 
-// Minimal scene with warm lighting
+// Minimal scene with clean lighting
 function Scene() {
   return (
     <>
       <ambientLight intensity={0.5} />
-      <directionalLight position={[5, 5, 5]} intensity={0.7} color="#FFF7ED" />
-      <pointLight position={[-3, 2, 3]} intensity={0.5} color="#F59E0B" />
-      <pointLight position={[3, -1, -2]} intensity={0.3} color="#D97706" />
+      <directionalLight position={[5, 5, 5]} intensity={0.7} color="#FFFFFF" />
+      <pointLight position={[-3, 2, 3]} intensity={0.5} color="#FFFFFF" />
+      <pointLight position={[3, -1, -2]} intensity={0.3} color="#CCCCCC" />
       <ExchangeRings />
     </>
   );

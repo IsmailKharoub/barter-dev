@@ -204,7 +204,7 @@ function GameCanvas({ isHovered }: { isHovered: boolean }) {
               cy="30"
               r="26"
               fill="none"
-              stroke="#F59E0B"
+              stroke="#FFFFFF"
               strokeWidth="4"
               strokeLinecap="round"
               strokeDasharray={163.36}

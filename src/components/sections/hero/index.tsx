@@ -1,13 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
 import { HeroContent } from "./hero-content";
-
-const OrbitingShapes = dynamic(
-  () => import("@/components/three/orbiting-shapes").then((mod) => mod.OrbitingShapes),
-  { ssr: false }
-);
 
 // Radial dot pattern
 function DotPattern() {
@@ -57,14 +51,7 @@ export function Hero() {
     >
       <DotPattern />
 
-      {/* 3D Background - positioned behind content */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-full h-full max-w-4xl max-h-[600px] opacity-60">
-          <OrbitingShapes />
-        </div>
-      </div>
-
-      {/* Content overlay */}
+      {/* Content */}
       <div className="relative z-10 w-full max-w-4xl mx-auto px-6 py-24 lg:py-32">
         <HeroContent />
       </div>

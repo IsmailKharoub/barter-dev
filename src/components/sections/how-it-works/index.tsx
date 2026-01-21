@@ -1,146 +1,108 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { t } from "@/i18n";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
-import { FrameIcon } from "./frame-icon";
 import {
-  CircleDollarSign,
-  Lightbulb,
-  FileEdit,
+  Ban,
+  Sparkles,
+  FileText,
   Scale,
-  FileCheck,
-  Rocket,
+  Handshake,
+  CheckCircle2,
 } from "lucide-react";
 
-const steps = [
-  { key: "problem" as const, icon: CircleDollarSign, color: "rose" },
-  { key: "alternative" as const, icon: Lightbulb, color: "amber" },
-  { key: "apply" as const, icon: FileEdit, color: "emerald" },
-  { key: "evaluate" as const, icon: Scale, color: "sky" },
-  { key: "agree" as const, icon: FileCheck, color: "violet" },
-  { key: "deliver" as const, icon: Rocket, color: "orange" },
-];
+const frameKeys = ["problem", "alternative", "apply", "evaluate", "agree", "deliver"] as const;
 
-const colorMap: Record<string, { bg: string; border: string; text: string; glow: string }> = {
-  rose: { bg: "bg-rose-500/10", border: "border-rose-500/30", text: "text-rose-400", glow: "shadow-rose-500/20" },
-  amber: { bg: "bg-amber-500/10", border: "border-amber-500/30", text: "text-amber-400", glow: "shadow-amber-500/20" },
-  emerald: { bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-400", glow: "shadow-emerald-500/20" },
-  sky: { bg: "bg-sky-500/10", border: "border-sky-500/30", text: "text-sky-400", glow: "shadow-sky-500/20" },
-  violet: { bg: "bg-violet-500/10", border: "border-violet-500/30", text: "text-violet-400", glow: "shadow-violet-500/20" },
-  orange: { bg: "bg-orange-500/10", border: "border-orange-500/30", text: "text-orange-400", glow: "shadow-orange-500/20" },
+const frameIcons = {
+  problem: Ban,
+  alternative: Sparkles,
+  apply: FileText,
+  evaluate: Scale,
+  agree: Handshake,
+  deliver: CheckCircle2,
 };
 
-function StepCard({
-  step,
-  index,
-  title,
-  description,
-}: {
-  step: typeof steps[0];
+const frameColors = {
+  problem: { bg: "bg-white/5", border: "border-white/10", text: "text-gray-400" },
+  alternative: { bg: "bg-white/5", border: "border-white/15", text: "text-gray-300" },
+  apply: { bg: "bg-white/5", border: "border-white/10", text: "text-gray-400" },
+  evaluate: { bg: "bg-white/5", border: "border-white/10", text: "text-gray-400" },
+  agree: { bg: "bg-white/5", border: "border-white/15", text: "text-gray-300" },
+  deliver: { bg: "bg-white/10", border: "border-white/20", text: "text-white" },
+};
+
+function StepCard({ 
+  step, 
+  index, 
+  total,
+  isRTL = false,
+}: { 
+  step: { id: typeof frameKeys[number]; title: string; description: string }; 
   index: number;
-  title: string;
-  description: string;
+  total: number;
+  isRTL?: boolean;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "center center"],
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 1, 1]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 1]);
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], [30, 0, 0]);
-
-  const Icon = step.icon;
-  const colors = colorMap[step.color];
-  const isEven = index % 2 === 0;
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const Icon = frameIcons[step.id];
+  const colors = frameColors[step.id];
 
   return (
     <motion.div
-      ref={cardRef}
-      className={`flex items-center gap-8 lg:gap-16 ${isEven ? "" : "lg:flex-row-reverse"}`}
-      style={{ opacity, scale, y }}
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.25, 0.4, 0.25, 1] }}
+      className="relative"
     >
-      {/* Step number - visible on lg */}
-      <div className={`hidden lg:flex flex-1 ${isEven ? "justify-end" : "justify-start"}`}>
-        <motion.span
-          className="text-[120px] xl:text-[160px] font-bold text-border-subtle/30 leading-none select-none"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
+      {/* Connecting line to next step */}
+      {index < total - 1 && (
+        <div className="absolute start-8 top-20 bottom-0 w-px bg-gradient-to-b from-border-default to-transparent hidden md:block" />
+      )}
+
+      <div className="flex gap-6 items-start">
+        {/* Icon */}
+        <motion.div
+          initial={{ scale: 0, rotate: -180 }}
+          animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
+          transition={{ duration: 0.5, delay: index * 0.1 + 0.2, type: "spring", stiffness: 200 }}
+          className={`relative flex-shrink-0 w-16 h-16 rounded-2xl ${colors.bg} ${colors.border} border flex items-center justify-center`}
         >
-          {String(index + 1).padStart(2, "0")}
-        </motion.span>
-      </div>
-
-      {/* Card */}
-      <motion.div
-        className={`flex-1 relative group ${isEven ? "lg:pr-8" : "lg:pl-8"}`}
-        initial={{ opacity: 0, x: isEven ? -30 : 30 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-      >
-        {/* Card glow */}
-        <div className={`absolute inset-0 ${colors.bg} rounded-3xl blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500`} />
-
-        <div className={`relative p-6 md:p-8 rounded-3xl bg-bg-tertiary/50 border ${colors.border} backdrop-blur-sm`}>
-          {/* Header */}
-          <div className="flex items-start gap-4 mb-4">
-            {/* Icon */}
-            <div className={`shrink-0 w-14 h-14 rounded-2xl ${colors.bg} border ${colors.border} flex items-center justify-center`}>
-              <Icon className={`w-7 h-7 ${colors.text}`} />
-            </div>
-
-            {/* Step badge */}
-            <div className="flex-1">
-              <span className={`inline-block px-3 py-1 text-xs font-mono ${colors.text} ${colors.bg} rounded-full mb-2`}>
-                Step {index + 1}
-              </span>
-              <h3 className="text-xl md:text-2xl font-bold text-fg-primary">
-                {title}
-              </h3>
-            </div>
+          <Icon className={`w-7 h-7 ${colors.text}`} />
+          {/* Step number badge */}
+          <div className="absolute -top-2 -end-2 w-6 h-6 rounded-full bg-bg-primary border border-border-default flex items-center justify-center">
+            <span className="text-xs font-mono text-fg-muted">{index + 1}</span>
           </div>
+        </motion.div>
 
-          {/* Description */}
-          <p className="text-fg-secondary text-base md:text-lg leading-relaxed pl-0 md:pl-18">
-            {description}
-          </p>
-
-          {/* Decorative corner */}
-          <div className={`absolute top-0 right-0 w-16 h-16 ${colors.bg} rounded-bl-3xl rounded-tr-3xl opacity-50`} />
+        {/* Content */}
+        <div className="flex-1 pt-1">
+          <motion.h3
+            initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isRTL ? 20 : -20 }}
+            transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
+            className="text-xl md:text-2xl font-bold text-fg-primary mb-2"
+          >
+            {step.title}
+          </motion.h3>
+          <motion.p
+            initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isRTL ? 20 : -20 }}
+            transition={{ duration: 0.5, delay: index * 0.1 + 0.4 }}
+            className="text-fg-secondary leading-relaxed"
+          >
+            {step.description}
+          </motion.p>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
 
-function TimelineConnector({ index }: { index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start center", "end center"],
-  });
-
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
-
-  return (
-    <div ref={ref} className="flex justify-center py-4 lg:py-8">
-      <div className="relative w-0.5 h-16 lg:h-24 bg-border-subtle overflow-hidden">
-        <motion.div
-          className="absolute top-0 left-0 w-full bg-gradient-to-b from-accent-primary to-accent-secondary origin-top"
-          style={{ scaleY, height: "100%" }}
-        />
-      </div>
-    </div>
-  );
-}
-
 export function HowItWorks() {
+  const { t, isRTL } = useLocale();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -153,6 +115,13 @@ export function HowItWorks() {
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Build frames data from translations
+  const frames = frameKeys.map((key) => ({
+    id: key,
+    title: t.howItWorks.frames[key].title,
+    description: t.howItWorks.frames[key].description,
+  }));
+
   return (
     <section
       id="how-it-works"
@@ -162,8 +131,8 @@ export function HowItWorks() {
       {/* Background elements */}
       <motion.div className="absolute inset-0 pointer-events-none" style={{ y: backgroundY }}>
         {/* Gradient orbs */}
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent-primary/5 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-accent-secondary/5 rounded-full blur-[100px]" />
+        <div className="absolute top-1/4 -start-32 w-96 h-96 bg-accent-primary/5 rounded-full blur-[100px]" />
+        <div className="absolute bottom-1/4 -end-32 w-96 h-96 bg-accent-secondary/5 rounded-full blur-[100px]" />
       </motion.div>
 
       {/* Noise texture overlay */}
@@ -177,7 +146,7 @@ export function HowItWorks() {
       <div className="relative max-w-5xl mx-auto px-6 lg:px-8">
         {/* Section header */}
         <motion.div
-          className="text-center mb-16 lg:mb-24"
+          className="text-center mb-16 md:mb-24"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -191,20 +160,22 @@ export function HowItWorks() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            The Process
+            {isRTL ? "התהליך" : "The Process"}
           </motion.p>
 
           {/* Headline */}
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-            <span className="text-fg-primary">How It </span>
-            <span className="bg-gradient-to-r from-accent-primary via-amber-400 to-accent-secondary bg-clip-text text-transparent">
-              Works
+            <span className="text-fg-primary">{isRTL ? "איך זה " : "How It "}</span>
+            <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              {isRTL ? "עובד" : "Works"}
             </span>
           </h2>
 
           {/* Subhead */}
           <p className="text-fg-secondary text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            From first contact to final handoff — a clear, fair process for both sides.
+            {isRTL 
+              ? "מהקשר הראשון ועד למסירה הסופית — תהליך ברור והוגן לשני הצדדים."
+              : "From first contact to final handoff — a clear, fair process for both sides."}
           </p>
 
           {/* Decorative divider */}
@@ -222,23 +193,15 @@ export function HowItWorks() {
         </motion.div>
 
         {/* Steps */}
-        <div className="space-y-0">
-          {steps.map((step, index) => (
-            <div key={step.key}>
-              <StepCard
-                step={step}
-                index={index}
-                title={t.howItWorks.frames[step.key].title}
-                description={t.howItWorks.frames[step.key].description}
-              />
-              {index < steps.length - 1 && <TimelineConnector index={index} />}
-            </div>
+        <div className="space-y-12 md:space-y-16 max-w-3xl mx-auto">
+          {frames.map((frame, index) => (
+            <StepCard key={frame.id} step={frame} index={index} total={frames.length} isRTL={isRTL} />
           ))}
         </div>
 
         {/* CTA */}
         <motion.div
-          className="mt-16 lg:mt-24 text-center"
+          className="text-center mt-16 md:mt-24"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -247,7 +210,7 @@ export function HowItWorks() {
           <Button onClick={handleApply} size="lg" className="group">
             <span>{t.howItWorks.cta}</span>
             <motion.span
-              className="inline-block ml-1"
+              className={`inline-block ${isRTL ? "me-1 rotate-180" : "ms-1"}`}
               animate={{ x: [0, 4, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
@@ -255,7 +218,7 @@ export function HowItWorks() {
             </motion.span>
           </Button>
           <p className="mt-4 text-sm text-fg-muted">
-            Reviewed within 48 hours
+            {isRTL ? "נסקר תוך 48 שעות" : "Reviewed within 48 hours"}
           </p>
         </motion.div>
       </div>

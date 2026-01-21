@@ -19,8 +19,8 @@ interface ButtonProps {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: `
-    bg-accent-primary text-bg-primary font-semibold
-    shadow-[0_0_24px_rgba(245,158,11,0.35)]
+    bg-white text-black font-semibold
+    shadow-[0_0_24px_rgba(255,255,255,0.15)]
   `,
   secondary: `
     bg-transparent text-fg-primary
@@ -73,7 +73,7 @@ export function Button({
       {/* Animated background for primary */}
       {variant === "primary" && (
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-accent-secondary via-accent-primary to-amber-400"
+          className="absolute inset-0 bg-gradient-to-r from-gray-200 via-white to-gray-300"
           initial={{ x: "-100%" }}
           animate={{ x: isHovered ? "0%" : "-100%" }}
           transition={{ duration: 0.3, ease: "easeOut" }}
@@ -83,7 +83,7 @@ export function Button({
       {/* Hover glow effect for primary */}
       {variant === "primary" && (
         <motion.div
-          className="absolute inset-0 bg-accent-primary"
+          className="absolute inset-0 bg-white"
           initial={{ opacity: 1 }}
           animate={{ opacity: isHovered ? 0 : 1 }}
           transition={{ duration: 0.3 }}
@@ -93,7 +93,7 @@ export function Button({
       {/* Border animation for secondary */}
       {variant === "secondary" && (
         <motion.div
-          className="absolute inset-0 rounded-full border border-accent-primary"
+          className="absolute inset-0 rounded-full border border-white"
           initial={{ opacity: 0 }}
           animate={{ opacity: isHovered ? 1 : 0 }}
           transition={{ duration: 0.2 }}
@@ -103,7 +103,7 @@ export function Button({
       {/* Content */}
       <span className={cn(
         "relative z-10 flex items-center gap-2 transition-colors duration-200",
-        variant === "secondary" && isHovered && "text-accent-primary",
+        variant === "secondary" && isHovered && "text-white",
         variant === "ghost" && isHovered && "text-fg-primary",
       )}>
         {children}

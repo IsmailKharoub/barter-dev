@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { t } from "@/i18n";
+import { useLocale } from "@/components/providers";
 import { TradeCategory } from "./trade-category";
 import type { TradeCategoryKey } from "./trade-icons";
 
@@ -12,12 +12,12 @@ const categories: {
   accentColor: string;
   accentName: string;
 }[] = [
-  { key: "designCreative", accentColor: "#F43F5E", accentName: "rose" },
-  { key: "professionalServices", accentColor: "#0EA5E9", accentName: "sky" },
-  { key: "physicalGoods", accentColor: "#F59E0B", accentName: "amber" },
-  { key: "accessOpportunity", accentColor: "#10B981", accentName: "emerald" },
-  { key: "skilledLabor", accentColor: "#8B5CF6", accentName: "violet" },
-  { key: "hybrid", accentColor: "#F97316", accentName: "orange" },
+  { key: "designCreative", accentColor: "#FFFFFF", accentName: "white" },
+  { key: "professionalServices", accentColor: "#E5E5E5", accentName: "gray" },
+  { key: "physicalGoods", accentColor: "#FFFFFF", accentName: "white" },
+  { key: "accessOpportunity", accentColor: "#E5E5E5", accentName: "gray" },
+  { key: "skilledLabor", accentColor: "#FFFFFF", accentName: "white" },
+  { key: "hybrid", accentColor: "#E5E5E5", accentName: "gray" },
 ];
 
 // Animated background pattern - gradient mesh style
@@ -29,7 +29,7 @@ function BackgroundPattern() {
         className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
         style={{
           background:
-            "radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)",
         }}
         animate={{
           x: [0, 50, 0],
@@ -45,7 +45,7 @@ function BackgroundPattern() {
         className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
         style={{
           background:
-            "radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)",
         }}
         animate={{
           x: [0, -50, 0],
@@ -61,7 +61,7 @@ function BackgroundPattern() {
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[200px]"
         style={{
           background:
-            "radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 60%)",
+            "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%)",
         }}
         animate={{
           scale: [1, 1.1, 1],
@@ -151,7 +151,7 @@ function ExchangeSymbol() {
 }
 
 // No equity badge
-function NoEquityBadge() {
+function NoEquityBadge({ note }: { note: string }) {
   return (
     <motion.div
       className="relative mt-16 flex justify-center"
@@ -211,10 +211,10 @@ function NoEquityBadge() {
           {/* Text */}
           <div>
             <p className="text-fg-primary font-semibold text-lg">
-              {t.tradeTypes.note.split(".")[0]}.
+              {note.split(".")[0]}.
             </p>
             <p className="text-fg-secondary text-sm mt-0.5">
-              {t.tradeTypes.note.split(".").slice(1).join(".").trim()}
+              {note.split(".").slice(1).join(".").trim()}
             </p>
           </div>
         </div>
@@ -224,6 +224,7 @@ function NoEquityBadge() {
 }
 
 export function TradeTypes() {
+  const { t, isRTL } = useLocale();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -255,7 +256,7 @@ export function TradeTypes() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              Trade Categories
+              {isRTL ? "קטגוריות החלפה" : "Trade Categories"}
             </motion.p>
 
             {/* Headline */}
@@ -266,9 +267,9 @@ export function TradeTypes() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <span className="text-fg-primary">What I&apos;ll </span>
-              <span className="bg-gradient-to-r from-accent-primary via-amber-400 to-accent-secondary bg-clip-text text-transparent">
-                Trade For
+              <span className="text-fg-primary">{t.tradeTypes.headline.split(" ").slice(0, -1).join(" ")} </span>
+              <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                {t.tradeTypes.headline.split(" ").slice(-1)[0]}
               </span>
             </motion.h2>
 
@@ -280,8 +281,9 @@ export function TradeTypes() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              Not everything needs to be paid in cash. Here&apos;s what I value
-              and accept as fair exchange for development work.
+              {isRTL 
+                ? "לא הכל צריך להיות משולם במזומן. הנה מה שאני מעריך ומקבל כהחלפה הוגנת עבור עבודת פיתוח."
+                : "Not everything needs to be paid in cash. Here's what I value and accept as fair exchange for development work."}
             </motion.p>
 
             {/* Decorative line */}
@@ -317,7 +319,7 @@ export function TradeTypes() {
           </div>
 
           {/* No equity badge */}
-          <NoEquityBadge />
+          <NoEquityBadge note={t.tradeTypes.note} />
         </div>
       </motion.div>
     </section>

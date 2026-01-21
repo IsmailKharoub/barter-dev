@@ -100,7 +100,7 @@ function FloatingDevice() {
           {[0.35, 0.15, -0.05, -0.25, -0.45].map((y, i) => (
             <mesh key={i} position={[-1.1, y, 0.01]}>
               <planeGeometry args={[0.35, 0.08]} />
-              <meshBasicMaterial color={i === 0 ? "#F59E0B" : "#2a2a2a"} />
+              <meshBasicMaterial color={i === 0 ? "#FFFFFF" : "#2a2a2a"} />
             </mesh>
           ))}
 
@@ -116,7 +116,7 @@ function FloatingDevice() {
             </RoundedBox>
             {/* Card 3 - highlighted */}
             <RoundedBox args={[0.8, 0.5, 0.02]} radius={0.03} position={[-0.45, -0.45, 0]}>
-              <meshBasicMaterial color="#F59E0B" opacity={0.2} transparent />
+              <meshBasicMaterial color="#FFFFFF" opacity={0.15} transparent />
             </RoundedBox>
             {/* Card 4 */}
             <RoundedBox args={[0.8, 0.5, 0.02]} radius={0.03} position={[0.45, -0.45, 0]}>
@@ -131,7 +131,7 @@ function FloatingDevice() {
               return (
                 <mesh key={i} position={[x - 0.2, heights[i] / 2 - 0.2, 0]}>
                   <planeGeometry args={[0.06, heights[i]]} />
-                  <meshBasicMaterial color="#F59E0B" opacity={0.6 + i * 0.1} transparent />
+                  <meshBasicMaterial color="#FFFFFF" opacity={0.5 + i * 0.1} transparent />
                 </mesh>
               );
             })}
@@ -170,7 +170,7 @@ function Particles() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial size={0.02} color="#F59E0B" transparent opacity={0.4} sizeAttenuation />
+      <pointsMaterial size={0.02} color="#FFFFFF" transparent opacity={0.35} sizeAttenuation />
     </points>
   );
 }
@@ -179,16 +179,16 @@ function Particles() {
 function Lighting() {
   return (
     <>
-      <ambientLight intensity={0.3} />
+      <ambientLight intensity={0.35} />
       <directionalLight position={[5, 5, 5]} intensity={0.8} color="#fff" />
-      <pointLight position={[-3, 2, 2]} intensity={0.4} color="#F59E0B" />
-      <pointLight position={[3, -1, 3]} intensity={0.3} color="#D97706" />
+      <pointLight position={[-3, 2, 2]} intensity={0.4} color="#FFFFFF" />
+      <pointLight position={[3, -1, 3]} intensity={0.3} color="#CCCCCC" />
       <spotLight 
         position={[0, 5, 0]} 
         angle={0.5} 
         penumbra={1} 
         intensity={0.5} 
-        color="#FFF7ED"
+        color="#FFFFFF"
       />
     </>
   );

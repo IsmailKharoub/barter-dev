@@ -6,7 +6,7 @@ import type { AnimationProps } from "./types";
 const dataInputs = [
   { label: "Weather", color: "#3B82F6", delay: 0 },
   { label: "Soil", color: "#10B981", delay: 0.1 },
-  { label: "Yield", color: "#F59E0B", delay: 0.2 },
+  { label: "Yield", color: "#FFFFFF", delay: 0.2 },
   { label: "Market", color: "#8B5CF6", delay: 0.3 },
 ];
 

@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { t } from "@/i18n";
+import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import {
   StepWhatYouNeed,
@@ -21,10 +21,10 @@ import {
 } from "lucide-react";
 
 const steps = [
-  { key: "whatYouNeed", component: StepWhatYouNeed, icon: Rocket, color: "amber" },
-  { key: "whatYouOffer", component: StepWhatYouOffer, icon: Gift, color: "emerald" },
-  { key: "aboutYou", component: StepAboutYou, icon: User, color: "violet" },
-  { key: "confirmation", component: StepConfirmation, icon: CheckCircle2, color: "sky" },
+  { key: "whatYouNeed", component: StepWhatYouNeed, icon: Rocket, color: "white" },
+  { key: "whatYouOffer", component: StepWhatYouOffer, icon: Gift, color: "gray" },
+  { key: "aboutYou", component: StepAboutYou, icon: User, color: "white" },
+  { key: "confirmation", component: StepConfirmation, icon: CheckCircle2, color: "gray" },
 ] as const;
 
 // Background pattern with animated elements
@@ -98,7 +98,7 @@ function StepIndicator({
               {i < totalSteps - 1 && (
                 <div className="absolute left-full top-1/2 -translate-y-1/2 w-3 md:w-4 h-0.5 overflow-hidden">
                   <motion.div
-                    className="h-full bg-accent-primary"
+                            className="h-full bg-white"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: isCompleted ? 1 : 0 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
@@ -114,9 +114,9 @@ function StepIndicator({
                   relative w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center
                   transition-colors duration-300
                   ${isActive 
-                    ? "bg-accent-primary text-bg-primary shadow-[0_0_30px_rgba(245,158,11,0.4)]" 
+                    ? "bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.3)]" 
                     : isCompleted 
-                    ? "bg-accent-primary/20 text-accent-primary border-2 border-accent-primary/40"
+                    ? "bg-white/20 text-white border-2 border-white/40"
                     : "bg-bg-tertiary text-fg-muted border border-border-default"
                   }
                 `}
@@ -137,7 +137,7 @@ function StepIndicator({
                 {/* Active ring pulse */}
                 {isActive && (
                   <motion.div
-                    className="absolute inset-0 rounded-full border-2 border-accent-primary"
+                    className="absolute inset-0 rounded-full border-2 border-white"
                     animate={{
                       scale: [1, 1.3, 1.3],
                       opacity: [0.8, 0, 0],
@@ -155,7 +155,7 @@ function StepIndicator({
               <motion.span
                 className={`
                   absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] md:text-xs font-medium whitespace-nowrap
-                  ${isActive ? "text-accent-primary" : isCompleted ? "text-fg-secondary" : "text-fg-muted"}
+                  ${isActive ? "text-white" : isCompleted ? "text-fg-secondary" : "text-fg-muted"}
                 `}
                 animate={{ opacity: isActive || isCompleted ? 1 : 0.5 }}
               >
@@ -170,7 +170,7 @@ function StepIndicator({
 }
 
 // Success animation component
-function SuccessState() {
+function SuccessState({ successMessage, isRTL }: { successMessage: string; isRTL: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -186,7 +186,7 @@ function SuccessState() {
       >
         {/* Outer glow */}
         <motion.div
-          className="absolute inset-0 bg-accent-primary/20 rounded-full blur-xl"
+          className="absolute inset-0 bg-white/20 rounded-full blur-xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.5, 0.3, 0.5],
@@ -196,7 +196,7 @@ function SuccessState() {
         
         {/* Circle background */}
         <motion.div
-          className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary"
+          className="absolute inset-0 rounded-full bg-white"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
@@ -248,7 +248,7 @@ function SuccessState() {
               ease: "easeOut",
             }}
           >
-            <Sparkles className="w-4 h-4 text-accent-primary" />
+            <Sparkles className="w-4 h-4 text-white" />
           </motion.div>
         ))}
       </motion.div>
@@ -261,10 +261,10 @@ function SuccessState() {
         className="space-y-4"
       >
         <h3 className="text-2xl md:text-3xl font-bold text-fg-primary">
-          Application Received!
+          {isRTL ? "הבקשה התקבלה!" : "Application Received!"}
         </h3>
         <p className="text-fg-secondary text-lg max-w-md mx-auto leading-relaxed">
-          {t.apply.success}
+          {successMessage}
         </p>
       </motion.div>
 
@@ -278,7 +278,7 @@ function SuccessState() {
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
-            className="w-2 h-2 rounded-full bg-accent-primary/30"
+            className="w-2 h-2 rounded-full bg-white/30"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.6, 0.3],
@@ -296,6 +296,7 @@ function SuccessState() {
 }
 
 export function Apply() {
+  const { t, isRTL } = useLocale();
   const sectionRef = useRef<HTMLElement>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -315,14 +316,14 @@ export function Apply() {
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
-      setDirection(1);
+      setDirection(isRTL ? -1 : 1);
       setCurrentStep((prev) => prev + 1);
     }
   };
 
   const handleBack = () => {
     if (currentStep > 0) {
-      setDirection(-1);
+      setDirection(isRTL ? 1 : -1);
       setCurrentStep((prev) => prev - 1);
     }
   };
@@ -376,14 +377,14 @@ export function Apply() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            Start Trading
+            {isRTL ? "התחילו להחליף" : "Start Trading"}
           </motion.p>
 
           {/* Main headline */}
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
             <span className="block text-fg-primary">{t.apply.headline.split(" ").slice(0, 2).join(" ")}</span>
-            <span className="block bg-gradient-to-r from-accent-primary via-amber-400 to-accent-secondary bg-clip-text text-transparent">
-              {t.apply.headline.split(" ").slice(2).join(" ") || "a Trade"}
+            <span className="block bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              {t.apply.headline.split(" ").slice(2).join(" ") || (isRTL ? "להחלפה" : "a Trade")}
             </span>
           </h2>
 
@@ -422,7 +423,7 @@ export function Apply() {
         {/* Form container */}
         <AnimatePresence mode="wait" custom={direction}>
           {submitted ? (
-            <SuccessState key="success" />
+            <SuccessState key="success" successMessage={t.apply.success} isRTL={isRTL} />
           ) : (
             <motion.div
               key={currentStep}
@@ -439,23 +440,23 @@ export function Apply() {
               {/* Form card */}
               <div className="relative">
                 {/* Card glow effect */}
-                <div className="absolute -inset-[1px] bg-gradient-to-b from-accent-primary/20 via-border-subtle to-border-subtle rounded-3xl blur-[1px] -z-10" />
+                <div className="absolute -inset-[1px] bg-gradient-to-b from-white/20 via-border-subtle to-border-subtle rounded-3xl blur-[1px] -z-10" />
                 
                 <div className="bg-bg-secondary/80 backdrop-blur-sm rounded-3xl border border-border-subtle overflow-hidden">
                   {/* Step header */}
                   <div className="relative px-6 md:px-8 py-6 border-b border-border-subtle bg-bg-tertiary/50">
                     <div className="flex items-center gap-4">
                       <motion.div
-                        className="w-12 h-12 rounded-2xl bg-accent-primary/10 border border-accent-primary/20 flex items-center justify-center"
+                        className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center"
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
                       >
-                        <currentStepData.icon className="w-6 h-6 text-accent-primary" />
+                        <currentStepData.icon className="w-6 h-6 text-white" />
                       </motion.div>
                       <div>
                         <p className="text-xs text-fg-muted font-mono uppercase tracking-wider">
-                          Step {currentStep + 1} of {steps.length}
+                          {isRTL ? `שלב ${currentStep + 1} מתוך ${steps.length}` : `Step ${currentStep + 1} of ${steps.length}`}
                         </p>
                         <h3 className="text-xl md:text-2xl font-semibold text-fg-primary">
                           {t.apply.steps[currentStepData.key].title}
@@ -478,8 +479,8 @@ export function Apply() {
                         disabled={currentStep === 0}
                         className={`gap-2 ${currentStep === 0 ? "opacity-0 pointer-events-none" : ""}`}
                       >
-                        <ArrowLeft className="w-4 h-4" />
-                        Back
+                        <ArrowLeft className={`w-4 h-4 ${isRTL ? "rotate-180" : ""}`} />
+                        {isRTL ? "חזרה" : "Back"}
                       </Button>
 
                       {currentStep === steps.length - 1 ? (
@@ -494,8 +495,8 @@ export function Apply() {
                         </Button>
                       ) : (
                         <Button onClick={handleNext} className="group gap-2">
-                          <span>Continue</span>
-                          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                          <span>{isRTL ? "המשך" : "Continue"}</span>
+                          <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${isRTL ? "rotate-180" : ""}`} />
                         </Button>
                       )}
                     </div>
@@ -519,13 +520,13 @@ export function Apply() {
               <div className="w-4 h-4 rounded-full bg-success/20 flex items-center justify-center">
                 <div className="w-2 h-2 rounded-full bg-success" />
               </div>
-              <span>Reviewed within 48h</span>
+              <span>{isRTL ? "נסקר תוך 48 שעות" : "Reviewed within 48h"}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-accent-primary/20 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-accent-primary" />
+              <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-white" />
               </div>
-              <span>No commitment required</span>
+              <span>{isRTL ? "ללא התחייבות" : "No commitment required"}</span>
             </div>
           </motion.div>
         )}

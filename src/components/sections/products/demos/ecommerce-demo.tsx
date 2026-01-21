@@ -74,7 +74,7 @@ export function EcommerceDemo() {
         animate={isInView ? { opacity: 0.4 } : {}}
         transition={{ delay: 0.5, duration: 1 }}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-violet-500/20 rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-white/10 rounded-full" />
       </motion.div>
     </div>
   );
@@ -90,12 +90,12 @@ function StoreView({
   selectedProduct: number | null;
 }) {
   const products = [
-    { name: "Wireless Headphones", price: "$149", color: "from-violet-400 to-purple-500" },
-    { name: "Smart Watch", price: "$299", color: "from-blue-400 to-indigo-500" },
-    { name: "Camera Lens", price: "$449", color: "from-amber-400 to-orange-500" },
-    { name: "Keyboard", price: "$179", color: "from-emerald-400 to-teal-500" },
-    { name: "Speaker", price: "$89", color: "from-pink-400 to-rose-500" },
-    { name: "Microphone", price: "$199", color: "from-cyan-400 to-blue-500" },
+    { name: "Wireless Headphones", price: "$149", color: "from-white/30 to-white/10" },
+    { name: "Smart Watch", price: "$299", color: "from-gray-300/30 to-gray-500/10" },
+    { name: "Camera Lens", price: "$449", color: "from-white/40 to-white/20" },
+    { name: "Keyboard", price: "$179", color: "from-gray-400/30 to-gray-600/10" },
+    { name: "Speaker", price: "$89", color: "from-white/20 to-white/5" },
+    { name: "Microphone", price: "$199", color: "from-gray-200/30 to-gray-400/10" },
   ];
 
   return (
@@ -115,7 +115,7 @@ function StoreView({
       >
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded bg-gradient-to-br from-violet-500 to-purple-600" />
+          <div className="w-5 h-5 rounded bg-white" />
           <div className="h-2 w-12 bg-neutral-300 rounded" />
         </div>
 
@@ -137,13 +137,13 @@ function StoreView({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
             {cartCount > 0 && (
-              <motion.div
-                className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-violet-500 rounded-full flex items-center justify-center"
+                <motion.div
+                  className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-white rounded-full flex items-center justify-center"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 500 }}
               >
-                <span className="text-[6px] text-white font-bold">{cartCount}</span>
+                <span className="text-[6px] text-black font-bold">{cartCount}</span>
               </motion.div>
             )}
           </motion.div>
@@ -161,7 +161,7 @@ function StoreView({
               <motion.div
                 key={i}
                 className={`relative bg-white rounded-lg border overflow-hidden cursor-pointer transition-all ${
-                  isSelected ? "border-violet-400 ring-2 ring-violet-200" : "border-neutral-100"
+                  isSelected ? "border-neutral-400 ring-2 ring-neutral-200" : "border-neutral-100"
                 }`}
                 initial={{ opacity: 0, y: -100, rotateX: -20 }}
                 animate={showProduct ? { 
@@ -198,8 +198,8 @@ function StoreView({
 
                 {/* Add to cart overlay */}
                 {isSelected && phase >= 9 && (
-                  <motion.div
-                    className="absolute inset-0 bg-violet-500/90 flex items-center justify-center"
+                                <motion.div
+                                    className="absolute inset-0 bg-neutral-800/90 flex items-center justify-center"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.2 }}
@@ -277,7 +277,7 @@ function CheckoutView({ phase }: { phase: number }) {
               <motion.div
                 key={i}
                 className={`flex-1 h-8 rounded border flex items-center justify-center ${
-                  i === 0 ? "border-violet-400 bg-violet-50" : "border-neutral-200"
+                  i === 0 ? "border-neutral-400 bg-neutral-100" : "border-neutral-200"
                 }`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -296,8 +296,8 @@ function CheckoutView({ phase }: { phase: number }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
         >
-          <motion.div
-            className="h-10 bg-gradient-to-r from-violet-500 to-purple-600 rounded-lg flex items-center justify-center relative overflow-hidden"
+            <motion.div
+              className="h-10 bg-neutral-900 rounded-lg flex items-center justify-center relative overflow-hidden"
             animate={phase >= 12 ? { scale: [1, 0.98, 1] } : {}}
           >
             {phase < 12 ? (
@@ -328,7 +328,7 @@ function Confetti() {
     x: Math.random() * 100,
     delay: Math.random() * 0.5,
     duration: 1 + Math.random() * 2,
-    color: ["#8B5CF6", "#EC4899", "#F59E0B", "#10B981", "#3B82F6"][Math.floor(Math.random() * 5)],
+    color: ["#FFFFFF", "#CCCCCC", "#999999", "#666666", "#333333"][Math.floor(Math.random() * 5)],
     size: 4 + Math.random() * 6,
   }));
 

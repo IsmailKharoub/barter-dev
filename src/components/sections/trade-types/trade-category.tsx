@@ -58,59 +58,76 @@ export function TradeCategory({
 
   const Icon = tradeCategoryIcons[categoryKey];
 
-  // Dynamic accent classes
+  // Dynamic accent classes - now all grayscale for B&W theme
   const accentClasses = {
+    white: {
+      border: "hover:border-white/30",
+      bg: "bg-white/5",
+      text: "text-white",
+      glow: "group-hover:shadow-white/10",
+      dot: "bg-white",
+      itemHover: "hover:bg-white/10",
+    },
+    gray: {
+      border: "hover:border-gray-400/30",
+      bg: "bg-white/5",
+      text: "text-gray-300",
+      glow: "group-hover:shadow-white/5",
+      dot: "bg-gray-400",
+      itemHover: "hover:bg-white/10",
+    },
+    // Keep legacy names mapping to grayscale for backwards compatibility
     rose: {
-      border: "hover:border-rose-500/40",
-      bg: "bg-rose-500/5",
-      text: "text-rose-400",
-      glow: "group-hover:shadow-rose-500/10",
-      dot: "bg-rose-400",
-      itemHover: "hover:bg-rose-500/10",
+      border: "hover:border-white/30",
+      bg: "bg-white/5",
+      text: "text-white",
+      glow: "group-hover:shadow-white/10",
+      dot: "bg-white",
+      itemHover: "hover:bg-white/10",
     },
     sky: {
-      border: "hover:border-sky-500/40",
-      bg: "bg-sky-500/5",
-      text: "text-sky-400",
-      glow: "group-hover:shadow-sky-500/10",
-      dot: "bg-sky-400",
-      itemHover: "hover:bg-sky-500/10",
+      border: "hover:border-gray-400/30",
+      bg: "bg-white/5",
+      text: "text-gray-300",
+      glow: "group-hover:shadow-white/5",
+      dot: "bg-gray-400",
+      itemHover: "hover:bg-white/10",
     },
     amber: {
-      border: "hover:border-amber-500/40",
-      bg: "bg-amber-500/5",
-      text: "text-amber-400",
-      glow: "group-hover:shadow-amber-500/10",
-      dot: "bg-amber-400",
-      itemHover: "hover:bg-amber-500/10",
+      border: "hover:border-white/30",
+      bg: "bg-white/5",
+      text: "text-white",
+      glow: "group-hover:shadow-white/10",
+      dot: "bg-white",
+      itemHover: "hover:bg-white/10",
     },
     emerald: {
-      border: "hover:border-emerald-500/40",
-      bg: "bg-emerald-500/5",
-      text: "text-emerald-400",
-      glow: "group-hover:shadow-emerald-500/10",
-      dot: "bg-emerald-400",
-      itemHover: "hover:bg-emerald-500/10",
+      border: "hover:border-gray-400/30",
+      bg: "bg-white/5",
+      text: "text-gray-300",
+      glow: "group-hover:shadow-white/5",
+      dot: "bg-gray-400",
+      itemHover: "hover:bg-white/10",
     },
     violet: {
-      border: "hover:border-violet-500/40",
-      bg: "bg-violet-500/5",
-      text: "text-violet-400",
-      glow: "group-hover:shadow-violet-500/10",
-      dot: "bg-violet-400",
-      itemHover: "hover:bg-violet-500/10",
+      border: "hover:border-white/30",
+      bg: "bg-white/5",
+      text: "text-white",
+      glow: "group-hover:shadow-white/10",
+      dot: "bg-white",
+      itemHover: "hover:bg-white/10",
     },
     orange: {
-      border: "hover:border-orange-500/40",
-      bg: "bg-orange-500/5",
-      text: "text-orange-400",
-      glow: "group-hover:shadow-orange-500/10",
-      dot: "bg-orange-400",
-      itemHover: "hover:bg-orange-500/10",
+      border: "hover:border-gray-400/30",
+      bg: "bg-white/5",
+      text: "text-gray-300",
+      glow: "group-hover:shadow-white/5",
+      dot: "bg-gray-400",
+      itemHover: "hover:bg-white/10",
     },
   };
 
-  const colors = accentClasses[accentName as keyof typeof accentClasses] || accentClasses.amber;
+  const colors = accentClasses[accentName as keyof typeof accentClasses] || accentClasses.white;
 
   return (
     <motion.div
@@ -205,52 +222,30 @@ export function TradeCategory({
 
           {/* Items list */}
           <div className="flex-1">
-            <ul className="space-y-2">
+            <div className="flex flex-wrap gap-2">
               {items.map((item, i) => (
-                <motion.li
+                <motion.span
                   key={i}
                   className={`
-                    flex items-center gap-3 py-2 px-3 -mx-3 rounded-lg
+                    inline-flex items-center gap-2 py-1.5 px-3 rounded-full
+                    bg-white/5 border border-white/10
+                    text-fg-secondary text-sm
                     transition-all duration-200
-                    ${colors.itemHover}
-                    cursor-default
+                    hover:bg-white/10 hover:border-white/20
                   `}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{
                     delay: index * 0.1 + 0.4 + i * 0.05,
-                    duration: 0.4,
+                    duration: 0.3,
                   }}
                 >
-                  {/* Animated dot */}
-                  <motion.span
-                    className={`w-2 h-2 rounded-full ${colors.dot} opacity-60 flex-shrink-0`}
-                    whileHover={{ scale: 1.5, opacity: 1 }}
-                    transition={{ type: "spring", stiffness: 400 }}
-                  />
-                  <span className="text-fg-secondary text-sm">{item}</span>
-                </motion.li>
+                  {item}
+                </motion.span>
               ))}
-            </ul>
+            </div>
           </div>
-
-          {/* Bottom accent line */}
-          <motion.div
-            className="mt-6 h-0.5 rounded-full overflow-hidden bg-border-subtle"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1 + 0.6, duration: 0.5 }}
-          >
-            <motion.div
-              className="h-full w-full origin-left"
-              style={{ backgroundColor: accentColor }}
-              initial={{ scaleX: 0 }}
-              whileHover={{ scaleX: 1 }}
-              transition={{ duration: 0.3 }}
-            />
-          </motion.div>
         </div>
       </motion.div>
     </motion.div>

@@ -5,3 +5,5 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export { initConsoleMessage, logPerformanceMetrics } from "./console-message";
+

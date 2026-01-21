@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { t } from "@/i18n";
+import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 
 // Animated rings - CSS-only alternative to 3D canvas
@@ -73,6 +73,8 @@ function Background() {
 }
 
 export function FooterCta() {
+  const { t, isRTL } = useLocale();
+  
   const handleApply = () => {
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -101,18 +103,20 @@ export function FooterCta() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            Let&apos;s Build Something
+            {isRTL ? "בואו נבנה משהו" : "Let's Build Something"}
           </motion.p>
 
           <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight">
             <span className="text-fg-primary">{t.footerCta.headline.split(" ")[0]} </span>
-            <span className="bg-gradient-to-r from-accent-primary via-amber-400 to-accent-secondary bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
               {t.footerCta.headline.split(" ").slice(1).join(" ")}
             </span>
           </h2>
 
           <p className="text-fg-secondary text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
-            Got something valuable to offer? Let&apos;s talk about building your next project.
+            {isRTL 
+              ? "יש לכם משהו בעל ערך להציע? בואו נדבר על בניית הפרויקט הבא שלכם."
+              : "Got something valuable to offer? Let's talk about building your next project."}
           </p>
         </motion.div>
 

@@ -44,27 +44,57 @@ export interface Translations {
   };
   products: {
     headline: string;
+    subhead: string;
     items: {
-      marketingSites: {
+      launchFast: {
         title: string;
+        subtitle: string;
         description: string;
-        tradeValue: string;
+        capabilities: string[];
       };
-      webApps: {
+      businessApps: {
         title: string;
+        subtitle: string;
         description: string;
-        tradeValue: string;
+        capabilities: string[];
       };
-      ecommerce: {
+      commerce: {
         title: string;
+        subtitle: string;
         description: string;
-        tradeValue: string;
+        capabilities: string[];
       };
-      cms: {
+      realtime: {
         title: string;
+        subtitle: string;
         description: string;
-        tradeValue: string;
+        capabilities: string[];
       };
+      integrations: {
+        title: string;
+        subtitle: string;
+        description: string;
+        capabilities: string[];
+      };
+      complex: {
+        title: string;
+        subtitle: string;
+        description: string;
+        capabilities: string[];
+      };
+    };
+  };
+  faq: {
+    label: string;
+    headlinePrimary: string;
+    headlineAccent: string;
+    items: {
+      question: string;
+      answer: string;
+    }[];
+    cta: {
+      prompt: string;
+      linkText: string;
     };
   };
   tradeTypes: {

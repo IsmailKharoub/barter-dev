@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { t } from "@/i18n";
+import { useLocale } from "@/components/providers";
 import type { LucideIcon } from "lucide-react";
 import {
   Globe,
@@ -29,10 +29,12 @@ interface StepProps {
 
 // Project type icons
 const projectTypeIcons: Record<string, LucideIcon> = {
-  "Marketing Site": Globe,
-  "Web App": Smartphone,
-  "E-Commerce": ShoppingCart,
-  "CMS/Content": FileText,
+  "Landing Page": Globe,
+  "Web Application": Smartphone,
+  "Mobile App": Smartphone,
+  "E-Commerce Store": ShoppingCart,
+  "Dashboard/Admin": FileText,
+  "API/Backend": Briefcase,
   "Other": HelpCircle,
 };
 
@@ -72,8 +74,8 @@ function SelectionButton({
         relative flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium
         transition-all duration-300 ease-out
         ${isSelected
-          ? "bg-accent-primary text-bg-primary shadow-[0_0_20px_rgba(245,158,11,0.3)]"
-          : "bg-bg-tertiary text-fg-secondary hover:text-fg-primary border border-border-subtle hover:border-accent-primary/30"
+          ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+          : "bg-bg-tertiary text-fg-secondary hover:text-fg-primary border border-border-subtle hover:border-white/30"
         }
       `}
       whileHover={{ scale: 1.02 }}
@@ -83,12 +85,12 @@ function SelectionButton({
       <span>{label}</span>
       {isSelected && (
         <motion.div
-          className="absolute -top-1 -right-1 w-4 h-4 bg-bg-primary rounded-full flex items-center justify-center"
+          className="absolute -top-1 -right-1 w-4 h-4 bg-black rounded-full flex items-center justify-center"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 500, damping: 25 }}
         >
-          <CheckCircle2 className="w-3 h-3 text-accent-primary" />
+          <CheckCircle2 className="w-3 h-3 text-white" />
         </motion.div>
       )}
     </motion.button>
@@ -134,11 +136,11 @@ function InputField({
             w-full bg-bg-tertiary border border-border-subtle rounded-xl
             ${prefix ? "pl-8" : "pl-4"} pr-4 py-3.5
             text-fg-primary placeholder:text-fg-muted/50
-            focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/10
+            focus:outline-none focus:border-white/50 focus:ring-2 focus:ring-white/10
             transition-all duration-200
           `}
         />
-        <div className="absolute inset-0 rounded-xl bg-accent-primary/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
+        <div className="absolute inset-0 rounded-xl bg-white/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
       </div>
     </div>
   );
@@ -176,11 +178,11 @@ function TextareaField({
             w-full bg-bg-tertiary border border-border-subtle rounded-xl
             px-4 py-3.5
             text-fg-primary placeholder:text-fg-muted/50
-            focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/10
+            focus:outline-none focus:border-white/50 focus:ring-2 focus:ring-white/10
             transition-all duration-200 resize-none
           `}
         />
-        <div className="absolute inset-0 rounded-xl bg-accent-primary/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
+        <div className="absolute inset-0 rounded-xl bg-white/5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
       </div>
     </div>
   );
@@ -210,6 +212,7 @@ function FieldSection({
 }
 
 export function StepWhatYouNeed({ data, onChange }: StepProps) {
+  const { t } = useLocale();
   const step = t.apply.steps.whatYouNeed;
 
   return (
@@ -276,6 +279,7 @@ export function StepWhatYouNeed({ data, onChange }: StepProps) {
 }
 
 export function StepWhatYouOffer({ data, onChange }: StepProps) {
+  const { t, isRTL } = useLocale();
   const step = t.apply.steps.whatYouOffer;
 
   return (
@@ -334,7 +338,7 @@ export function StepWhatYouOffer({ data, onChange }: StepProps) {
         />
         <p className="mt-2 text-xs text-fg-muted flex items-center gap-1.5">
           <AlertCircle className="w-3 h-3" />
-          Estimate the market value of what you&apos;re offering
+          {isRTL ? "העריכו את שווי השוק של מה שאתם מציעים" : "Estimate the market value of what you're offering"}
         </p>
       </motion.div>
     </div>
@@ -342,6 +346,7 @@ export function StepWhatYouOffer({ data, onChange }: StepProps) {
 }
 
 export function StepAboutYou({ data, onChange }: StepProps) {
+  const { t, isRTL } = useLocale();
   const step = t.apply.steps.aboutYou;
 
   return (
@@ -357,7 +362,7 @@ export function StepAboutYou({ data, onChange }: StepProps) {
             label={step.name}
             value={data.name || ""}
             onChange={(value) => onChange("name", value)}
-            placeholder="Your full name"
+            placeholder={isRTL ? "השם המלא שלכם" : "Your full name"}
             icon={UserIcon}
           />
         </motion.div>
@@ -404,7 +409,7 @@ export function StepAboutYou({ data, onChange }: StepProps) {
           label={step.anything}
           value={data.anything || ""}
           onChange={(value) => onChange("anything", value)}
-          placeholder="Any context that might help me evaluate your application..."
+          placeholder={isRTL ? "כל הקשר שיכול לעזור לי להעריך את הבקשה שלכם..." : "Any context that might help me evaluate your application..."}
           rows={3}
           icon={MessageSquare}
         />
@@ -437,8 +442,8 @@ function Checkbox({
             w-5 h-5 rounded-md border-2 flex items-center justify-center
             transition-colors duration-200
             ${checked
-              ? "bg-accent-primary border-accent-primary"
-              : "bg-bg-tertiary border-border-default group-hover:border-accent-primary/50"
+              ? "bg-white border-white"
+              : "bg-bg-tertiary border-border-default group-hover:border-white/50"
             }
           `}
           whileTap={{ scale: 0.9 }}
@@ -474,6 +479,7 @@ export function StepConfirmation({
   data,
   onChange,
 }: StepProps & { data: Record<string, string | boolean> }) {
+  const { t, isRTL } = useLocale();
   const step = t.apply.steps.confirmation;
 
   return (
@@ -567,7 +573,7 @@ function SummaryRow({
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs text-fg-muted">{label}</p>
-        <p className={`text-sm font-medium truncate ${highlight ? "text-accent-primary" : "text-fg-primary"}`}>
+        <p className={`text-sm font-medium truncate ${highlight ? "text-white" : "text-fg-primary"}`}>
           {value || "—"}
         </p>
       </div>

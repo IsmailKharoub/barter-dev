@@ -22,62 +22,122 @@ export const en: Translations = {
       problem: {
         title: "The Problem",
         description:
-          "Agencies charge $10k–$50k+. You might have a real need (or a great idea) — but not the cash to fund it.",
+          "Agencies charge $10k–$50k+. Great idea, no budget.",
       },
       alternative: {
         title: "The Alternative",
         description:
-          "You may not have cash — but you do have value: skills, services, products, inventory, or access I can use.",
+          "No cash? Trade skills, services, goods, or access instead.",
       },
       apply: {
         title: "You Apply",
         description:
-          "You share what you need built and what you’re offering. If it’s clear, specific, and fair, we move forward.",
+          "Tell me what you need and what you're offering. Clear and fair wins.",
       },
       evaluate: {
         title: "I Evaluate",
         description:
-          "I scope the build. We align on trade value and what “done” means. No ambiguity, no surprises.",
+          "I scope the build. We align on value. No ambiguity.",
       },
       agree: {
         title: "We Agree",
         description:
-          "Everything in writing: milestones, deliverables, timeline, and trade terms for both sides.",
+          "Everything in writing: milestones, deliverables, trade terms.",
       },
       deliver: {
         title: "We Deliver",
-        description: "I ship the work. You deliver the trade. Clean handoff, fair exchange.",
+        description: "I ship. You deliver. Clean handoff.",
       },
     },
     cta: "Apply for a Trade",
   },
   products: {
     headline: "What I Build",
+    subhead: "From weekend launches to enterprise systems. 12 years of shipping.",
     items: {
-      marketingSites: {
-        title: "Marketing Sites",
+      launchFast: {
+        title: "Launch Fast",
+        subtitle: "Days to weeks",
         description:
-          "Landing pages and business sites that convert. Fast, responsive, polished motion.",
-        tradeValue: "$3,000 - $8,000",
+          "Landing pages, marketing sites, portfolios. Pixel-perfect, performance-optimized, ready to convert. Sometimes you just need it live.",
+        capabilities: ["Marketing sites", "Landing pages", "Portfolios", "Documentation sites"],
       },
-      webApps: {
-        title: "Web Applications",
+      businessApps: {
+        title: "Business Applications",
+        subtitle: "Weeks to months",
         description:
-          "Dashboards, booking, internal tools. Your workflow, built to spec and easy to maintain.",
-        tradeValue: "$8,000 - $20,000",
+          "Dashboards, admin panels, booking systems, internal tools. Role-based access, audit logs, the works. Built for your team, not just your demo.",
+        capabilities: ["Custom dashboards", "Admin panels", "Booking systems", "Internal tools"],
       },
-      ecommerce: {
-        title: "E-Commerce Stores",
+      commerce: {
+        title: "Commerce & Marketplaces",
+        subtitle: "Full product builds",
         description:
-          "Full storefronts powered by Medusa. Catalog, checkout, payments, shipping — handled.",
-        tradeValue: "$10,000 - $25,000",
+          "Headless storefronts, multi-vendor marketplaces, subscription platforms. Inventory, payments, shipping, analytics — architected to scale.",
+        capabilities: ["Headless e-commerce", "Marketplaces", "Subscription platforms", "Inventory systems"],
       },
-      cms: {
-        title: "CMS & Content Platforms",
+      realtime: {
+        title: "Real-Time Systems",
+        subtitle: "Live data, instant updates",
         description:
-          "Content systems you can actually run. No developer needed after handoff.",
-        tradeValue: "$4,000 - $12,000",
+          "Tracking dashboards, collaborative tools, live feeds. WebSockets, event-driven architecture, optimistic updates. Data that moves.",
+        capabilities: ["Live dashboards", "Collaboration tools", "Tracking systems", "Notification systems"],
       },
+      integrations: {
+        title: "APIs & Integrations",
+        subtitle: "Connect everything",
+        description:
+          "Third-party integrations, headless backends, webhook orchestration. Your systems talking to each other, reliably.",
+        capabilities: ["REST & GraphQL APIs", "Third-party integrations", "Webhook systems", "Data pipelines"],
+      },
+      complex: {
+        title: "Complex Systems",
+        subtitle: "Enterprise-grade",
+        description:
+          "Fintech platforms, healthcare systems, multi-tenant SaaS. Compliance-aware, audit-ready, built for scale. The stuff that keeps CTOs up at night.",
+        capabilities: ["Fintech platforms", "Healthcare systems", "Multi-tenant SaaS", "Regulated industries"],
+      },
+    },
+  },
+  faq: {
+    label: "Common Questions",
+    headlinePrimary: "Frequently Asked",
+    headlineAccent: "Questions",
+    items: [
+      {
+        question: "What is barter-based web development?",
+        answer:
+          "Barter-based web development is a service model where software development work is exchanged for goods, services, or other non-cash value instead of traditional payment. This includes trading development work for professional services (legal, accounting, marketing), physical goods (equipment, inventory), creative work (design, photography), or hybrid arrangements combining partial cash with trade.",
+      },
+      {
+        question: "What types of projects can be built through barter?",
+        answer:
+          "I build four main types of projects: Marketing websites (valued at $3,000-$8,000), Web applications like dashboards and booking systems ($8,000-$20,000), E-commerce stores with full catalog and checkout ($10,000-$25,000), and CMS platforms for content management ($4,000-$12,000). All projects include clear scope, milestones, and timelines.",
+      },
+      {
+        question: "What can I trade for web development work?",
+        answer:
+          "Accepted trade categories include: Design & Creative services (graphic design, photography, videography, copywriting), Professional Services (legal consultation, accounting, marketing, business coaching), Physical Goods (furniture, electronics, equipment), Access & Opportunity (introductions, speaking engagements, partnerships), Skilled Labor (carpentry, renovation, catering), and Hybrid arrangements combining partial cash with any of the above.",
+      },
+      {
+        question: "How long does the process take?",
+        answer:
+          "Applications are reviewed within 48 hours. Project timelines vary based on scope: marketing sites typically take 2-4 weeks, web applications 1-3 months, e-commerce stores 2-4 months, and CMS platforms 3-6 weeks. We agree on specific milestones and deadlines before starting.",
+      },
+      {
+        question: "Do you accept equity or revenue share?",
+        answer:
+          "No. I don't accept equity, vague promises, or future commitments. Only tangible value that can be delivered now or within the project timeline is accepted. This ensures fair, clear exchanges for both parties and avoids the complications that come with equity arrangements.",
+      },
+      {
+        question: "How do you determine trade value?",
+        answer:
+          "Trade value is determined by the market rate of what you're offering. For services, this is typically your hourly or project rate. For goods, it's the fair market value. We align on this during the scoping phase before any work begins, so both parties know exactly what's being exchanged.",
+      },
+    ],
+    cta: {
+      prompt: "Still have questions?",
+      linkText: "Get in touch through the application form →",
     },
   },
   tradeTypes: {
@@ -155,10 +215,12 @@ export const en: Translations = {
         title: "What You Need",
         projectType: "What are you building?",
         projectTypes: [
-          "Marketing Site",
-          "Web App",
-          "E-Commerce",
-          "CMS/Content",
+          "Landing Page",
+          "Web Application",
+          "Mobile App",
+          "E-Commerce Store",
+          "Dashboard/Admin",
+          "API/Backend",
           "Other",
         ],
         description: "Describe the project in 2–3 sentences:",

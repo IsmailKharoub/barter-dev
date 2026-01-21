@@ -20,11 +20,15 @@ let indexesInitialized = false;
 export async function POST(request: NextRequest) {
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+  const userAgent = request.headers.get('user-agent') || 'unknown';
+  const referer = request.headers.get('referer');
+  
   apiLogger.info("New application submission started", {
     requestId,
-    userAgent: request.headers.get('user-agent'),
-    referer: request.headers.get('referer'),
-    ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
+    userAgent,
+    referer,
+    ipAddress: ip,
   });
   
   console.log("\n[API] ========== New application submission ==========");
@@ -38,6 +42,11 @@ export async function POST(request: NextRequest) {
     if (!indexesInitialized) {
       console.log("[API] Initializing database indexes...");
       await initializeIndexes().catch(e => console.warn("[API] Index init failed:", e));
+      
+      // Also initialize log indexes
+      const { initializeLogIndexes } = await import("@/lib/db/logs");
+      await initializeLogIndexes().catch(e => console.warn("[API] Log index init failed:", e));
+      
       indexesInitialized = true;
     }
 

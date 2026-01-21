@@ -1,12 +1,19 @@
 /**
- * Centralized logging utility for CloudWatch integration
+ * Centralized logging utility for CloudWatch and MongoDB
  * All logs are automatically captured by Amplify and sent to CloudWatch
+ * Important logs are also saved to MongoDB for long-term analysis
  */
+
+import { saveLogToDatabase, type LogEntry } from './db/logs';
 
 type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
 interface LogContext {
   [key: string]: unknown;
+  requestId?: string;
+  userId?: string;
+  ipAddress?: string;
+  userAgent?: string;
 }
 
 class Logger {
@@ -29,14 +36,55 @@ class Logger {
     return logEntry;
   }
 
+  private async saveToDatabase(
+    level: LogLevel,
+    message: string,
+    error?: Error | unknown,
+    data?: LogContext
+  ) {
+    // Only save important logs to database (errors, warnings, and important info)
+    const shouldSave = 
+      level === 'error' || 
+      level === 'warn' || 
+      (level === 'info' && (data?.requestId || message.includes('submission') || message.includes('created')));
+
+    if (shouldSave) {
+      const logEntry: LogEntry = {
+        timestamp: new Date(),
+        level,
+        context: this.context,
+        message,
+        data,
+        requestId: data?.requestId as string | undefined,
+        userId: data?.userId as string | undefined,
+        ipAddress: data?.ipAddress as string | undefined,
+        userAgent: data?.userAgent as string | undefined,
+        ...(error instanceof Error && {
+          error: {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+          },
+        }),
+      };
+
+      // Save to MongoDB asynchronously (don't wait)
+      saveLogToDatabase(logEntry).catch(err => {
+        console.error('[Logger] Failed to save to database:', err);
+      });
+    }
+  }
+
   info(message: string, data?: LogContext) {
     const logEntry = this.formatMessage('info', message, data);
     console.log(JSON.stringify(logEntry));
+    this.saveToDatabase('info', message, undefined, data);
   }
 
   warn(message: string, data?: LogContext) {
     const logEntry = this.formatMessage('warn', message, data);
     console.warn(JSON.stringify(logEntry));
+    this.saveToDatabase('warn', message, undefined, data);
   }
 
   error(message: string, error?: Error | unknown, data?: LogContext) {
@@ -49,6 +97,7 @@ class Logger {
       } : error,
     });
     console.error(JSON.stringify(logEntry));
+    this.saveToDatabase('error', message, error, data);
   }
 
   debug(message: string, data?: LogContext) {

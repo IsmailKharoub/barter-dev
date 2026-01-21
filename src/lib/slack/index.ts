@@ -66,10 +66,6 @@ export async function notifySlackNewApplication(
         },
         { type: "mrkdwn", text: `*Timeline:*\n${timelineLabels[application.timeline]}` },
         { type: "mrkdwn", text: `*Trade:*\n${tradeTypeLabels[application.tradeType]}` },
-        {
-          type: "mrkdwn",
-          text: `*Value:*\n$${application.estimatedValue.toLocaleString()}`,
-        },
       ],
     },
     ...(application.website

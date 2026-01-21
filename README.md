@@ -20,6 +20,19 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Application submissions (email + Slack)
+
+The `POST /api/apply` endpoint stores applications in the DB and can send:
+- **Email notifications** via Resend
+- **Slack notifications** via an Incoming Webhook
+
+Environment variables:
+- **`RESEND_API_KEY`**: required to send email
+- **`FROM_EMAIL`**: optional (defaults to `notifications@barter.dev`)
+- **`NOTIFICATION_EMAIL`**: optional (defaults to `hello@barter.dev`)
+- **`SLACK_WEBHOOK_URL`**: optional — when set, new applications are posted to Slack
+- **`NEXT_PUBLIC_SITE_URL`**: optional (used in the Slack message; defaults to `https://barter.dev`)
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

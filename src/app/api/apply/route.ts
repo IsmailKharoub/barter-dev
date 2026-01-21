@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { applicationSchema } from "@/lib/validations/application";
 import { createApplication, getRecentApplicationsByEmail, initDb } from "@/lib/db";
 import { sendAdminNotification, sendApplicantConfirmation } from "@/lib/email";
+import { notifySlackNewApplication } from "@/lib/slack";
 
 // Rate limiting configuration
 const RATE_LIMIT_HOURS = 24;
@@ -83,8 +84,9 @@ export async function POST(request: NextRequest) {
     Promise.all([
       sendAdminNotification(data, appId),
       sendApplicantConfirmation(data, appId),
+      notifySlackNewApplication(data, appId, { ip, userAgent, referrer }),
     ]).catch((error) => {
-      console.error("Failed to send email notifications:", error);
+      console.error("Failed to send notifications:", error);
     });
 
     return NextResponse.json(

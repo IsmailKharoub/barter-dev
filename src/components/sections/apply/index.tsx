@@ -450,16 +450,18 @@ export function Apply() {
   };
 
   const handleSubmit = async () => {
-    // Prevent double submission
+    // Prevent double submission - set immediately before any async work
     if (isSubmitting) {
       return;
     }
+    setIsSubmitting(true);
 
     setSubmitError(null);
 
     const stepError = validateStep(3);
     if (stepError) {
       setSubmitError(stepError);
+      setIsSubmitting(false);
       return;
     }
 
@@ -469,6 +471,7 @@ export function Apply() {
       setSubmitError(
         isRTL ? "אנא אשרו את שתי התיבות לפני שליחה." : "Please check both boxes before submitting."
       );
+      setIsSubmitting(false);
       return;
     }
 
@@ -520,7 +523,6 @@ export function Apply() {
       agreesToGoodFaith: true,
     };
 
-    setIsSubmitting(true);
     try {
       const res = await fetch("/api/apply", {
         method: "POST",

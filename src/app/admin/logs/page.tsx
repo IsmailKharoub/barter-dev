@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import { verifySession } from "@/lib/auth/admin";
+import { isAuthenticated } from "@/lib/auth/admin";
 import { LogsViewer } from "./logs-viewer";
 
 export const metadata = {
@@ -9,17 +8,9 @@ export const metadata = {
 };
 
 export default async function LogsPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin-session");
+  const authenticated = await isAuthenticated();
 
-  if (!token) {
-    redirect("/admin/login");
-  }
-
-  // Verify session is valid
-  const session = await verifySession({ cookies: () => cookieStore } as any);
-  
-  if (!session) {
+  if (!authenticated) {
     redirect("/admin/login");
   }
 

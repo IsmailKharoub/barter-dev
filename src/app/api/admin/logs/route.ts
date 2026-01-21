@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifySession } from "@/lib/auth/admin";
+import { getAdminSession } from "@/lib/auth/admin";
 import { queryLogs } from "@/lib/db/logs";
 
 export async function GET(request: NextRequest) {
   // Verify admin session
-  const session = await verifySession(request);
-  if (!session) {
+  const session = await getAdminSession();
+  if (!session?.isAdmin) {
     return NextResponse.json(
       { success: false, error: "Unauthorized" },
       { status: 401 }

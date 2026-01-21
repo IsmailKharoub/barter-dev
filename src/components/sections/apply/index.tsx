@@ -450,6 +450,11 @@ export function Apply() {
   };
 
   const handleSubmit = async () => {
+    // Prevent double submission
+    if (isSubmitting) {
+      return;
+    }
+
     setSubmitError(null);
 
     const stepError = validateStep(3);
@@ -712,7 +717,7 @@ export function Apply() {
                       <Button
                         variant="ghost"
                         onClick={handleBack}
-                        disabled={currentStep === 0}
+                        disabled={currentStep === 0 || isSubmitting}
                         className={`gap-2 ${currentStep === 0 ? "opacity-0 pointer-events-none" : ""}`}
                       >
                         <ArrowLeft className={`w-4 h-4 ${isRTL ? "rotate-180" : ""}`} />
@@ -721,16 +726,30 @@ export function Apply() {
 
                       {currentStep === steps.length - 1 ? (
                         <Button onClick={handleSubmit} className="group gap-2" disabled={isSubmitting}>
-                          <span>{t.apply.steps.confirmation.submit}</span>
-                          <motion.span
-                            animate={reducedEffects ? undefined : { x: [0, 4, 0] }}
-                            transition={reducedEffects ? undefined : { duration: 1.5, repeat: Infinity }}
-                          >
-                            <Sparkles className="w-4 h-4" />
-                          </motion.span>
+                          {isSubmitting ? (
+                            <>
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                              >
+                                <Sparkles className="w-4 h-4" />
+                              </motion.div>
+                              <span>{isRTL ? "שולח..." : "Submitting..."}</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>{t.apply.steps.confirmation.submit}</span>
+                              <motion.span
+                                animate={reducedEffects ? undefined : { x: [0, 4, 0] }}
+                                transition={reducedEffects ? undefined : { duration: 1.5, repeat: Infinity }}
+                              >
+                                <Sparkles className="w-4 h-4" />
+                              </motion.span>
+                            </>
+                          )}
                         </Button>
                       ) : (
-                        <Button onClick={handleNext} className="group gap-2">
+                        <Button onClick={handleNext} className="group gap-2" disabled={isSubmitting}>
                           <span>{isRTL ? "המשך" : "Continue"}</span>
                           <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${isRTL ? "rotate-180" : ""}`} />
                         </Button>

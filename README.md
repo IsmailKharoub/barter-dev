@@ -20,6 +20,28 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Admin Panel 🔐
+
+A secure dashboard for managing barter application submissions and tracking the pipeline.
+
+### Quick Setup
+1. Install dependencies: `npm install jose`
+2. Set environment variables in `.env.local`:
+   ```bash
+   ADMIN_PASSWORD=your_secure_password
+   ADMIN_JWT_SECRET=your_random_32_char_secret
+   ```
+3. Access at `/admin` (redirects to `/admin/login` if not authenticated)
+
+See [ADMIN_SETUP.md](./ADMIN_SETUP.md) for detailed setup instructions and [docs/admin-panel.md](./docs/admin-panel.md) for full documentation.
+
+### Features
+- 📊 Dashboard with real-time statistics
+- 🔍 Filter and search applications
+- ✏️ Update application status (Pending → Reviewing → Accepted/Rejected)
+- 📝 Add internal notes to applications
+- 🔐 Secure JWT-based authentication
+
 ## Application submissions (email + Slack)
 
 The `POST /api/apply` endpoint stores applications in the DB and can send:
@@ -32,6 +54,9 @@ Environment variables:
 - **`NOTIFICATION_EMAIL`**: optional (defaults to `hello@barter.dev`)
 - **`SLACK_WEBHOOK_URL`**: optional — when set, new applications are posted to Slack
 - **`NEXT_PUBLIC_SITE_URL`**: optional (used in the Slack message; defaults to `https://barter-dev.com`)
+- **`MONGODB_URI`**: required for database connection
+- **`ADMIN_PASSWORD`**: required for admin panel access
+- **`ADMIN_JWT_SECRET`**: required for admin authentication
 
 ## Learn More
 

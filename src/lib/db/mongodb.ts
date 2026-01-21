@@ -36,6 +36,11 @@ export async function connectToDatabase() {
   }
 }
 
+export interface ApplicationNote {
+  text: string;
+  createdAt: Date;
+}
+
 export interface Application {
   _id?: ObjectId;
   projectType: string;
@@ -51,6 +56,7 @@ export interface Application {
   userAgent: string;
   referrer?: string | null;
   status: "pending" | "reviewing" | "accepted" | "rejected";
+  notes?: ApplicationNote[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -94,12 +100,32 @@ export async function getApplicationById(id: string) {
   return await applications.findOne({ _id: new ObjectId(id) });
 }
 
-export async function getAllApplications(limit: number = 100) {
+export async function getAllApplications(
+  limit: number = 100,
+  status?: string | null,
+  search?: string | null
+) {
   const database = await connectToDatabase();
   const applications = database.collection<Application>("applications");
   
+  // Build query
+  const query: Record<string, unknown> = {};
+  
+  if (status && status !== "all") {
+    query.status = status;
+  }
+  
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+      { projectType: { $regex: search, $options: "i" } },
+      { tradeType: { $regex: search, $options: "i" } },
+    ];
+  }
+  
   return await applications
-    .find()
+    .find(query)
     .sort({ createdAt: -1 })
     .limit(limit)
     .toArray();
@@ -119,6 +145,60 @@ export async function updateApplicationStatus(
         status,
         updatedAt: new Date(),
       } 
+    }
+  );
+  
+  return result.modifiedCount > 0;
+}
+
+// Delete application
+export async function deleteApplication(id: string) {
+  const database = await connectToDatabase();
+  const applications = database.collection<Application>("applications");
+  
+  const result = await applications.deleteOne({ _id: new ObjectId(id) });
+  
+  console.log("[MongoDB] Application deleted:", id);
+  return result.deletedCount > 0;
+}
+
+// Get application statistics
+export async function getApplicationStats() {
+  const database = await connectToDatabase();
+  const applications = database.collection<Application>("applications");
+  
+  const [total, pending, reviewing, accepted, rejected] = await Promise.all([
+    applications.countDocuments(),
+    applications.countDocuments({ status: "pending" }),
+    applications.countDocuments({ status: "reviewing" }),
+    applications.countDocuments({ status: "accepted" }),
+    applications.countDocuments({ status: "rejected" }),
+  ]);
+  
+  return {
+    total,
+    pending,
+    reviewing,
+    accepted,
+    rejected,
+  };
+}
+
+// Add note to application
+export async function addApplicationNote(id: string, noteText: string) {
+  const database = await connectToDatabase();
+  const applications = database.collection<Application>("applications");
+  
+  const note: ApplicationNote = {
+    text: noteText,
+    createdAt: new Date(),
+  };
+  
+  const result = await applications.updateOne(
+    { _id: new ObjectId(id) },
+    { 
+      $push: { notes: note },
+      $set: { updatedAt: new Date() },
     }
   );
   

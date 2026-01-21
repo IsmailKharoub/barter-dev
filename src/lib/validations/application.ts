@@ -54,7 +54,14 @@ export const applicationSchema = z.object({
     .min(2, "Name must be at least 2 characters")
     .max(100, "Name must be less than 100 characters"),
   email: z.string().email("Please enter a valid email address"),
-  website: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+  website: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || val === "" || /^https?:\/\/.+/.test(val),
+      "Please enter a valid URL starting with http:// or https://"
+    )
+    .transform((val) => val || ""),
   additionalInfo: z.string().max(1000, "Additional info must be less than 1000 characters").optional(),
 
   // Step 4: Agreements

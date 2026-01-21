@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { applicationSchema } from "@/lib/validations/application";
-import { createApplication, getRecentApplicationsByEmail, initDb } from "@/lib/db";
+import { 
+  createApplication, 
+  getRecentApplicationsByEmail, 
+  initializeIndexes 
+} from "@/lib/db/mongodb";
 
 export const runtime = "nodejs";
 
@@ -8,8 +12,8 @@ export const runtime = "nodejs";
 const RATE_LIMIT_HOURS = 24;
 const RATE_LIMIT_MAX_APPLICATIONS = 3;
 
-// Initialize database on first request
-let dbInitialized = false;
+// Initialize database indexes on first request
+let indexesInitialized = false;
 
 export async function POST(request: NextRequest) {
   console.log("\n[API] ========== New application submission ==========");
@@ -18,11 +22,11 @@ export async function POST(request: NextRequest) {
   console.log("[API] - NEXT_PUBLIC_SITE_URL:", process.env.NEXT_PUBLIC_SITE_URL);
   
   try {
-    // Initialize database if not already done
-    if (!dbInitialized) {
-      console.log("[API] Initializing database...");
-      await initDb();
-      dbInitialized = true;
+    // Initialize database indexes if not already done
+    if (!indexesInitialized) {
+      console.log("[API] Initializing database indexes...");
+      await initializeIndexes().catch(e => console.warn("[API] Index init failed:", e));
+      indexesInitialized = true;
     }
 
     // Parse request body
@@ -71,22 +75,22 @@ export async function POST(request: NextRequest) {
 
     // Save to database
     const applicationId = await createApplication({
-      project_type: data.projectType,
-      project_description: data.projectDescription,
+      projectType: data.projectType,
+      projectDescription: data.projectDescription,
       timeline: data.timeline,
-      trade_type: data.tradeType,
-      trade_description: data.tradeDescription,
-      estimated_value: data.estimatedValue,
+      tradeType: data.tradeType,
+      tradeDescription: data.tradeDescription,
+      estimatedValue: data.estimatedValue,
       name: data.name,
       email: data.email,
       website: data.website || null,
-      additional_info: data.additionalInfo || null,
-      ip_address: ip,
-      user_agent: userAgent,
+      additionalInfo: data.additionalInfo || null,
+      ipAddress: ip,
+      userAgent: userAgent,
       referrer,
     });
 
-    const appId = applicationId ?? 0;
+    const appId = applicationId;
     console.log("[API] Application saved with ID:", appId);
     
     // Send simple Slack notification
@@ -125,7 +129,7 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         message: "Application submitted successfully",
-        applicationId: Number(appId),
+        applicationId: appId,
       },
       { status: 201 }
     );

@@ -16,13 +16,4 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-    environment:
-      variables:
-        SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
-        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
-        TURSO_DATABASE_URL: ${TURSO_DATABASE_URL}
-        TURSO_AUTH_TOKEN: ${TURSO_AUTH_TOKEN}
-        RESEND_API_KEY: ${RESEND_API_KEY}
-        FROM_EMAIL: ${FROM_EMAIL}
-        NOTIFICATION_EMAIL: ${NOTIFICATION_EMAIL}
 

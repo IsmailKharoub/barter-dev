@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
@@ -10,19 +11,18 @@ function Logo() {
   return (
     <a href="#hero" className="flex items-center gap-2 group">
       <motion.div 
-        className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center"
+        className="relative w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden border border-border-subtle"
         whileHover={{ scale: 1.05, rotate: 5 }}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-bg-primary">
-          <path
-            d="M7 10H17L14 7M7 14H17L14 17"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <Image
+          src="/brand/logo-bw.png"
+          alt="Barter Dev"
+          width={40}
+          height={40}
+          priority
+          className="object-contain"
+        />
       </motion.div>
       <span className="font-bold text-lg tracking-tight text-fg-primary group-hover:text-accent-primary transition-colors">
         BARTER
@@ -294,7 +294,7 @@ function ScrollProgress() {
 
   return (
     <motion.div
-      className="absolute bottom-0 start-0 h-0.5 bg-gradient-to-r from-accent-primary to-accent-secondary origin-[start]"
+      className="absolute bottom-0 start-0 h-0.5 bg-linear-to-r from-accent-primary to-accent-secondary origin-[start]"
       style={{ scaleX: scrollYProgress }}
     />
   );

@@ -25,7 +25,7 @@ function ScrollIndicator() {
       onClick={() => {
         document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
       }}
-      className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-fg-muted hover:text-fg-secondary transition-colors cursor-pointer"
+      className="absolute bottom-8 start-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-fg-muted hover:text-fg-secondary transition-colors cursor-pointer"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 1.5, duration: 0.5 }}
@@ -59,7 +59,7 @@ export function Hero() {
       <ScrollIndicator />
       
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-bg-primary to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 start-0 end-0 h-24 bg-gradient-to-t from-bg-primary to-transparent pointer-events-none" />
     </section>
   );
 }

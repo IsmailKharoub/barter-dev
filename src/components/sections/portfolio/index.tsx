@@ -84,7 +84,7 @@ export function Portfolio() {
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="text-center md:text-left"
+              className="text-center md:text-start"
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -101,7 +101,7 @@ export function Portfolio() {
         </motion.div>
 
         {/* Bento grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5 mb-20 lg:mb-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-5 mb-20 lg:mb-24">
           {projects.map((project, index) => (
             <ProjectCard
               key={project.id}
@@ -126,14 +126,14 @@ export function Portfolio() {
         >
           {/* Decorative line */}
           <motion.div
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-white/50 via-white/20 to-transparent hidden lg:block"
+            className="absolute start-0 top-1/2 -translate-y-1/2 h-px bg-linear-to-r from-white/50 via-white/20 to-transparent hidden lg:block"
             initial={{ width: 0 }}
             whileInView={{ width: "15%" }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.8 }}
           />
 
-          <div className="text-center lg:text-left lg:pl-[20%]">
+          <div className="text-center lg:text-start lg:ps-[20%]">
             <motion.p
               className="text-2xl md:text-3xl lg:text-4xl font-semibold text-fg-primary leading-tight"
               initial={{ opacity: 0, y: 20 }}
@@ -153,7 +153,7 @@ export function Portfolio() {
 
           {/* Decorative element */}
           <motion.div
-            className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-20 hidden lg:block"
+            className="absolute end-0 top-1/2 -translate-y-1/2 w-20 h-20 hidden lg:block"
             initial={{ opacity: 0, scale: 0.5, rotate: -45 }}
             whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
             viewport={{ once: true }}

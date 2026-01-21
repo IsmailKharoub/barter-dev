@@ -10,22 +10,8 @@ import { LanguagePicker } from "@/components/ui/language-picker";
 function Logo() {
   return (
     <a href="#hero" className="flex items-center gap-2 group">
-      <motion.div 
-        className="relative w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden border border-border-subtle"
-        whileHover={{ scale: 1.05, rotate: 5 }}
-        transition={{ type: "spring", stiffness: 400, damping: 20 }}
-      >
-        <Image
-          src="/brand/logo-bw-trim.png"
-          alt="Barter Dev"
-          width={40}
-          height={40}
-          priority
-          className="object-contain"
-        />
-      </motion.div>
       <span className="font-bold text-lg tracking-tight text-fg-primary group-hover:text-accent-primary transition-colors">
-        BARTER
+        BARTER-DEV
       </span>
     </a>
   );
@@ -294,7 +280,7 @@ function ScrollProgress() {
 
   return (
     <motion.div
-      className="absolute bottom-0 start-0 h-0.5 bg-linear-to-r from-accent-primary to-accent-secondary origin-[start]"
+      className="absolute bottom-0 start-0 h-0.5 bg-linear-to-r from-accent-primary to-accent-secondary origin-left"
       style={{ scaleX: scrollYProgress }}
     />
   );

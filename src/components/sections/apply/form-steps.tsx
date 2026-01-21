@@ -85,7 +85,7 @@ function SelectionButton({
       <span>{label}</span>
       {isSelected && (
         <motion.div
-          className="absolute -top-1 -right-1 w-4 h-4 bg-black rounded-full flex items-center justify-center"
+          className="absolute -top-1 -end-1 w-4 h-4 bg-black rounded-full flex items-center justify-center"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 500, damping: 25 }}
@@ -123,7 +123,7 @@ function InputField({
       </label>
       <div className="relative group">
         {prefix && (
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-muted font-mono">
+          <span className="absolute start-4 top-1/2 -translate-y-1/2 text-fg-muted font-mono">
             {prefix}
           </span>
         )}
@@ -134,7 +134,7 @@ function InputField({
           placeholder={placeholder}
           className={`
             w-full bg-bg-tertiary border border-border-subtle rounded-xl
-            ${prefix ? "pl-8" : "pl-4"} pr-4 py-3.5
+            ${prefix ? "ps-8" : "ps-4"} pe-4 py-3.5
             text-fg-primary placeholder:text-fg-muted/50
             focus:outline-none focus:border-white/50 focus:ring-2 focus:ring-white/10
             transition-all duration-200

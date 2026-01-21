@@ -28,10 +28,10 @@ function FAQItem({
     >
       <button
         onClick={onToggle}
-        className="w-full py-6 flex items-center justify-between text-left group"
+        className="w-full py-6 flex items-center justify-between text-start group"
         aria-expanded={isOpen}
       >
-        <span className="text-lg font-medium text-fg-primary group-hover:text-accent-primary transition-colors pr-8">
+        <span className="text-lg font-medium text-fg-primary group-hover:text-accent-primary transition-colors pe-8">
           {question}
         </span>
         <motion.div

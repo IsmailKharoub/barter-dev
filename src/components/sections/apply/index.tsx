@@ -33,7 +33,7 @@ function BackgroundPattern() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Gradient orbs */}
       <motion.div
-        className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-accent-primary/5 rounded-full blur-[150px]"
+        className="absolute top-0 start-1/4 w-[600px] h-[600px] bg-accent-primary/5 rounded-full blur-[150px]"
         animate={{
           x: [0, 50, 0],
           y: [0, 30, 0],
@@ -41,7 +41,7 @@ function BackgroundPattern() {
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent-secondary/5 rounded-full blur-[120px]"
+        className="absolute bottom-0 end-1/4 w-[500px] h-[500px] bg-accent-secondary/5 rounded-full blur-[120px]"
         animate={{
           x: [0, -30, 0],
           y: [0, -50, 0],
@@ -71,10 +71,12 @@ function BackgroundPattern() {
 // Animated step indicator
 function StepIndicator({ 
   currentStep, 
-  totalSteps 
+  totalSteps,
+  isRTL,
 }: { 
   currentStep: number; 
   totalSteps: number;
+  isRTL: boolean;
 }) {
   return (
     <div className="flex items-center justify-center gap-3 md:gap-4">
@@ -96,13 +98,16 @@ function StepIndicator({
             >
               {/* Connector line */}
               {i < totalSteps - 1 && (
-                <div className="absolute left-full top-1/2 -translate-y-1/2 w-3 md:w-4 h-0.5 overflow-hidden">
+                <div
+                  className={`absolute top-1/2 -translate-y-1/2 w-3 md:w-4 h-0.5 overflow-hidden ${
+                    isRTL ? "end-full" : "start-full"
+                  }`}
+                >
                   <motion.div
-                            className="h-full bg-white"
+                    className="h-full bg-white origin-left"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: isCompleted ? 1 : 0 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    style={{ transformOrigin: "left" }}
                   />
                   <div className="absolute inset-0 bg-border-default -z-10" />
                 </div>
@@ -416,7 +421,7 @@ export function Apply() {
             transition={{ delay: 0.2 }}
             className="mb-12 md:mb-16"
           >
-            <StepIndicator currentStep={currentStep} totalSteps={steps.length} />
+            <StepIndicator currentStep={currentStep} totalSteps={steps.length} isRTL={isRTL} />
           </motion.div>
         )}
 

@@ -104,7 +104,7 @@ function ProblemIcon({ isActive }: { isActive: boolean }) {
 
           {/* "Too expensive" badge */}
           <motion.div
-            className="absolute -top-3 -right-3 bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg"
+            className="absolute -top-3 -end-3 bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg"
             initial={{ scale: 0, rotate: -12 }}
             animate={isActive ? { scale: 1, rotate: -12 } : { scale: 0, rotate: -12 }}
             transition={{ delay: 1.2, type: "spring", stiffness: 400, damping: 15 }}

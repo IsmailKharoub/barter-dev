@@ -26,7 +26,7 @@ function BackgroundPattern() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Gradient mesh blobs */}
       <motion.div
-        className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
+        className="absolute top-0 start-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
         style={{
           background:
             "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)",
@@ -42,7 +42,7 @@ function BackgroundPattern() {
         }}
       />
       <motion.div
-        className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
+        className="absolute bottom-0 end-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
         style={{
           background:
             "radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)",
@@ -58,7 +58,7 @@ function BackgroundPattern() {
         }}
       />
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[200px]"
+        className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[200px]"
         style={{
           background:
             "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%)",
@@ -135,13 +135,13 @@ function ExchangeSymbol() {
 
       {/* Orbiting dots */}
       <motion.div
-        className="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-primary shadow-lg shadow-accent-primary/50"
+        className="absolute -top-1 start-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-primary shadow-lg shadow-accent-primary/50"
         animate={{ rotate: 360 }}
         transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "50% calc(50% + 44px)" }}
       />
       <motion.div
-        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-secondary shadow-lg shadow-accent-secondary/50"
+        className="absolute -bottom-1 start-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-secondary shadow-lg shadow-accent-secondary/50"
         animate={{ rotate: -360 }}
         transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "50% calc(50% - 44px)" }}

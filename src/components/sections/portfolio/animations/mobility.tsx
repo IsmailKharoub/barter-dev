@@ -4,126 +4,146 @@ import { motion } from "framer-motion";
 import type { AnimationProps } from "./types";
 
 const routePoints = [
-  { x: 12, y: 72 },
-  { x: 26, y: 52 },
-  { x: 42, y: 32 },
-  { x: 64, y: 30 },
-  { x: 78, y: 45 },
-  { x: 90, y: 66 },
+  { x: 14, y: 70 },
+  { x: 24, y: 54 },
+  { x: 40, y: 42 },
+  { x: 58, y: 38 },
+  { x: 74, y: 46 },
+  { x: 88, y: 62 },
 ];
 
-const storySteps = [
-  { label: "Locate", color: "text-white", times: [0, 0.06, 0.22, 0.28] },
-  { label: "Unlock", color: "text-gray-300", times: [0.24, 0.3, 0.46, 0.52] },
-  { label: "Ride", color: "text-white", times: [0.5, 0.56, 0.72, 0.78] },
-  { label: "Charge", color: "text-gray-400", times: [0.76, 0.82, 0.96, 1] },
+const storyPhases = [
+  { label: "Find", tint: "#10B981", times: [0, 0.08, 0.22, 0.3] },
+  { label: "Unlock", tint: "#F59E0B", times: [0.24, 0.32, 0.46, 0.54] },
+  { label: "Ride", tint: "#FFFFFF", times: [0.5, 0.58, 0.72, 0.8] },
+  { label: "Dock", tint: "#6366F1", times: [0.74, 0.82, 0.96, 1] },
 ];
 
-function MapBackdrop() {
+function Backdrop() {
   return (
-    <div className="absolute inset-4">
-      <svg className="absolute inset-0 w-full h-full opacity-20">
-        {[0, 1, 2, 3, 4].map((i) => (
-          <line
-            key={`v-${i}`}
-            x1={`${20 * i + 10}%`}
-            y1="0"
-            x2={`${20 * i + 10}%`}
-            y2="100%"
-            stroke="var(--fg-muted)"
-            strokeWidth="0.5"
-          />
-        ))}
-        {[0, 1, 2, 3].map((i) => (
-          <line
-            key={`h-${i}`}
-            x1="0"
-            y1={`${25 * i + 12.5}%`}
-            x2="100%"
-            y2={`${25 * i + 12.5}%`}
-            stroke="var(--fg-muted)"
-            strokeWidth="0.5"
-          />
-        ))}
-      </svg>
+    <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-linear-to-br from-bg-secondary via-bg-secondary to-bg-tertiary/30" />
+      <div className="absolute inset-0 opacity-30">
+        <svg className="absolute inset-0 w-full h-full">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <line
+              key={`v-${i}`}
+              x1={`${20 * i + 10}%`}
+              y1="0"
+              x2={`${20 * i + 10}%`}
+              y2="100%"
+              stroke="var(--fg-muted)"
+              strokeWidth="0.6"
+            />
+          ))}
+          {[0, 1, 2, 3].map((i) => (
+            <line
+              key={`h-${i}`}
+              x1="0"
+              y1={`${25 * i + 12.5}%`}
+              x2="100%"
+              y2={`${25 * i + 12.5}%`}
+              stroke="var(--fg-muted)"
+              strokeWidth="0.6"
+            />
+          ))}
+        </svg>
+      </div>
 
-      <motion.div
-        className="absolute top-[16%] left-[8%] w-[28%] h-[26%] rounded bg-bg-tertiary/40 border border-border-subtle/30"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      />
-      <motion.div
-        className="absolute top-[58%] left-[32%] w-[24%] h-[26%] rounded bg-bg-tertiary/40 border border-border-subtle/30"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-      />
-      <motion.div
-        className="absolute top-[12%] right-[12%] w-[24%] h-[34%] rounded bg-bg-tertiary/40 border border-border-subtle/30"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-      />
-      <motion.div
-        className="absolute bottom-[14%] right-[8%] w-[20%] h-[20%] rounded bg-bg-tertiary/30 border border-border-subtle/20"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      />
+      {/* Soft vignette for contrast */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.08),transparent_55%),radial-gradient(circle_at_80%_70%,rgba(99,102,241,0.10),transparent_55%)]" />
     </div>
   );
 }
 
-function DemandPulse({
+function PulseDot({
   x,
   y,
   color,
   delay,
+  size = 10,
 }: {
   x: number;
   y: number;
   color: string;
   delay: number;
+  size?: number;
 }) {
   return (
-    <motion.div
-      className="absolute w-3 h-3 rounded-full"
-      style={{ left: `${x}%`, top: `${y}%`, backgroundColor: color }}
-      animate={{ scale: [1, 2.8], opacity: [0.6, 0] }}
-      transition={{ duration: 2.4, repeat: Infinity, delay }}
-    />
+    <div className="absolute" style={{ left: `${x}%`, top: `${y}%` }}>
+      <motion.div
+        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{ width: size, height: size, backgroundColor: color }}
+        animate={{ scale: [1, 1.08, 1] }}
+        transition={{ duration: 1.8, repeat: Infinity, delay }}
+      />
+      <motion.div
+        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{ width: size, height: size, border: `2px solid ${color}` }}
+        animate={{ scale: [1, 2.4], opacity: [0.45, 0] }}
+        transition={{ duration: 2.2, repeat: Infinity, delay }}
+      />
+    </div>
   );
 }
 
 function RouteLayer({ isHovered }: { isHovered: boolean }) {
-  const duration = isHovered ? 5 : 7;
+  const duration = isHovered ? 3.6 : 5.2;
 
   return (
     <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="mobilityRoute" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#10B981" stopOpacity="0.7" />
+          <stop offset="55%" stopColor="#FFFFFF" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#6366F1" stopOpacity="0.7" />
+        </linearGradient>
+      </defs>
+
+      {/* Base route */}
       <motion.path
-        d="M12 72 C22 52, 36 40, 50 34 S78 34, 90 66"
+        d="M14 70 C22 54, 36 46, 46 42 S72 34, 88 62"
         fill="none"
-        stroke="rgba(245, 158, 11, 0.5)"
-        strokeWidth="1.2"
-        strokeDasharray="4 6"
-        initial={{ strokeDashoffset: 40 }}
-        animate={{ strokeDashoffset: [40, 0] }}
+        stroke="rgba(255, 255, 255, 0.14)"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+      />
+
+      {/* Animated route highlight */}
+      <motion.path
+        d="M14 70 C22 54, 36 46, 46 42 S72 34, 88 62"
+        fill="none"
+        stroke="url(#mobilityRoute)"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeDasharray="14 86"
+        animate={{ strokeDashoffset: [100, 0] }}
         transition={{ duration, repeat: Infinity, ease: "linear" }}
       />
-      <motion.path
-        d="M12 72 C22 52, 36 40, 50 34 S78 34, 90 66"
-        fill="none"
-        stroke="rgba(16, 185, 129, 0.6)"
+
+      {/* Start / end nodes */}
+      <motion.circle
+        cx="14"
+        cy="70"
+        r="4.2"
+        fill="rgba(16, 185, 129, 0.18)"
+        stroke="rgba(16, 185, 129, 0.75)"
         strokeWidth="1.8"
-        strokeDasharray="16 80"
-        animate={{ strokeDashoffset: [96, 0] }}
-        transition={{ duration, repeat: Infinity, ease: "linear" }}
       />
       <motion.circle
-        r="2.6"
-        fill="rgba(16, 185, 129, 0.9)"
-        stroke="rgba(16, 185, 129, 0.3)"
+        cx="88"
+        cy="62"
+        r="4.2"
+        fill="rgba(99, 102, 241, 0.16)"
+        stroke="rgba(99, 102, 241, 0.8)"
+        strokeWidth="1.8"
+      />
+
+      {/* Vehicle dot */}
+      <motion.circle
+        r="3.4"
+        fill="rgba(255, 255, 255, 0.95)"
+        stroke="rgba(16, 185, 129, 0.35)"
         strokeWidth="2"
         animate={{
           cx: routePoints.map((point) => point.x),
@@ -131,112 +151,158 @@ function RouteLayer({ isHovered }: { isHovered: boolean }) {
         }}
         transition={{ duration, repeat: Infinity, ease: "easeInOut" }}
       />
-      <motion.circle
-        cx="12"
-        cy="72"
-        r="5"
-        fill="rgba(16, 185, 129, 0.15)"
-        animate={{ scale: [1, 1.6], opacity: [0.8, 0] }}
-        transition={{ duration: 2.2, repeat: Infinity }}
-      />
-      <motion.circle
-        cx="90"
-        cy="66"
-        r="5"
-        fill="rgba(99, 102, 241, 0.2)"
-        animate={{ scale: [1, 1.6], opacity: [0.8, 0] }}
-        transition={{ duration: 2.2, repeat: Infinity, delay: 0.6 }}
-      />
     </svg>
   );
 }
 
-function StoryRibbon() {
+function StoryBar({ isHovered }: { isHovered: boolean }) {
+  const duration = isHovered ? 4.8 : 6.6;
+
   return (
-    <div className="absolute top-3 left-3 flex items-center gap-1.5">
-      {storySteps.map((step) => (
+    <div className="absolute start-4 end-4 bottom-4">
+      <div className="relative rounded-xl border border-border-subtle bg-bg-primary/55 backdrop-blur-sm px-3 py-2">
+        <div className="flex items-center justify-between gap-2">
+          {storyPhases.map((phase) => (
+            <motion.div
+              key={phase.label}
+              className="flex-1"
+              animate={{ opacity: [0.35, 1, 1, 0.35] }}
+              transition={{ duration, repeat: Infinity, times: phase.times }}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <span
+                  className="inline-block w-2 h-2 rounded-full"
+                  style={{ backgroundColor: phase.tint }}
+                />
+                <span className="text-[10px] font-semibold tracking-wider uppercase text-white/90">
+                  {phase.label}
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Progress sweep */}
         <motion.div
-          key={step.label}
-          className={`px-2 py-0.5 rounded-full border border-border-subtle bg-bg-primary/70 text-[9px] font-mono uppercase tracking-wide ${step.color}`}
-          animate={{ opacity: [0, 1, 1, 0], y: [4, 0, 0, -4] }}
-          transition={{ duration: 8, repeat: Infinity, times: step.times }}
+          className="absolute start-3 end-3 bottom-1 h-[2px] rounded-full bg-white/10 overflow-hidden"
+          aria-hidden
         >
-          {step.label}
+          <motion.div
+            className="h-full w-1/3 rounded-full"
+            style={{ background: "linear-gradient(90deg, rgba(16,185,129,0.9), rgba(255,255,255,0.9), rgba(99,102,241,0.9))" }}
+            animate={{ x: ["-40%", "200%"] }}
+            transition={{ duration, repeat: Infinity, ease: "linear" }}
+          />
         </motion.div>
-      ))}
+      </div>
     </div>
   );
 }
 
 function PhonePanel({ isHovered }: { isHovered: boolean }) {
+  const duration = isHovered ? 4.8 : 6.6;
+
   return (
     <motion.div
-      className="absolute right-3 top-10 w-14 h-24 rounded-xl bg-bg-primary border border-border-default shadow-xl overflow-hidden"
-      initial={{ x: 24, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ delay: 0.4 }}
+      className="absolute end-4 top-4 w-[clamp(120px,34%,190px)] aspect-9/16 rounded-2xl bg-bg-primary border border-border-default shadow-xl overflow-hidden"
+      initial={{ y: 14, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ delay: 0.2, type: "spring", stiffness: 220, damping: 22 }}
     >
-      <div className="h-full flex flex-col p-2 gap-1">
-        <div className="flex justify-between items-center">
-          <div className="w-4 h-1 bg-fg-muted/30 rounded" />
-          <div className="w-1.5 h-1.5 bg-success rounded-full" />
-        </div>
-        <div className="flex-1 rounded-lg bg-bg-secondary border border-border-subtle p-1.5 flex flex-col gap-1">
-          <motion.div
-            className="h-2 rounded bg-white/30"
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-          <motion.div
-            className="h-2 rounded bg-gray-400/30"
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-          />
-          <motion.div
-            className="h-2 rounded bg-white/25"
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
-          />
-          <div className="mt-auto text-[7px] font-mono text-fg-muted">
-            ETA 04:12
+      <div className="h-full flex flex-col p-3 gap-2">
+        <div className="flex items-center justify-between">
+          <div className="h-1.5 w-10 rounded bg-fg-muted/25" />
+          <div className="flex items-center gap-1.5">
+            <div className="h-1.5 w-4 rounded bg-fg-muted/20" />
+            <div className="h-1.5 w-4 rounded bg-fg-muted/20" />
+            <div className="h-1.5 w-4 rounded bg-fg-muted/20" />
           </div>
         </div>
+
+        {/* Map preview */}
+        <div className="relative flex-1 rounded-xl bg-bg-secondary border border-border-subtle overflow-hidden">
+          <div className="absolute inset-0 opacity-25">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(16,185,129,0.25),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(99,102,241,0.25),transparent_60%)]" />
+          </div>
+
+          <div className="absolute inset-0">
+            <RouteLayer isHovered={isHovered} />
+          </div>
+
+          {/* Phase label */}
+          <motion.div
+            className="absolute start-2 bottom-2 end-2 rounded-lg bg-bg-primary/55 border border-border-subtle px-2 py-1 backdrop-blur-sm"
+            animate={{ opacity: [0.55, 1, 0.55] }}
+            transition={{ duration: 1.6, repeat: Infinity }}
+          >
+            <motion.div
+              className="text-[10px] font-semibold tracking-wide text-white/90"
+              animate={{
+                opacity: [0, 1, 1, 0],
+              }}
+              transition={{ duration, repeat: Infinity }}
+            >
+              Ride in progress
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* CTA */}
         <motion.div
-          className="h-3 rounded bg-success/70 flex items-center justify-center"
-          animate={isHovered ? { scale: [1, 1.05, 1] } : {}}
+          className="relative rounded-xl border border-emerald-400/30 bg-emerald-500/25 overflow-hidden"
+          animate={isHovered ? { scale: [1, 1.03, 1] } : {}}
           transition={{ duration: 1.2, repeat: Infinity }}
         >
-          <span className="text-[6px] font-bold text-white">START RIDE</span>
+          <div className="flex items-center justify-between px-3 py-2">
+            <span className="text-[10px] font-bold tracking-wider uppercase text-white">
+              Start ride
+            </span>
+            <motion.div
+              className="w-8 h-3 rounded-full bg-white/10"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.4, repeat: Infinity }}
+            />
+          </div>
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.16) 50%, transparent 100%)",
+            }}
+            animate={{ x: ["-60%", "60%"] }}
+            transition={{ duration: isHovered ? 1.8 : 2.6, repeat: Infinity, ease: "linear" }}
+          />
         </motion.div>
       </div>
     </motion.div>
   );
 }
 
-function OpsPanel({ isHovered }: { isHovered: boolean }) {
+function MetricsChips({ isHovered }: { isHovered: boolean }) {
   return (
     <motion.div
-      className="absolute left-3 bottom-3 flex flex-col gap-1.5"
-      initial={{ x: -20, opacity: 0 }}
+      className="absolute start-4 top-10 flex flex-col gap-2"
+      initial={{ x: -14, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ delay: 0.6 }}
+      transition={{ delay: 0.25 }}
     >
       {[
-        { label: "Trips/hr", value: "128", color: "#10B981" },
-        { label: "Utilization", value: "74%", color: "#FFFFFF" },
+        { label: "ETA", value: "4m", color: "#FFFFFF" },
         { label: "Battery", value: "92%", color: "#6366F1" },
       ].map((stat, i) => (
         <motion.div
           key={stat.label}
-          className="flex items-center gap-2 px-2 py-1 bg-bg-tertiary/80 rounded border border-border-subtle backdrop-blur-sm"
-          initial={{ x: -10, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.8 + i * 0.1 }}
+          className="flex items-center gap-2 px-2.5 py-1.5 bg-bg-primary/55 rounded-xl border border-border-subtle backdrop-blur-sm"
+          initial={{ y: 8, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.35 + i * 0.12 }}
         >
-          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stat.color }} />
-          <span className="text-[8px] font-mono text-fg-muted">{stat.label}</span>
+          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: stat.color }} />
+          <span className="text-[10px] font-semibold tracking-wide text-white/70">
+            {stat.label}
+          </span>
           <motion.span
-            className="text-[9px] font-mono font-bold"
+            className="text-[11px] font-bold"
             style={{ color: stat.color }}
             animate={isHovered ? { opacity: [1, 0.5, 1] } : {}}
             transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
@@ -249,45 +315,35 @@ function OpsPanel({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function ChargingDock() {
+function LegendMarkers() {
   return (
-    <motion.div
-      className="absolute right-3 bottom-3 w-20 h-10 rounded-lg bg-bg-tertiary/70 border border-border-subtle px-2 py-1"
-      initial={{ y: 12, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.7 }}
-    >
-      <div className="text-[7px] font-mono text-fg-muted">Dock 12</div>
-      <div className="mt-1 flex items-end gap-1 h-4">
-        {[40, 60, 80, 100].map((fill, i) => (
-          <motion.div
-            key={fill}
-            className="w-2 rounded-sm bg-white/50"
-            style={{ height: `${fill}%` }}
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 1.6, repeat: Infinity, delay: i * 0.2 }}
-          />
-        ))}
-      </div>
-    </motion.div>
+    <>
+      {/* Avoid top-left area (category badge lives there) */}
+      <PulseDot x={28} y={18} color="#10B981" delay={0} size={9} />
+      <PulseDot x={58} y={22} color="#FFFFFF" delay={0.4} size={8} />
+      <PulseDot x={70} y={74} color="#6366F1" delay={0.8} size={9} />
+    </>
   );
 }
 
 export function MobilityAnimation({ isHovered = false }: AnimationProps) {
   return (
-    <div className="w-full h-full relative overflow-hidden bg-bg-secondary/50">
-      <MapBackdrop />
+    <div className="w-full h-full relative overflow-hidden bg-bg-secondary">
+      <Backdrop />
 
-      <DemandPulse x={18} y={20} color="#10B981" delay={0} />
-      <DemandPulse x={72} y={18} color="#06B6D4" delay={0.4} />
-      <DemandPulse x={64} y={72} color="#6366F1" delay={0.8} />
+      {/* Safe-area content to avoid the card's external overlays */}
+      <div className="absolute inset-0">
+        <LegendMarkers />
 
-      <RouteLayer isHovered={isHovered} />
-      <StoryRibbon />
-      <PhonePanel isHovered={isHovered} />
-      <OpsPanel isHovered={isHovered} />
-      <ChargingDock />
+        {/* Map route occupies the left/center; phone sits on the right */}
+        <div className="absolute inset-0">
+          <RouteLayer isHovered={isHovered} />
+        </div>
+
+        <MetricsChips isHovered={isHovered} />
+        <PhonePanel isHovered={isHovered} />
+        <StoryBar isHovered={isHovered} />
+      </div>
     </div>
   );
 }
-

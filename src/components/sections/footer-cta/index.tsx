@@ -45,7 +45,7 @@ function AnimatedRings() {
         animate={{ rotate: 360 }}
         transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       >
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-primary shadow-lg shadow-accent-primary/50" />
+        <div className="absolute top-0 start-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-primary shadow-lg shadow-accent-primary/50" />
       </motion.div>
 
       <motion.div
@@ -53,7 +53,7 @@ function AnimatedRings() {
         animate={{ rotate: -360 }}
         transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
       >
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-accent-secondary shadow-lg shadow-accent-secondary/50" />
+        <div className="absolute top-0 start-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-accent-secondary shadow-lg shadow-accent-secondary/50" />
       </motion.div>
     </div>
   );
@@ -64,10 +64,10 @@ function Background() {
   return (
     <div className="absolute inset-0 pointer-events-none">
       {/* Top gradient fade */}
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-bg-secondary to-transparent" />
+      <div className="absolute top-0 start-0 end-0 h-32 bg-gradient-to-b from-bg-secondary to-transparent" />
       
       {/* Gradient orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-primary/5 rounded-full blur-[150px]" />
+      <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-primary/5 rounded-full blur-[150px]" />
     </div>
   );
 }

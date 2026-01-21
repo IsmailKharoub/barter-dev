@@ -28,8 +28,8 @@ export function ProjectCard({
   return (
     <motion.article
       className={`group relative bg-bg-tertiary rounded-2xl overflow-hidden border border-border-subtle transition-colors duration-300 ${
-        featured ? "lg:col-span-2 lg:row-span-2" : ""
-      } ${isHovered ? "border-white/40" : "hover:border-border-default"}`}
+        isHovered ? "border-white/40" : "hover:border-border-default"
+      }`}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
@@ -39,21 +39,19 @@ export function ProjectCard({
     >
       {/* Glow effect on hover */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/3 opacity-0 transition-opacity duration-500 pointer-events-none"
+        className="absolute inset-0 bg-linear-to-br from-white/5 via-transparent to-white/3 opacity-0 transition-opacity duration-500 pointer-events-none"
         style={{ opacity: isHovered ? 1 : 0 }}
       />
 
       {/* Animation container */}
       <div
-        className={`relative bg-bg-secondary overflow-hidden ${
-          featured ? "aspect-[16/10]" : "aspect-[16/9]"
-        }`}
+        className="relative bg-bg-secondary overflow-hidden aspect-video"
       >
         <ProjectAnimation projectId={id} isHovered={isHovered} />
 
         {/* Category badge */}
         <motion.div
-          className="absolute top-3 left-3 px-2.5 py-1 bg-bg-primary/80 backdrop-blur-sm rounded-full border border-border-subtle"
+          className="absolute top-3 start-3 px-2.5 py-1 bg-bg-primary/80 backdrop-blur-sm rounded-full border border-border-subtle"
           initial={{ opacity: 0, x: -10 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -67,7 +65,7 @@ export function ProjectCard({
         {/* Featured badge */}
         {featured && (
           <motion.div
-            className="absolute top-3 right-3 px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20"
+            className="absolute top-3 end-3 px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20"
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -80,25 +78,23 @@ export function ProjectCard({
         )}
 
         {/* Bottom gradient overlay */}
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-bg-tertiary to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-bg-tertiary to-transparent pointer-events-none" />
       </div>
 
       {/* Content */}
-      <div className={`p-5 ${featured ? "lg:p-6" : ""}`}>
+      <div className="p-5">
         {/* Title */}
         <motion.h3
-          className={`font-semibold mb-2 text-fg-primary transition-colors duration-300 ${
-            featured ? "text-xl lg:text-2xl" : "text-base"
-          } ${isHovered ? "text-white" : ""}`}
+          className={`font-semibold mb-2 text-fg-primary transition-colors duration-300 text-base ${
+            isHovered ? "text-white" : ""
+          }`}
         >
           {title}
         </motion.h3>
 
         {/* Description */}
         <p
-          className={`text-fg-secondary leading-relaxed mb-4 ${
-            featured ? "text-sm lg:text-base" : "text-sm"
-          }`}
+          className="text-fg-secondary leading-relaxed mb-4 text-sm"
         >
           {description}
         </p>

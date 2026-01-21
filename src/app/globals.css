@@ -268,8 +268,17 @@ html[dir="rtl"] .origin-left {
 }
 
 /* Gradient direction flip for RTL */
-html[dir="rtl"] .bg-gradient-to-r {
+html[dir="rtl"] .bg-gradient-to-r,
+html[dir="rtl"] .bg-linear-to-r {
+  /* Tailwind gradient direction (var name differs by version) */
   --tw-gradient-direction: to left;
+  --tw-gradient-position: to left;
+}
+
+html[dir="rtl"] .bg-gradient-to-l,
+html[dir="rtl"] .bg-linear-to-l {
+  --tw-gradient-direction: to right;
+  --tw-gradient-position: to right;
 }
 
 /* RTL arrow flip */

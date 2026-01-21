@@ -156,28 +156,28 @@ export function HowItWorks() {
         >
           {/* Eyebrow */}
           <motion.p
-            className="text-accent-primary font-mono text-sm tracking-widest uppercase mb-4"
+            className={`text-accent-primary text-sm mb-4 ${
+              isRTL ? "font-medium tracking-normal" : "font-mono tracking-widest uppercase"
+            }`}
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            {isRTL ? "התהליך" : "The Process"}
+            {t.howItWorks.eyebrow}
           </motion.p>
 
           {/* Headline */}
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-            <span className="text-fg-primary">{isRTL ? "איך זה " : "How It "}</span>
+            <span className="text-fg-primary">{t.howItWorks.headlinePrimary} </span>
             <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              {isRTL ? "עובד" : "Works"}
+              {t.howItWorks.headlineAccent}
             </span>
           </h2>
 
           {/* Subhead */}
           <p className="text-fg-secondary text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            {isRTL 
-              ? "מהקשר הראשון ועד למסירה הסופית — תהליך ברור והוגן לשני הצדדים."
-              : "From first contact to final handoff — a clear, fair process for both sides."}
+            {t.howItWorks.subhead}
           </p>
 
           {/* Decorative divider */}
@@ -220,7 +220,7 @@ export function HowItWorks() {
             </motion.span>
           </Button>
           <p className="mt-4 text-sm text-fg-muted">
-            {isRTL ? "נסקר תוך 48 שעות" : "Reviewed within 48 hours"}
+            {t.howItWorks.reviewedNote}
           </p>
         </motion.div>
       </div>

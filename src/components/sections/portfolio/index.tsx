@@ -45,7 +45,7 @@ export function Portfolio() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            {isRTL ? "העבודה" : "The Work"}
+            {t.portfolio.eyebrow}
           </motion.p>
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
@@ -80,9 +80,9 @@ export function Portfolio() {
           transition={{ delay: 0.4 }}
         >
           {[
-            { value: stats.years, label: "Years" },
-            { value: stats.products, label: "Products" },
-            { value: stats.stack, label: "Stack" },
+            { value: stats.years, label: t.portfolio.statsLabels.years },
+            { value: stats.products, label: t.portfolio.statsLabels.products },
+            { value: stats.stack, label: t.portfolio.statsLabels.stack },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}

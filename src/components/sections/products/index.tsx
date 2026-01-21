@@ -120,19 +120,21 @@ export function Products() {
           transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
         >
           <motion.p
-            className="text-accent-primary font-mono text-sm tracking-widest uppercase mb-4"
+            className={`text-accent-primary text-sm mb-4 ${
+              isRTL ? "font-medium tracking-normal" : "font-mono tracking-widest uppercase"
+            }`}
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            {isRTL ? "יכולות" : "Capabilities"}
+            {t.products.eyebrow}
           </motion.p>
 
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-            <span className="text-fg-primary">{t.products.headline.split(" ")[0]} </span>
-            <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              {t.products.headline.split(" ").slice(1).join(" ")}
+            <span className="text-fg-primary">{t.products.headlinePrimary} </span>
+            <span className="bg-linear-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              {t.products.headlineAccent}
             </span>
           </h2>
 
@@ -147,9 +149,9 @@ export function Products() {
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
           >
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-accent-primary/50" />
+            <div className="h-px w-12 bg-linear-to-r from-transparent to-accent-primary/50" />
             <div className="w-2 h-2 rounded-full bg-accent-primary/50" />
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-accent-primary/50" />
+            <div className="h-px w-12 bg-linear-to-l from-transparent to-accent-primary/50" />
           </motion.div>
         </motion.div>
 
@@ -170,9 +172,9 @@ export function Products() {
         >
           <p className="text-fg-muted text-sm">
             <span className="text-fg-secondary font-semibold">
-              {isRTL ? "מדפי נחיתה ועד פלטפורמות פינטק" : "From landing pages to fintech platforms"}
+              {t.products.bottomStatPrimary}
             </span>
-            {" "}— {isRTL ? "ההיקף משתנה, האיכות לא." : "the scope changes, the quality doesn't."}
+            {" "}— {t.products.bottomStatSecondary}
           </p>
         </motion.div>
       </div>

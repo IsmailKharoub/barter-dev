@@ -106,6 +106,7 @@ function InputField({
   placeholder,
   icon: Icon,
   prefix,
+  required,
 }: {
   label: string;
   type?: string;
@@ -114,12 +115,16 @@ function InputField({
   placeholder?: string;
   icon?: LucideIcon;
   prefix?: string;
+  required?: boolean;
 }) {
   return (
     <div className="space-y-2">
       <label className="flex items-center gap-2 text-fg-primary font-medium text-sm">
         {Icon && <Icon className="w-4 h-4 text-fg-muted" />}
-        {label}
+        <span>
+          {label}
+          {required && <span className="text-red-400 ms-1">*</span>}
+        </span>
       </label>
       <div className="relative group">
         {prefix && (
@@ -132,6 +137,8 @@ function InputField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
+          required={required}
+          aria-required={required ? "true" : undefined}
           className={`
             w-full bg-bg-tertiary border border-border-subtle rounded-xl
             ${prefix ? "ps-8" : "ps-4"} pe-4 py-3.5
@@ -154,6 +161,7 @@ function TextareaField({
   placeholder,
   rows = 3,
   icon: Icon,
+  required,
 }: {
   label: string;
   value: string;
@@ -161,12 +169,16 @@ function TextareaField({
   placeholder?: string;
   rows?: number;
   icon?: LucideIcon;
+  required?: boolean;
 }) {
   return (
     <div className="space-y-2">
       <label className="flex items-center gap-2 text-fg-primary font-medium text-sm">
         {Icon && <Icon className="w-4 h-4 text-fg-muted" />}
-        {label}
+        <span>
+          {label}
+          {required && <span className="text-red-400 ms-1">*</span>}
+        </span>
       </label>
       <div className="relative group">
         <textarea
@@ -174,6 +186,8 @@ function TextareaField({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={rows}
+          required={required}
+          aria-required={required ? "true" : undefined}
           className={`
             w-full bg-bg-tertiary border border-border-subtle rounded-xl
             px-4 py-3.5
@@ -191,10 +205,12 @@ function TextareaField({
 // Section header for grouping fields
 function FieldSection({ 
   title, 
-  children 
+  children,
+  required,
 }: { 
   title: string; 
   children: React.ReactNode;
+  required?: boolean;
 }) {
   return (
     <motion.div
@@ -205,6 +221,7 @@ function FieldSection({
     >
       <h4 className="text-sm font-medium text-fg-muted uppercase tracking-wider">
         {title}
+        {required && <span className="text-red-400 ms-1">*</span>}
       </h4>
       {children}
     </motion.div>
@@ -218,7 +235,7 @@ export function StepWhatYouNeed({ data, onChange }: StepProps) {
   return (
     <div className="space-y-8">
       {/* Project Type Selection */}
-      <FieldSection title={step.projectType}>
+      <FieldSection title={step.projectType} required>
         <div className="flex flex-wrap gap-3">
           {step.projectTypes.map((type, i) => (
             <motion.div
@@ -251,11 +268,12 @@ export function StepWhatYouNeed({ data, onChange }: StepProps) {
           placeholder={step.descriptionPlaceholder}
           rows={4}
           icon={MessageSquare}
+          required
         />
       </motion.div>
 
       {/* Timeline Selection */}
-      <FieldSection title={step.timeline}>
+      <FieldSection title={step.timeline} required>
         <div className="flex flex-wrap gap-3">
           {step.timelineOptions.map((option, i) => (
             <motion.div
@@ -285,7 +303,7 @@ export function StepWhatYouOffer({ data, onChange }: StepProps) {
   return (
     <div className="space-y-8">
       {/* Trade Type Selection */}
-      <FieldSection title={step.tradeType}>
+      <FieldSection title={step.tradeType} required>
         <div className="flex flex-wrap gap-3">
           {step.tradeTypes.map((type, i) => (
             <motion.div
@@ -318,6 +336,7 @@ export function StepWhatYouOffer({ data, onChange }: StepProps) {
           placeholder={step.descriptionPlaceholder}
           rows={4}
           icon={MessageSquare}
+          required
         />
       </motion.div>
 
@@ -335,6 +354,7 @@ export function StepWhatYouOffer({ data, onChange }: StepProps) {
           placeholder="5,000"
           icon={DollarSign}
           prefix="$"
+          required
         />
         <p className="mt-2 text-xs text-fg-muted flex items-center gap-1.5">
           <AlertCircle className="w-3 h-3" />
@@ -364,6 +384,7 @@ export function StepAboutYou({ data, onChange }: StepProps) {
             onChange={(value) => onChange("name", value)}
             placeholder={isRTL ? "השם המלא שלכם" : "Your full name"}
             icon={UserIcon}
+            required
           />
         </motion.div>
 
@@ -379,6 +400,7 @@ export function StepAboutYou({ data, onChange }: StepProps) {
             onChange={(value) => onChange("email", value)}
             placeholder="you@example.com"
             icon={Mail}
+            required
           />
         </motion.div>
       </div>

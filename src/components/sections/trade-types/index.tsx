@@ -174,7 +174,7 @@ function NoEquityBadge({ note }: { note: string }) {
           {/* Icon */}
           <div className="relative">
             <motion.div
-              className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 flex items-center justify-center"
+              className="w-12 h-12 rounded-xl bg-linear-to-br from-accent-primary/20 to-accent-secondary/20 flex items-center justify-center"
               whileHover={{ scale: 1.05, rotate: 5 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
@@ -229,7 +229,7 @@ function NoEquityBadge({ note }: { note: string }) {
 }
 
 export function TradeTypes() {
-  const { t, isRTL } = useLocale();
+  const { t } = useLocale();
   const reducedEffects = useReducedEffects();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -256,13 +256,13 @@ export function TradeTypes() {
 
             {/* Eyebrow */}
             <motion.p
-              className="text-accent-primary font-mono text-sm tracking-widest uppercase mb-4"
+              className="text-accent-primary font-mono text-sm tracking-widest uppercase text-center mb-4"
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              {isRTL ? "קטגוריות החלפה" : "Trade Categories"}
+              {t.tradeTypes.eyebrow}
             </motion.p>
 
             {/* Headline */}
@@ -273,9 +273,9 @@ export function TradeTypes() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <span className="text-fg-primary">{t.tradeTypes.headline.split(" ").slice(0, -1).join(" ")} </span>
-              <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                {t.tradeTypes.headline.split(" ").slice(-1)[0]}
+              <span className="text-fg-primary">{t.tradeTypes.headlinePrimary} </span>
+              <span className="bg-linear-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                {t.tradeTypes.headlineAccent}
               </span>
             </motion.h2>
 
@@ -287,9 +287,7 @@ export function TradeTypes() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              {isRTL 
-                ? "לא הכל צריך להיות משולם במזומן. הנה מה שאני מעריך ומקבל כהחלפה הוגנת עבור עבודת פיתוח."
-                : "Not everything needs to be paid in cash. Here's what I value and accept as fair exchange for development work."}
+              {t.tradeTypes.subhead}
             </motion.p>
 
             {/* Decorative line */}
@@ -300,9 +298,9 @@ export function TradeTypes() {
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
             >
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-accent-primary/50" />
+              <div className="h-px w-12 bg-linear-to-r from-transparent to-accent-primary/50" />
               <div className="w-2 h-2 rounded-full bg-accent-primary/50" />
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-accent-primary/50" />
+              <div className="h-px w-12 bg-linear-to-l from-transparent to-accent-primary/50" />
             </motion.div>
           </div>
 

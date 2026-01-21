@@ -14,6 +14,11 @@ export interface Translations {
     cta: string;
   };
   howItWorks: {
+    eyebrow: string;
+    headlinePrimary: string;
+    headlineAccent: string;
+    subhead: string;
+    reviewedNote: string;
     frames: {
       problem: {
         title: string;
@@ -43,8 +48,12 @@ export interface Translations {
     cta: string;
   };
   products: {
-    headline: string;
+    eyebrow: string;
+    headlinePrimary: string;
+    headlineAccent: string;
     subhead: string;
+    bottomStatPrimary: string;
+    bottomStatSecondary: string;
     items: {
       launchFast: {
         title: string;
@@ -98,7 +107,11 @@ export interface Translations {
     };
   };
   tradeTypes: {
+    eyebrow: string;
+    headlinePrimary: string;
+    headlineAccent: string;
     headline: string;
+    subhead: string;
     note: string;
     categories: {
       designCreative: {
@@ -134,6 +147,9 @@ export interface Translations {
     };
   };
   apply: {
+    eyebrow: string;
+    headlinePrimary: string;
+    headlineAccent: string;
     headline: string;
     subhead: string;
     steps: {
@@ -172,6 +188,7 @@ export interface Translations {
     success: string;
   };
   portfolio: {
+    eyebrow: string;
     headline: string;
     subhead: string;
     projects: {
@@ -188,9 +205,17 @@ export interface Translations {
       products: string;
       stack: string;
     };
+    statsLabels: {
+      years: string;
+      products: string;
+      stack: string;
+    };
   };
   footerCta: {
-    headline: string;
+    eyebrow: string;
+    headlinePrimary: string;
+    headlineAccent: string;
+    subhead: string;
     buttons: string[];
   };
   footer: {

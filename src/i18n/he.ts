@@ -18,6 +18,11 @@ export const he: Translations = {
     cta: "איך זה עובד ↓",
   },
   howItWorks: {
+    eyebrow: "התהליך",
+    headlinePrimary: "איך זה",
+    headlineAccent: "עובד",
+    subhead: "מהקשר הראשון ועד למסירה הסופית — תהליך ברור והוגן לשני הצדדים.",
+    reviewedNote: "נסקר תוך 48 שעות",
     frames: {
       problem: {
         title: "הבעיה",
@@ -49,11 +54,15 @@ export const he: Translations = {
         description: "אני מוסר תוצר. הערך מגיע. העברה נקייה.",
       },
     },
-    cta: "להגשת בארטר",
+    cta: "הגשת בקשה לבארטר",
   },
   products: {
-    headline: "מה אני בונה",
+    eyebrow: "יכולות",
+    headlinePrimary: "מה",
+    headlineAccent: "אני בונה",
     subhead: "מהשקות סופ״ש ועד מערכות ארגוניות. 12 שנות עשייה.",
+    bottomStatPrimary: "מדפי נחיתה ועד פלטפורמות פינטק",
+    bottomStatSecondary: "ההיקף משתנה, האיכות לא.",
     items: {
       launchFast: {
         title: "השקה מהירה",
@@ -141,7 +150,11 @@ export const he: Translations = {
     },
   },
   tradeTypes: {
+    eyebrow: "קטגוריות בארטר",
+    headlinePrimary: "מה מתאים",
+    headlineAccent: "לבארטר",
     headline: "מה מתאים לבארטר",
+    subhead: "לא הכול חייב להיות במזומן. הנה מה שאני מעריך ומקבל כבארטר הוגן עבור עבודת פיתוח.",
     note: "בלי הצעות לאקוויטי ואחוזים. בלי הבטחות עמומות. בארטר מבוסס על ערך מוחשי שאפשר להשתמש בו עכשיו.",
     categories: {
       designCreative: {
@@ -207,9 +220,12 @@ export const he: Translations = {
     },
   },
   apply: {
+    eyebrow: "התחילו בהצעה",
+    headlinePrimary: "הגשת בקשה",
+    headlineAccent: "לבארטר",
     headline: "הגשת בארטר",
     subhead:
-      "זה לא טופס יצירת קשר — זו הגשת בארטר. כדאי להיות ספציפיים לגבי מה נדרש ומה מוצע (פניות עמומות לרוב נשארות ללא מענה).",
+      "הטופס מיועד להגשת הצעת בארטר מלאה וברורה. כתבו בפירוט מה דרוש לכם ומה תוכלו להציע בתמורה — ככל שתהיו ממוקדים ושקופים יותר, כך יש סיכוי טוב יותר לקבל מענה.",
     steps: {
       whatYouNeed: {
         title: "מה נדרש",
@@ -269,6 +285,7 @@ export const he: Translations = {
       "התקבל. אסקור תוך 48 שעות. אם זה מתאים, אחזור עם השלבים הבאים ורשימת בדיקה קצרה להגדרת מסגרת עבודה.",
   },
   portfolio: {
+    eyebrow: "הפרויקטים",
     headline: "עשור של עשייה",
     subhead: "בלי שמות. עם תוצאות.",
     projects: [
@@ -323,9 +340,17 @@ export const he: Translations = {
       products: "15+",
       stack: "מלא",
     },
+    statsLabels: {
+      years: "שנים",
+      products: "מוצרים",
+      stack: "סטאק",
+    },
   },
   footerCta: {
-    headline: "מתחילים בארטר?",
+    eyebrow: "בואו נבנה משהו",
+    headlinePrimary: "מתחילים",
+    headlineAccent: "בארטר?",
+    subhead: "יש לכם משהו בעל ערך להציע? בואו נדבר על בניית הפרויקט הבא שלכם.",
     buttons: ["להגשת בארטר", "איך זה עובד ↑"],
   },
   footer: {

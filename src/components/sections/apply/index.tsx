@@ -354,8 +354,81 @@ export function Apply() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const validateStep = (stepIndex: number) => {
+    const projectDescription = (formData.projectDescription || "").trim();
+    const tradeDescription = (formData.tradeDescription || "").trim();
+    const name = (formData.name || "").trim();
+    const email = (formData.email || "").trim();
+
+    const estimatedValueRaw = (formData.estimatedValue || "").replace(/[,\s]/g, "");
+    const estimatedValue = Number(estimatedValueRaw);
+
+    if (stepIndex === 0) {
+      if (!formData.projectType) {
+        return isRTL ? "בחרו סוג פרויקט." : "Select a project type.";
+      }
+      if (projectDescription.length < 20) {
+        return isRTL
+          ? "תיאור הפרויקט חייב להיות לפחות 20 תווים."
+          : "Project description must be at least 20 characters.";
+      }
+      if (!formData.timeline) {
+        return isRTL ? "בחרו לוח זמנים." : "Select a timeline.";
+      }
+    }
+
+    if (stepIndex === 1) {
+      if (!formData.tradeType) {
+        return isRTL ? "בחרו סוג הצעה." : "Select a trade type.";
+      }
+      if (tradeDescription.length < 20) {
+        return isRTL
+          ? "תיאור ההצעה חייב להיות לפחות 20 תווים."
+          : "Trade description must be at least 20 characters.";
+      }
+      if (!Number.isFinite(estimatedValue)) {
+        return isRTL ? "הכניסו ערך מספרי תקין." : "Enter a valid numeric value.";
+      }
+      if (estimatedValue < 500) {
+        return isRTL ? "ערך מינימלי הוא $500." : "Minimum value is $500.";
+      }
+      if (estimatedValue > 100000) {
+        return isRTL ? "ערך מקסימלי הוא $100,000." : "Maximum value is $100,000.";
+      }
+    }
+
+    if (stepIndex === 2) {
+      if (name.length < 2) {
+        return isRTL ? "השם חייב להיות לפחות 2 תווים." : "Name must be at least 2 characters.";
+      }
+      if (!email) {
+        return isRTL ? "האימייל הוא שדה חובה." : "Email is required.";
+      }
+      // Basic email sanity check (server still validates strictly)
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return isRTL ? "הכניסו אימייל תקין." : "Enter a valid email address.";
+      }
+    }
+
+    if (stepIndex === 3) {
+      const agreesToTerms = formData.checkbox0 === "true";
+      const agreesToGoodFaith = formData.checkbox1 === "true";
+      if (!agreesToTerms || !agreesToGoodFaith) {
+        return isRTL ? "אנא אשרו את שתי התיבות לפני שליחה." : "Please check both boxes before submitting.";
+      }
+    }
+
+    return null;
+  };
+
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
+      const error = validateStep(currentStep);
+      if (error) {
+        setSubmitError(error);
+        return;
+      }
+      setSubmitError(null);
       setDirection(isRTL ? -1 : 1);
       setCurrentStep((prev) => prev + 1);
     }
@@ -370,6 +443,12 @@ export function Apply() {
 
   const handleSubmit = async () => {
     setSubmitError(null);
+
+    const stepError = validateStep(3);
+    if (stepError) {
+      setSubmitError(stepError);
+      return;
+    }
 
     const agreesToTerms = formData.checkbox0 === "true";
     const agreesToGoodFaith = formData.checkbox1 === "true";
@@ -504,14 +583,14 @@ export function Apply() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            {isRTL ? "התחילו להחליף" : "Start Trading"}
+            {t.apply.eyebrow}
           </motion.p>
 
           {/* Main headline */}
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-            <span className="block text-fg-primary">{t.apply.headline.split(" ").slice(0, 2).join(" ")}</span>
+            <span className="block text-fg-primary">{t.apply.headlinePrimary}</span>
             <span className="block bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              {t.apply.headline.split(" ").slice(2).join(" ") || (isRTL ? "להחלפה" : "a Trade")}
+              {t.apply.headlineAccent}
             </span>
           </h2>
 

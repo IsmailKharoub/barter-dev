@@ -91,7 +91,7 @@ function Background() {
 }
 
 export function FooterCta() {
-  const { t, isRTL } = useLocale();
+  const { t } = useLocale();
   const reducedEffects = useReducedEffects();
   
   const handleApply = () => {
@@ -122,20 +122,18 @@ export function FooterCta() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            {isRTL ? "בואו נבנה משהו" : "Let's Build Something"}
+            {t.footerCta.eyebrow}
           </motion.p>
 
           <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight">
-            <span className="text-fg-primary">{t.footerCta.headline.split(" ")[0]} </span>
+            <span className="text-fg-primary">{t.footerCta.headlinePrimary} </span>
             <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              {t.footerCta.headline.split(" ").slice(1).join(" ")}
+              {t.footerCta.headlineAccent}
             </span>
           </h2>
 
           <p className="text-fg-secondary text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
-            {isRTL 
-              ? "יש לכם משהו בעל ערך להציע? בואו נדבר על בניית הפרויקט הבא שלכם."
-              : "Got something valuable to offer? Let's talk about building your next project."}
+            {t.footerCta.subhead}
           </p>
         </motion.div>
 

@@ -18,6 +18,11 @@ export const en: Translations = {
     cta: "See How It Works ↓",
   },
   howItWorks: {
+    eyebrow: "The Process",
+    headlinePrimary: "How It",
+    headlineAccent: "Works",
+    subhead: "From first contact to final handoff — a clear, fair process for both sides.",
+    reviewedNote: "Reviewed within 48 hours",
     frames: {
       problem: {
         title: "The Problem",
@@ -52,8 +57,12 @@ export const en: Translations = {
     cta: "Apply for a Trade",
   },
   products: {
-    headline: "What I Build",
+    eyebrow: "Capabilities",
+    headlinePrimary: "What",
+    headlineAccent: "I Build",
     subhead: "From weekend launches to enterprise systems. 12 years of shipping.",
+    bottomStatPrimary: "From landing pages to fintech platforms",
+    bottomStatSecondary: "the scope changes, the quality doesn't.",
     items: {
       launchFast: {
         title: "Launch Fast",
@@ -141,7 +150,11 @@ export const en: Translations = {
     },
   },
   tradeTypes: {
+    eyebrow: "Trade Categories",
+    headlinePrimary: "What I'll Trade",
+    headlineAccent: "For",
     headline: "What I'll Trade For",
+    subhead: "Not everything needs to be paid in cash. Here's what I value and accept as fair exchange for development work.",
     note: "No equity. No vague promises. I trade for tangible value I can use now.",
     categories: {
       designCreative: {
@@ -207,6 +220,9 @@ export const en: Translations = {
     },
   },
   apply: {
+    eyebrow: "Start Trading",
+    headlinePrimary: "Apply for",
+    headlineAccent: "a Trade",
     headline: "Apply for a Trade",
     subhead:
       "This isn’t a contact form — it’s an application. Be specific about what you need and what you’re offering (vague requests get ignored).",
@@ -269,6 +285,7 @@ export const en: Translations = {
       "Got it. I’ll review within 48 hours. If it’s a fit, I’ll reply with next steps and a short scoping checklist.",
   },
   portfolio: {
+    eyebrow: "The Work",
     headline: "A Decade of Shipping",
     subhead: "I don’t name names. But I can show outcomes.",
     projects: [
@@ -323,9 +340,17 @@ export const en: Translations = {
       products: "15+",
       stack: "Full",
     },
+    statsLabels: {
+      years: "Years",
+      products: "Products",
+      stack: "Stack",
+    },
   },
   footerCta: {
-    headline: "Ready to trade?",
+    eyebrow: "Let's Build Something",
+    headlinePrimary: "Ready to",
+    headlineAccent: "trade?",
+    subhead: "Got something valuable to offer? Let's talk about building your next project.",
     buttons: ["Apply for a Trade", "See How It Works ↑"],
   },
   footer: {

@@ -315,8 +315,7 @@ html[dir="rtl"] .rtl-flip {
 
 /* Keep code blocks LTR */
 html[dir="rtl"] pre,
-html[dir="rtl"] code,
-html[dir="rtl"] .font-mono {
+html[dir="rtl"] code {
   direction: ltr;
   text-align: left;
 }

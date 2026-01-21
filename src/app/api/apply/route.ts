@@ -141,37 +141,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Send simple Slack notification
-    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
-    if (webhookUrl) {
-      console.log("[API] Sending Slack notification...");
-      try {
-        const slackMessage = {
-          text: `🆕 New Application #${appId}`,
-          blocks: [
-            {
-              type: "section",
-              text: {
-                type: "mrkdwn",
-                text: `*New Application #${appId}*\n\n*Name:* ${data.name}\n*Email:* ${data.email}\n*Project:* ${data.projectType}\n*Trade:* ${data.tradeType}\n\n${data.projectDescription.substring(0, 200)}...`
-              }
-            }
-          ]
-        };
-        
-        const res = await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(slackMessage),
-        });
-        
-        console.log("[API] Slack response:", res.status, await res.text());
-      } catch (e) {
-        console.error("[API] Slack failed:", e);
-      }
-    } else {
-      console.warn("[API] No SLACK_WEBHOOK_URL configured");
-    }
+    // Slack notifications removed - use email notifications instead
+    console.log("[API] Application created successfully, ID:", appId);
 
     return NextResponse.json(
       {

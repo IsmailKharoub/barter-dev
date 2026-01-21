@@ -25,7 +25,9 @@
 
 **Login Credentials:**
 - **Email**: hello@barter-dev.com
-- **Password**: Auto-generated (I can reset it for you)
+- **Password**: BarterDev2026!
+
+✅ **Password has been reset - try logging in now!**
 
 ---
 

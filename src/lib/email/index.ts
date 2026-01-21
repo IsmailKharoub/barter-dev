@@ -89,10 +89,6 @@ export async function sendAdminNotification(
                   <span style="color: #78716C; font-size: 12px;">Type</span>
                   <p style="margin: 4px 0 0; font-weight: 500;">${tradeTypeLabels[application.tradeType]}</p>
                 </div>
-                <div style="flex: 1;">
-                  <span style="color: #78716C; font-size: 12px;">Estimated Value</span>
-                  <p style="margin: 4px 0 0; font-weight: 600; color: #10B981;">$${application.estimatedValue.toLocaleString()}</p>
-                </div>
               </div>
               
               <div style="background-color: #211C18; padding: 16px; border-radius: 8px; margin-top: 12px;">
@@ -128,7 +124,7 @@ export async function sendAdminNotification(
     await getResend().emails.send({
       from: FROM_EMAIL,
       to: NOTIFICATION_EMAIL,
-      subject: `🔔 New Trade Application: ${projectTypeLabels[application.projectType]} ($${application.estimatedValue.toLocaleString()})`,
+      subject: `🔔 New Trade Application: ${projectTypeLabels[application.projectType]}`,
       html,
     });
     return { success: true };
@@ -175,7 +171,6 @@ export async function sendApplicantConfirmation(
             <div style="background-color: #211C18; padding: 20px; border-radius: 12px; margin-bottom: 24px; border-left: 3px solid #F59E0B;">
               <p style="margin: 0; color: #FAF8F5; font-size: 14px;">
                 <strong>Application ID:</strong> #${applicationId}<br>
-                <strong>Estimated Value:</strong> $${application.estimatedValue.toLocaleString()}<br>
                 <strong>Timeline:</strong> ${timelineLabels[application.timeline]}
               </p>
             </div>

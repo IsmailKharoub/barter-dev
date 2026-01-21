@@ -14,15 +14,22 @@ const RATE_LIMIT_MAX_APPLICATIONS = 3;
 let dbInitialized = false;
 
 export async function POST(request: NextRequest) {
+  console.log("\n[API] ========== New application submission ==========");
+  console.log("[API] Environment check:");
+  console.log("[API] - SLACK_WEBHOOK_URL present:", !!process.env.SLACK_WEBHOOK_URL);
+  console.log("[API] - NEXT_PUBLIC_SITE_URL:", process.env.NEXT_PUBLIC_SITE_URL);
+  
   try {
     // Initialize database if not already done
     if (!dbInitialized) {
+      console.log("[API] Initializing database...");
       await initDb();
       dbInitialized = true;
     }
 
     // Parse request body
     const body = await request.json();
+    console.log("[API] Request body received:", Object.keys(body));
 
     // Validate with Zod
     const validationResult = applicationSchema.safeParse(body);
@@ -82,14 +89,22 @@ export async function POST(request: NextRequest) {
     });
 
     const appId = applicationId ?? 0;
+    console.log("[API] Application saved with ID:", appId);
+    console.log("[API] Calling Slack notification...");
+    
     // Slack must be awaited in serverless environments; otherwise execution may end before it runs.
     const slackResult = await notifySlackNewApplication(data, appId, { ip, userAgent, referrer });
+    
+    console.log("[API] Slack result:", slackResult);
+    
     if (!slackResult.success) {
       if ("skipped" in slackResult && slackResult.skipped) {
-        console.warn("Slack notification skipped (missing SLACK_WEBHOOK_URL).");
+        console.warn("[API] ⚠️ Slack notification skipped (missing SLACK_WEBHOOK_URL).");
       } else {
-        console.error("Slack notification failed:", slackResult);
+        console.error("[API] ❌ Slack notification failed:", slackResult);
       }
+    } else {
+      console.log("[API] ✅ Slack notification sent successfully!");
     }
 
     // Email can remain best-effort, but we still await so failures show up in logs reliably.

@@ -26,12 +26,29 @@ export async function notifySlackNewApplication(
     referrer?: string | null;
   }
 ) {
+  console.log("[Slack] Starting notification process...");
+  console.log("[Slack] Application ID:", applicationId);
+  console.log("[Slack] Application data:", {
+    name: application.name,
+    email: application.email,
+    projectType: application.projectType,
+    tradeType: application.tradeType,
+  });
+  
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
-  if (!webhookUrl) return { success: false, skipped: true as const };
+  console.log("[Slack] Webhook URL present:", !!webhookUrl);
+  console.log("[Slack] Webhook URL (first 50 chars):", webhookUrl?.substring(0, 50));
+  
+  if (!webhookUrl) {
+    console.warn("[Slack] No webhook URL configured, skipping notification");
+    return { success: false, skipped: true as const };
+  }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://barter-dev.com";
   const id = Number(applicationId);
   const title = `New trade application #${id}`;
+  
+  console.log("[Slack] Building message blocks...");
 
   const blocks = [
     {
@@ -98,23 +115,35 @@ export async function notifySlackNewApplication(
   ];
 
   try {
+    const payload = {
+      text: title,
+      blocks,
+    };
+    
+    console.log("[Slack] Payload:", JSON.stringify(payload, null, 2));
+    console.log("[Slack] Sending request to Slack...");
+    
     const res = await fetch(webhookUrl, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        text: title,
-        blocks,
-      }),
+      body: JSON.stringify(payload),
     });
 
+    console.log("[Slack] Response status:", res.status, res.statusText);
+    
     if (!res.ok) {
       const text = await res.text().catch(() => "");
+      console.error("[Slack] Error response body:", text);
       throw new Error(`Slack webhook failed: ${res.status} ${res.statusText} ${text}`.trim());
     }
 
+    const responseText = await res.text().catch(() => "");
+    console.log("[Slack] Success response:", responseText);
+    console.log("[Slack] ✅ Notification sent successfully!");
+    
     return { success: true as const };
   } catch (error) {
-    console.error("Failed to send Slack notification:", error);
+    console.error("[Slack] ❌ Failed to send Slack notification:", error);
     return { success: false as const, error };
   }
 }

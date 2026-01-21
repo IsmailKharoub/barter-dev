@@ -6,6 +6,7 @@ import {
   initializeIndexes
 } from "@/lib/db/mongodb";
 import { getPostHogClient } from "@/lib/posthog-server";
+import { apiLogger } from "@/lib/logger";
 
 export const runtime = "nodejs";
 
@@ -17,7 +18,17 @@ const RATE_LIMIT_MAX_APPLICATIONS = 3;
 let indexesInitialized = false;
 
 export async function POST(request: NextRequest) {
+  const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
+  apiLogger.info("New application submission started", {
+    requestId,
+    userAgent: request.headers.get('user-agent'),
+    referer: request.headers.get('referer'),
+    ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
+  });
+  
   console.log("\n[API] ========== New application submission ==========");
+  console.log("[API] Request ID:", requestId);
   console.log("[API] Environment check:");
   console.log("[API] - SLACK_WEBHOOK_URL present:", !!process.env.SLACK_WEBHOOK_URL);
   console.log("[API] - NEXT_PUBLIC_SITE_URL:", process.env.NEXT_PUBLIC_SITE_URL);
@@ -38,6 +49,16 @@ export async function POST(request: NextRequest) {
     const validationResult = applicationSchema.safeParse(body);
     
     if (!validationResult.success) {
+      apiLogger.error("Validation failed", validationResult.error, {
+        requestId,
+        body: body,
+        fieldErrors: validationResult.error.flatten().fieldErrors,
+      });
+      
+      console.error("[API] ❌ Validation failed:");
+      console.error("[API] Body received:", JSON.stringify(body, null, 2));
+      console.error("[API] Validation errors:", JSON.stringify(validationResult.error.flatten().fieldErrors, null, 2));
+      
       return NextResponse.json(
         {
           success: false,
@@ -152,6 +173,12 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    apiLogger.error("Application submission failed", error, {
+      requestId,
+      errorType: error instanceof Error ? error.name : typeof error,
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
+    
     console.error("[API] ❌ Application submission error:");
     console.error("[API] Error name:", error instanceof Error ? error.name : typeof error);
     console.error("[API] Error message:", error instanceof Error ? error.message : String(error));
@@ -163,6 +190,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: "Internal server error",
         message: "Something went wrong. Please try again later.",
+        requestId, // Include request ID for debugging
       },
       { status: 500 }
     );

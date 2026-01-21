@@ -6,7 +6,7 @@ applications:
         preBuild:
           commands:
             - npm ci
-            - env | grep -E "MONGODB_URI|SLACK_WEBHOOK_URL|NEXT_PUBLIC" > .env.production
+            - env | grep -E "MONGODB_URI|SLACK_WEBHOOK_URL|NEXT_PUBLIC|ADMIN_TOTP_SECRET|ADMIN_JWT_SECRET" > .env.production
         build:
           commands:
             - npm run build

@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 import { tradeCategoryIcons, type TradeCategoryKey } from "./trade-icons";
+import { useLocale } from "@/components/providers";
 
 interface TradeCategoryProps {
   categoryKey: TradeCategoryKey;
@@ -23,6 +24,7 @@ export function TradeCategory({
   accentColor,
   accentName,
 }: TradeCategoryProps) {
+  const { isRTL } = useLocale();
   const cardRef = useRef<HTMLDivElement>(null);
 
   // 3D tilt effect
@@ -175,7 +177,7 @@ export function TradeCategory({
         <div
           className="absolute top-0 end-0 w-32 h-32 opacity-20 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none"
           style={{
-            background: `radial-gradient(circle at 100% 0%, ${accentColor} 0%, transparent 70%)`,
+            background: `radial-gradient(circle at ${isRTL ? "0% 0%" : "100% 0%"}, ${accentColor} 0%, transparent 70%)`,
           }}
         />
 
@@ -210,7 +212,7 @@ export function TradeCategory({
 
             {/* Icon */}
             <motion.div
-              className="flex-shrink-0 ms-4"
+              className="shrink-0 ms-4"
               initial={{ scale: 0.8, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}

@@ -11,7 +11,7 @@ interface IconWrapperProps {
 
 function IconWrapper({ children, color, className = "" }: IconWrapperProps) {
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative icon-directional ${className}`}>
       {/* Glow effect */}
       <div
         className="absolute inset-0 rounded-2xl blur-xl opacity-30"

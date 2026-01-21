@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { useReducedEffects } from "@/lib/hooks";
+import type { ApplicationFormData } from "@/lib/validations/application";
 import {
   StepWhatYouNeed,
   StepWhatYouOffer,
@@ -339,6 +340,8 @@ export function Apply() {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [direction, setDirection] = useState<1 | -1>(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -365,9 +368,96 @@ export function Apply() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-    setSubmitted(true);
+  const handleSubmit = async () => {
+    setSubmitError(null);
+
+    const agreesToTerms = formData.checkbox0 === "true";
+    const agreesToGoodFaith = formData.checkbox1 === "true";
+    if (!agreesToTerms || !agreesToGoodFaith) {
+      setSubmitError(
+        isRTL ? "אנא אשרו את שתי התיבות לפני שליחה." : "Please check both boxes before submitting."
+      );
+      return;
+    }
+
+    // Map the UI labels to API enum values (server validates via Zod)
+    const projectTypeLabel = formData.projectType || "";
+    const tradeTypeLabel = formData.tradeType || "";
+    const timelineLabel = formData.timeline || "";
+
+    const projectType: ApplicationFormData["projectType"] =
+      projectTypeLabel === "Landing Page"
+        ? "marketing-site"
+        : projectTypeLabel === "E-Commerce Store"
+          ? "ecommerce"
+          : projectTypeLabel === "CMS / Content Platform"
+            ? "cms"
+            : projectTypeLabel === "Web Application"
+              ? "web-app"
+              : "other";
+
+    const tradeType: ApplicationFormData["tradeType"] =
+      tradeTypeLabel === "Services"
+        ? "services"
+        : tradeTypeLabel === "Physical Goods"
+          ? "physical-goods"
+          : tradeTypeLabel === "Hybrid (Cash + Trade)"
+            ? "hybrid"
+            : "other";
+
+    const timeline: ApplicationFormData["timeline"] =
+      timelineLabel === "< 1 month"
+        ? "less-than-1-month"
+        : timelineLabel === "1-3 months"
+          ? "1-3-months"
+          : timelineLabel === "3-6 months"
+            ? "3-6-months"
+            : "flexible";
+
+    const estimatedValueRaw = (formData.estimatedValue || "").replace(/[,\s]/g, "");
+    const estimatedValue = Number(estimatedValueRaw);
+
+    const payload: ApplicationFormData = {
+      projectType,
+      projectDescription: formData.projectDescription || "",
+      timeline,
+      tradeType,
+      tradeDescription: formData.tradeDescription || "",
+      estimatedValue,
+      name: formData.name || "",
+      email: formData.email || "",
+      website: formData.website || "",
+      additionalInfo: formData.additionalInfo || "",
+      agreesToTerms: true,
+      agreesToGoodFaith: true,
+    };
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/apply", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        const msg =
+          json?.message ||
+          json?.error ||
+          (isRTL ? "משהו השתבש. נסו שוב." : "Something went wrong. Please try again.");
+        setSubmitError(msg);
+        return;
+      }
+
+      setSubmitted(true);
+    } catch (e) {
+      console.error("Submit failed:", e);
+      setSubmitError(isRTL ? "שגיאת רשת. נסו שוב." : "Network error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const CurrentStepComponent = steps[currentStep].component;
@@ -521,7 +611,7 @@ export function Apply() {
                       </Button>
 
                       {currentStep === steps.length - 1 ? (
-                        <Button onClick={handleSubmit} className="group gap-2">
+                        <Button onClick={handleSubmit} className="group gap-2" disabled={isSubmitting}>
                           <span>{t.apply.steps.confirmation.submit}</span>
                           <motion.span
                             animate={reducedEffects ? undefined : { x: [0, 4, 0] }}
@@ -543,6 +633,12 @@ export function Apply() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {submitError && (
+          <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            {submitError}
+          </div>
+        )}
 
         {/* Trust indicators */}
         {!submitted && (

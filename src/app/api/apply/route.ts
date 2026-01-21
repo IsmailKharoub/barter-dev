@@ -4,6 +4,8 @@ import { createApplication, getRecentApplicationsByEmail, initDb } from "@/lib/d
 import { sendAdminNotification, sendApplicantConfirmation } from "@/lib/email";
 import { notifySlackNewApplication } from "@/lib/slack";
 
+export const runtime = "nodejs";
+
 // Rate limiting configuration
 const RATE_LIMIT_HOURS = 24;
 const RATE_LIMIT_MAX_APPLICATIONS = 3;
@@ -79,15 +81,22 @@ export async function POST(request: NextRequest) {
       referrer,
     });
 
-    // Send notifications (don't await to speed up response)
     const appId = applicationId ?? 0;
-    Promise.all([
+    // Slack must be awaited in serverless environments; otherwise execution may end before it runs.
+    const slackResult = await notifySlackNewApplication(data, appId, { ip, userAgent, referrer });
+    if (!slackResult.success) {
+      if ("skipped" in slackResult && slackResult.skipped) {
+        console.warn("Slack notification skipped (missing SLACK_WEBHOOK_URL).");
+      } else {
+        console.error("Slack notification failed:", slackResult);
+      }
+    }
+
+    // Email can remain best-effort, but we still await so failures show up in logs reliably.
+    await Promise.allSettled([
       sendAdminNotification(data, appId),
       sendApplicantConfirmation(data, appId),
-      notifySlackNewApplication(data, appId, { ip, userAgent, referrer }),
-    ]).catch((error) => {
-      console.error("Failed to send notifications:", error);
-    });
+    ]);
 
     return NextResponse.json(
       {

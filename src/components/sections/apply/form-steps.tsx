@@ -313,8 +313,8 @@ export function StepWhatYouOffer({ data, onChange }: StepProps) {
       >
         <TextareaField
           label={step.description}
-          value={data.offerDescription || ""}
-          onChange={(value) => onChange("offerDescription", value)}
+          value={data.tradeDescription || ""}
+          onChange={(value) => onChange("tradeDescription", value)}
           placeholder={step.descriptionPlaceholder}
           rows={4}
           icon={MessageSquare}
@@ -407,8 +407,8 @@ export function StepAboutYou({ data, onChange }: StepProps) {
       >
         <TextareaField
           label={step.anything}
-          value={data.anything || ""}
-          onChange={(value) => onChange("anything", value)}
+          value={data.additionalInfo || ""}
+          onChange={(value) => onChange("additionalInfo", value)}
           placeholder={isRTL ? "כל הקשר שיכול לעזור לי להעריך את הבקשה שלכם..." : "Any context that might help me evaluate your application..."}
           rows={3}
           icon={MessageSquare}

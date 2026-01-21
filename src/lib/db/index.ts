@@ -3,10 +3,10 @@ import { createClient } from "@libsql/client";
 // Create database client
 // In production, use Turso: TURSO_DATABASE_URL and TURSO_AUTH_TOKEN
 // In development, use local SQLite file
-const isProduction = process.env.NODE_ENV === "production";
-
 export const db = createClient({
-  url: process.env.TURSO_DATABASE_URL || "file:local.db",
+  // In serverless (Amplify/Vercel), the project directory is read-only at runtime.
+  // If Turso isn't configured, use /tmp as a writable fallback so submissions (and Slack) still work.
+  url: process.env.TURSO_DATABASE_URL || (process.env.NODE_ENV === "production" ? "file:/tmp/local.db" : "file:local.db"),
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
 

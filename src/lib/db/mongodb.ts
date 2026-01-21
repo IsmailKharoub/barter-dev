@@ -46,6 +46,12 @@ export interface ApplicationNote {
   createdAt: Date;
 }
 
+export interface ApplicationEmail {
+  subject: string;
+  template?: string;
+  sentAt: Date;
+}
+
 export interface Application {
   _id?: ObjectId;
   projectType: string;
@@ -62,6 +68,7 @@ export interface Application {
   referrer?: string | null;
   status: "pending" | "reviewing" | "accepted" | "rejected";
   notes?: ApplicationNote[];
+  emails?: ApplicationEmail[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -139,11 +146,35 @@ export async function getApplicationById(id: string) {
   return await applications.findOne({ _id: new ObjectId(id) });
 }
 
+export type SortField = "createdAt" | "name" | "email" | "status";
+export type SortOrder = "asc" | "desc";
+
+export interface PaginatedApplicationsResult {
+  applications: Application[];
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+}
+
 export async function getAllApplications(
-  limit: number = 100,
-  status?: string | null,
-  search?: string | null
-) {
+  options: {
+    page?: number;
+    pageSize?: number;
+    status?: string | null;
+    search?: string | null;
+    sortBy?: SortField;
+    sortOrder?: SortOrder;
+  } = {}
+): Promise<PaginatedApplicationsResult> {
+  const {
+    page = 1,
+    pageSize = 20,
+    status,
+    search,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+  } = options;
+
   const database = await connectToDatabase();
   const applications = database.collection<Application>("applications");
   
@@ -160,14 +191,39 @@ export async function getAllApplications(
       { email: { $regex: search, $options: "i" } },
       { projectType: { $regex: search, $options: "i" } },
       { tradeType: { $regex: search, $options: "i" } },
+      { projectDescription: { $regex: search, $options: "i" } },
     ];
   }
   
-  return await applications
+  // Get total count for pagination
+  const totalCount = await applications.countDocuments(query);
+  const totalPages = Math.ceil(totalCount / pageSize);
+  
+  // Build sort object
+  const sortDirection = sortOrder === "asc" ? 1 : -1;
+  const sort: Record<string, 1 | -1> = { [sortBy]: sortDirection };
+  
+  // If not sorting by createdAt, add it as secondary sort
+  if (sortBy !== "createdAt") {
+    sort.createdAt = -1;
+  }
+  
+  // Calculate skip for pagination
+  const skip = (page - 1) * pageSize;
+  
+  const results = await applications
     .find(query)
-    .sort({ createdAt: -1 })
-    .limit(limit)
+    .sort(sort)
+    .skip(skip)
+    .limit(pageSize)
     .toArray();
+  
+  return {
+    applications: results,
+    totalCount,
+    totalPages,
+    currentPage: page,
+  };
 }
 
 export async function updateApplicationStatus(
@@ -199,6 +255,30 @@ export async function deleteApplication(id: string) {
   
   console.log("[MongoDB] Application deleted:", id);
   return result.deletedCount > 0;
+}
+
+// Bulk update application statuses
+export async function bulkUpdateApplicationStatus(
+  ids: string[],
+  status: Application["status"]
+) {
+  const database = await connectToDatabase();
+  const applications = database.collection<Application>("applications");
+  
+  const objectIds = ids.map(id => new ObjectId(id));
+  
+  const result = await applications.updateMany(
+    { _id: { $in: objectIds } },
+    { 
+      $set: { 
+        status,
+        updatedAt: new Date(),
+      } 
+    }
+  );
+  
+  console.log("[MongoDB] Bulk status update:", result.modifiedCount, "applications updated to", status);
+  return result.modifiedCount;
 }
 
 // Get application statistics
@@ -237,6 +317,28 @@ export async function addApplicationNote(id: string, noteText: string) {
     { _id: new ObjectId(id) },
     { 
       $push: { notes: note },
+      $set: { updatedAt: new Date() },
+    }
+  );
+  
+  return result.modifiedCount > 0;
+}
+
+// Log sent email to application
+export async function logEmailSent(id: string, subject: string, template?: string) {
+  const database = await connectToDatabase();
+  const applications = database.collection<Application>("applications");
+  
+  const emailLog: ApplicationEmail = {
+    subject,
+    template,
+    sentAt: new Date(),
+  };
+  
+  const result = await applications.updateOne(
+    { _id: new ObjectId(id) },
+    { 
+      $push: { emails: emailLog },
       $set: { updatedAt: new Date() },
     }
   );

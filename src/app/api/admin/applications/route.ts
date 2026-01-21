@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/auth/admin";
-import { getAllApplications, getApplicationStats } from "@/lib/db/mongodb";
+import { getAllApplications, getApplicationStats, SortField, SortOrder } from "@/lib/db/mongodb";
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,11 +15,28 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
-    const limit = parseInt(searchParams.get("limit") || "100");
     const search = searchParams.get("search");
+    const page = parseInt(searchParams.get("page") || "1");
+    const pageSize = parseInt(searchParams.get("pageSize") || "20");
+    const sortBy = (searchParams.get("sortBy") || "createdAt") as SortField;
+    const sortOrder = (searchParams.get("sortOrder") || "desc") as SortOrder;
 
-    // Get applications
-    const applications = await getAllApplications(limit, status, search);
+    // Validate sort field
+    const validSortFields: SortField[] = ["createdAt", "name", "email", "status"];
+    const validatedSortBy = validSortFields.includes(sortBy) ? sortBy : "createdAt";
+
+    // Validate sort order
+    const validatedSortOrder: SortOrder = sortOrder === "asc" ? "asc" : "desc";
+
+    // Get applications with pagination
+    const result = await getAllApplications({
+      page,
+      pageSize,
+      status,
+      search,
+      sortBy: validatedSortBy,
+      sortOrder: validatedSortOrder,
+    });
     
     // Get stats
     const stats = await getApplicationStats();
@@ -27,8 +44,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { 
         success: true, 
-        applications,
+        applications: result.applications,
         stats,
+        pagination: {
+          currentPage: result.currentPage,
+          totalPages: result.totalPages,
+          totalCount: result.totalCount,
+          pageSize,
+        },
       },
       { status: 200 }
     );

@@ -1,4 +1,5 @@
 import { MongoClient, Db, ObjectId } from "mongodb";
+import { dbLogger } from "@/lib/logger";
 
 let client: MongoClient | null = null;
 let db: Db | null = null;
@@ -11,10 +12,12 @@ export async function connectToDatabase() {
 
   const uri = process.env.MONGODB_URI;
   if (!uri) {
+    dbLogger.error("MONGODB_URI not set", new Error("Missing environment variable"));
     console.error("[MongoDB] ❌ MONGODB_URI not set!");
     throw new Error("MONGODB_URI environment variable is not set");
   }
 
+  dbLogger.info("Connecting to database");
   console.log("[MongoDB] Connecting to database...");
   console.log("[MongoDB] URI prefix:", uri.substring(0, 30) + "...");
   
@@ -25,6 +28,7 @@ export async function connectToDatabase() {
     console.log("[MongoDB] Client connected, selecting database...");
     
     db = client.db("barter-dev");
+    dbLogger.info("Connected successfully to database");
     console.log("[MongoDB] ✅ Connected successfully to barter-dev database");
     
     return db;
@@ -62,35 +66,69 @@ export interface Application {
 }
 
 export async function createApplication(data: Omit<Application, "_id" | "status" | "createdAt" | "updatedAt">) {
-  const database = await connectToDatabase();
-  const applications = database.collection<Application>("applications");
-  
-  const now = new Date();
-  const application: Omit<Application, "_id"> = {
-    ...data,
-    status: "pending",
-    createdAt: now,
-    updatedAt: now,
-  };
-  
-  const result = await applications.insertOne(application as Application);
-  console.log("[MongoDB] Application created:", result.insertedId.toString());
-  
-  return result.insertedId.toString();
+  try {
+    dbLogger.info("Creating application", {
+      email: data.email,
+      projectType: data.projectType,
+      tradeType: data.tradeType,
+    });
+
+    const database = await connectToDatabase();
+    const applications = database.collection<Application>("applications");
+    
+    const now = new Date();
+    const application: Omit<Application, "_id"> = {
+      ...data,
+      status: "pending",
+      createdAt: now,
+      updatedAt: now,
+    };
+    
+    const result = await applications.insertOne(application as Application);
+    const applicationId = result.insertedId.toString();
+    
+    dbLogger.info("Application created successfully", {
+      applicationId,
+      email: data.email,
+    });
+    
+    console.log("[MongoDB] Application created:", applicationId);
+    
+    return applicationId;
+  } catch (error) {
+    dbLogger.error("Failed to create application", error, {
+      email: data.email,
+      projectType: data.projectType,
+    });
+    throw error;
+  }
 }
 
 export async function getRecentApplicationsByEmail(email: string, hours: number = 24): Promise<number> {
-  const database = await connectToDatabase();
-  const applications = database.collection<Application>("applications");
-  
-  const cutoffTime = new Date(Date.now() - hours * 60 * 60 * 1000);
-  
-  const count = await applications.countDocuments({
-    email,
-    createdAt: { $gte: cutoffTime },
-  });
-  
-  return count;
+  try {
+    const database = await connectToDatabase();
+    const applications = database.collection<Application>("applications");
+    
+    const cutoffTime = new Date(Date.now() - hours * 60 * 60 * 1000);
+    
+    const count = await applications.countDocuments({
+      email,
+      createdAt: { $gte: cutoffTime },
+    });
+    
+    if (count > 0) {
+      dbLogger.info("Rate limit check", {
+        email,
+        count,
+        hours,
+      });
+    }
+    
+    return count;
+  } catch (error) {
+    dbLogger.error("Failed to check rate limit", error, { email, hours });
+    throw error;
+  }
 }
 
 export async function getApplicationById(id: string) {

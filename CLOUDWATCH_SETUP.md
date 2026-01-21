@@ -26,21 +26,23 @@
 
 ### Option 2: AWS CLI
 ```bash
-# List log groups
-aws logs describe-log-groups --log-group-name-prefix "/aws/lambda"
-
-# Get recent logs
-aws logs tail /aws/lambda/us-east-1.d2c1w3ga1c6ojg_main_api-apply --follow
+# Get recent logs (LIVE TAIL)
+aws logs tail /aws/amplify/barter-dev/application-logs --follow
 
 # Search for errors
 aws logs filter-log-events \
-  --log-group-name "/aws/lambda/us-east-1.d2c1w3ga1c6ojg_main_api-apply" \
+  --log-group-name "/aws/amplify/barter-dev/application-logs" \
   --filter-pattern "ERROR"
 
 # Search for validation failures
 aws logs filter-log-events \
-  --log-group-name "/aws/lambda/us-east-1.d2c1w3ga1c6ojg_main_api-apply" \
+  --log-group-name "/aws/amplify/barter-dev/application-logs" \
   --filter-pattern "Validation failed"
+
+# Search for database errors
+aws logs filter-log-events \
+  --log-group-name "/aws/amplify/barter-dev/application-logs" \
+  --filter-pattern '{ $.context = "DATABASE" && $.level = "ERROR" }'
 ```
 
 ---
@@ -210,20 +212,30 @@ The logs will show:
 
 ```bash
 # Watch live logs
-aws logs tail /aws/lambda/us-east-1.d2c1w3ga1c6ojg_main_api-apply --follow
+aws logs tail /aws/amplify/barter-dev/application-logs --follow
 
 # Get last hour of errors
 aws logs filter-log-events \
-  --log-group-name "/aws/lambda/us-east-1.d2c1w3ga1c6ojg_main_api-apply" \
+  --log-group-name "/aws/amplify/barter-dev/application-logs" \
   --filter-pattern "ERROR" \
   --start-time $(date -u -d '1 hour ago' +%s)000
 
 # Count validation failures today
 aws logs filter-log-events \
-  --log-group-name "/aws/lambda/us-east-1.d2c1w3ga1c6ojg_main_api-apply" \
+  --log-group-name "/aws/amplify/barter-dev/application-logs" \
   --filter-pattern "Validation failed" \
   --start-time $(date -u -d 'today' +%s)000 \
   | grep -c "Validation failed"
+
+# View database operations
+aws logs filter-log-events \
+  --log-group-name "/aws/amplify/barter-dev/application-logs" \
+  --filter-pattern '{ $.context = "DATABASE" }'
+
+# Check rate limiting
+aws logs filter-log-events \
+  --log-group-name "/aws/amplify/barter-dev/application-logs" \
+  --filter-pattern "Rate limit"
 ```
 
 ---

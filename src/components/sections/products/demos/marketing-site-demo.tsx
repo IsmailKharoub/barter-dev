@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useReducedEffects } from "@/lib/hooks";
 
 // Typewriter effect component
 function TypewriterText({ 
@@ -55,10 +56,11 @@ export function MarketingSiteDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
   const [phase, setPhase] = useState(0);
+  const reducedEffects = useReducedEffects();
 
   // Progress through animation phases when in view
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reducedEffects) return;
     
     const phases = [
       { delay: 0 },      // 0: Browser appears
@@ -72,10 +74,52 @@ export function MarketingSiteDemo() {
       { delay: 5400 },   // 8: Complete
     ];
 
+    const timers: number[] = [];
     phases.forEach((p, i) => {
-      setTimeout(() => setPhase(i), p.delay);
+      timers.push(window.setTimeout(() => setPhase(i), p.delay));
     });
-  }, [isInView]);
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [isInView, reducedEffects]);
+
+  if (reducedEffects) {
+    return (
+      <div ref={containerRef} className="w-full h-full p-4 md:p-6">
+        <div className="w-full h-full bg-[#0f0f0f] rounded-lg border border-border-default overflow-hidden shadow-2xl">
+          <div className="h-8 bg-[#1a1a1a] flex items-center px-3 gap-2 border-b border-border-subtle">
+            <div className="flex gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+            </div>
+            <div className="flex-1 mx-2 h-5 bg-[#0f0f0f] rounded" />
+          </div>
+          <div className="p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="h-2 w-16 bg-white/10 rounded" />
+              <div className="flex gap-2">
+                <div className="h-2 w-10 bg-white/10 rounded" />
+                <div className="h-2 w-10 bg-white/10 rounded" />
+                <div className="h-2 w-10 bg-white/10 rounded" />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="h-6 w-3/4 bg-white/15 rounded" />
+              <div className="h-3 w-2/3 bg-white/10 rounded" />
+              <div className="h-9 w-28 bg-white rounded" />
+            </div>
+            <div className="h-24 rounded bg-white/5 border border-white/10" />
+            <div className="grid grid-cols-3 gap-3">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="h-16 rounded bg-white/5 border border-white/10" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="w-full h-full p-4 md:p-6">
@@ -266,7 +310,7 @@ export function MarketingSiteDemo() {
           animate={phase >= 8 ? { opacity: [0, 1, 0] } : {}}
           transition={{ duration: 1, ease: "easeOut" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-white/5 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-white/5 to-transparent" />
         </motion.div>
       </motion.div>
 

@@ -13,11 +13,13 @@ const patients = [
 function PatientQueueItem({ 
   patient, 
   index, 
-  isHovered 
+  isHovered,
+  shouldAnimate,
 }: { 
   patient: typeof patients[0]; 
   index: number;
   isHovered: boolean;
+  shouldAnimate: boolean;
 }) {
   const statusColors = {
     completed: { bg: "rgba(16,185,129,0.15)", border: "rgba(16,185,129,0.4)", dot: "#10B981" },
@@ -38,8 +40,8 @@ function PatientQueueItem({
       <motion.div
         className="w-2 h-2 rounded-full flex-shrink-0"
         style={{ backgroundColor: colors.dot }}
-        animate={patient.status === "current" ? { scale: [1, 1.3, 1] } : {}}
-        transition={{ duration: 1, repeat: Infinity }}
+        animate={shouldAnimate && patient.status === "current" ? { scale: [1, 1.3, 1] } : {}}
+        transition={shouldAnimate ? { duration: 1, repeat: Infinity } : undefined}
       />
 
       {/* Patient info */}
@@ -70,8 +72,8 @@ function PatientQueueItem({
       {patient.status === "current" && (
         <motion.div
           className="text-[7px] font-mono text-accent-primary px-1.5 py-0.5 bg-accent-primary/20 rounded"
-          animate={isHovered ? { opacity: [1, 0.5, 1] } : {}}
-          transition={{ duration: 0.8, repeat: Infinity }}
+          animate={shouldAnimate && isHovered ? { opacity: [1, 0.5, 1] } : {}}
+          transition={shouldAnimate ? { duration: 0.8, repeat: Infinity } : undefined}
         >
           NOW
         </motion.div>
@@ -80,7 +82,7 @@ function PatientQueueItem({
   );
 }
 
-function QueuePanel({ isHovered }: { isHovered: boolean }) {
+function QueuePanel({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
       className="absolute left-3 top-3 bottom-3 w-32 bg-bg-tertiary/90 rounded-xl border border-border-subtle overflow-hidden backdrop-blur-sm"
@@ -94,8 +96,8 @@ function QueuePanel({ isHovered }: { isHovered: boolean }) {
           <span className="text-[9px] font-mono text-fg-secondary uppercase tracking-wider">Queue</span>
           <motion.div
             className="px-1.5 py-0.5 bg-accent-primary/20 rounded text-[8px] font-mono text-accent-primary"
-            animate={isHovered ? { scale: [1, 1.05, 1] } : {}}
-            transition={{ duration: 0.8, repeat: Infinity }}
+            animate={shouldAnimate && isHovered ? { scale: [1, 1.05, 1] } : {}}
+            transition={shouldAnimate ? { duration: 0.8, repeat: Infinity } : undefined}
           >
             4
           </motion.div>
@@ -118,6 +120,7 @@ function QueuePanel({ isHovered }: { isHovered: boolean }) {
             patient={patient}
             index={i}
             isHovered={isHovered}
+            shouldAnimate={shouldAnimate}
           />
         ))}
       </div>
@@ -125,7 +128,7 @@ function QueuePanel({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function ConnectionStatus({ isHovered }: { isHovered: boolean }) {
+function ConnectionStatus({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   const isOnline = isHovered;
   
   return (
@@ -141,8 +144,8 @@ function ConnectionStatus({ isHovered }: { isHovered: boolean }) {
           <motion.div
             className="w-2 h-2 rounded-full"
             style={{ backgroundColor: isOnline ? "#FFFFFF" : "#666666" }}
-            animate={{ opacity: [1, 0.5, 1] }}
-            transition={{ duration: isOnline ? 2 : 0.8, repeat: Infinity }}
+            animate={shouldAnimate ? { opacity: [1, 0.5, 1] } : undefined}
+            transition={shouldAnimate ? { duration: isOnline ? 2 : 0.8, repeat: Infinity } : undefined}
           />
           <span className="text-[8px] font-mono text-fg-muted uppercase">
             {isOnline ? "Online" : "Offline"}
@@ -155,8 +158,8 @@ function ConnectionStatus({ isHovered }: { isHovered: boolean }) {
           <span>Records:</span>
           <motion.span
             className="text-fg-secondary"
-            animate={isHovered ? {} : { opacity: [1, 0.5, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
+            animate={shouldAnimate && !isHovered ? { opacity: [1, 0.5, 1] } : {}}
+            transition={shouldAnimate ? { duration: 1.5, repeat: Infinity } : undefined}
           >
             247
           </motion.span>
@@ -166,7 +169,7 @@ function ConnectionStatus({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function SyncAnimation({ isHovered }: { isHovered: boolean }) {
+function SyncAnimation({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
       className="absolute right-3 bottom-3 w-20"
@@ -176,19 +179,23 @@ function SyncAnimation({ isHovered }: { isHovered: boolean }) {
     >
       <motion.div
         className="bg-bg-tertiary/90 rounded-lg border border-border-subtle p-3 backdrop-blur-sm flex flex-col items-center"
-        animate={isHovered ? { borderColor: ["rgba(250,248,245,0.1)", "rgba(16,185,129,0.5)", "rgba(250,248,245,0.1)"] } : {}}
-        transition={{ duration: 2, repeat: Infinity }}
+        animate={
+          shouldAnimate && isHovered
+            ? { borderColor: ["rgba(250,248,245,0.1)", "rgba(16,185,129,0.5)", "rgba(250,248,245,0.1)"] }
+            : {}
+        }
+        transition={shouldAnimate ? { duration: 2, repeat: Infinity } : undefined}
       >
         {/* Sync icon */}
         <motion.div
           className="w-8 h-8 rounded-full border-2 border-accent-primary/40 border-t-accent-primary flex items-center justify-center mb-2"
-          animate={isHovered ? { rotate: 360 } : {}}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+          animate={shouldAnimate && isHovered ? { rotate: 360 } : {}}
+          transition={shouldAnimate ? { duration: 1.5, repeat: Infinity, ease: "linear" } : undefined}
         >
           <motion.span
             className="text-[10px]"
-            animate={isHovered ? { scale: [1, 0.8, 1] } : {}}
-            transition={{ duration: 0.5, repeat: Infinity }}
+            animate={shouldAnimate && isHovered ? { scale: [1, 0.8, 1] } : {}}
+            transition={shouldAnimate ? { duration: 0.5, repeat: Infinity } : undefined}
           >
             ☁️
           </motion.span>
@@ -217,8 +224,8 @@ function SyncAnimation({ isHovered }: { isHovered: boolean }) {
             <motion.div
               className="h-full bg-success rounded-full"
               initial={{ width: 0 }}
-              animate={{ width: ["0%", "100%"] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              animate={shouldAnimate ? { width: ["0%", "100%"] } : undefined}
+              transition={shouldAnimate ? { duration: 2, repeat: Infinity } : undefined}
             />
           </motion.div>
         )}
@@ -227,7 +234,7 @@ function SyncAnimation({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function MobileClinicBadge() {
+function MobileClinicBadge({ shouldAnimate }: { shouldAnimate: boolean }) {
   return (
     <motion.div
       className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1.5 bg-bg-tertiary/80 rounded-full border border-border-subtle backdrop-blur-sm"
@@ -239,27 +246,27 @@ function MobileClinicBadge() {
       <span className="text-[9px] font-mono text-fg-secondary">Mobile Clinic</span>
       <motion.div
         className="w-1.5 h-1.5 rounded-full bg-success"
-        animate={{ opacity: [1, 0.4, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        animate={shouldAnimate ? { opacity: [1, 0.4, 1] } : undefined}
+        transition={shouldAnimate ? { duration: 2, repeat: Infinity } : undefined}
       />
     </motion.div>
   );
 }
 
-export function MedicalAnimation({ isHovered = false }: AnimationProps) {
+export function MedicalAnimation({ isHovered = false, shouldAnimate = true }: AnimationProps) {
   return (
     <div className="w-full h-full relative overflow-hidden">
       {/* Mobile clinic badge */}
-      <MobileClinicBadge />
+      <MobileClinicBadge shouldAnimate={shouldAnimate} />
 
       {/* Queue panel */}
-      <QueuePanel isHovered={isHovered} />
+      <QueuePanel isHovered={isHovered} shouldAnimate={shouldAnimate} />
 
       {/* Connection status */}
-      <ConnectionStatus isHovered={isHovered} />
+      <ConnectionStatus isHovered={isHovered} shouldAnimate={shouldAnimate} />
 
       {/* Sync animation */}
-      <SyncAnimation isHovered={isHovered} />
+      <SyncAnimation isHovered={isHovered} shouldAnimate={shouldAnimate} />
     </div>
   );
 }

@@ -2,14 +2,16 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useReducedEffects } from "@/lib/hooks";
 
 export function ComplexDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-50px" });
   const [phase, setPhase] = useState(0);
+  const reducedEffects = useReducedEffects();
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reducedEffects) return;
 
     const phases = [
       { delay: 0 },
@@ -21,10 +23,14 @@ export function ComplexDemo() {
       { delay: 2400 },  // Success indicators
     ];
 
+    const timers: number[] = [];
     phases.forEach((p, i) => {
-      setTimeout(() => setPhase(i), p.delay);
+      timers.push(window.setTimeout(() => setPhase(i), p.delay));
     });
-  }, [isInView]);
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [isInView, reducedEffects]);
 
   const services = [
     { name: "Auth", color: "from-white/80 to-white/50" },
@@ -32,6 +38,48 @@ export function ComplexDemo() {
     { name: "Worker", color: "from-white/70 to-white/40" },
     { name: "Cache", color: "from-gray-400 to-gray-600" },
   ];
+
+  if (reducedEffects) {
+    return (
+      <div ref={containerRef} className="w-full h-full p-3 md:p-4 relative">
+        <div className="w-full h-full bg-[#0a0a0a] rounded-lg border border-white/10 overflow-hidden shadow-2xl">
+          <div className="h-6 border-b border-white/5 px-3 flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded bg-white" />
+              <span className="text-[7px] text-white/70 font-medium">System Architecture</span>
+            </div>
+            <span className="text-[6px] text-white/30">Static preview</span>
+          </div>
+          <div className="p-3 h-[calc(100%-24px)] flex flex-col gap-3">
+            <div className="mx-auto px-3 py-2 rounded bg-white/5 border border-white/10 w-40">
+              <div className="h-2 w-24 mx-auto bg-white/10 rounded" />
+              <div className="flex gap-1 mt-2 justify-center">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="w-1 h-3 bg-white/20 rounded" />
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {services.map((s) => (
+                <div key={s.name} className="p-2 rounded bg-white/5 border border-white/10">
+                  <div className="h-2 w-10 bg-white/10 rounded mb-2" />
+                  <div className="h-6 rounded bg-white/5" />
+                </div>
+              ))}
+            </div>
+            <div className="flex-1 rounded bg-white/5 border border-white/10 p-3">
+              <div className="h-2 w-24 bg-white/10 rounded mb-3" />
+              <div className="grid grid-cols-3 gap-2">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="h-10 rounded bg-white/5 border border-white/10" />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="w-full h-full p-3 md:p-4 relative">

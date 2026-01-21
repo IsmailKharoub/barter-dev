@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
+import { useReducedEffects } from "@/lib/hooks";
 import {
   StepWhatYouNeed,
   StepWhatYouOffer,
@@ -28,25 +29,33 @@ const steps = [
 ] as const;
 
 // Background pattern with animated elements
-function BackgroundPattern() {
+function BackgroundPattern({ reducedEffects }: { reducedEffects: boolean }) {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Gradient orbs */}
       <motion.div
         className="absolute top-0 start-1/4 w-[600px] h-[600px] bg-accent-primary/5 rounded-full blur-[150px]"
-        animate={{
-          x: [0, 50, 0],
-          y: [0, 30, 0],
-        }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        animate={
+          reducedEffects
+            ? undefined
+            : {
+                x: [0, 50, 0],
+                y: [0, 30, 0],
+              }
+        }
+        transition={reducedEffects ? undefined : { duration: 20, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
         className="absolute bottom-0 end-1/4 w-[500px] h-[500px] bg-accent-secondary/5 rounded-full blur-[120px]"
-        animate={{
-          x: [0, -30, 0],
-          y: [0, -50, 0],
-        }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        animate={
+          reducedEffects
+            ? undefined
+            : {
+                x: [0, -30, 0],
+                y: [0, -50, 0],
+              }
+        }
+        transition={reducedEffects ? undefined : { duration: 15, repeat: Infinity, ease: "easeInOut" }}
       />
       
       {/* Noise texture */}
@@ -73,10 +82,12 @@ function StepIndicator({
   currentStep, 
   totalSteps,
   isRTL,
+  reducedEffects,
 }: { 
   currentStep: number; 
   totalSteps: number;
   isRTL: boolean;
+  reducedEffects: boolean;
 }) {
   return (
     <div className="flex items-center justify-center gap-3 md:gap-4">
@@ -140,7 +151,7 @@ function StepIndicator({
                 )}
 
                 {/* Active ring pulse */}
-                {isActive && (
+                {isActive && !reducedEffects && (
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-white"
                     animate={{
@@ -175,7 +186,15 @@ function StepIndicator({
 }
 
 // Success animation component
-function SuccessState({ successMessage, isRTL }: { successMessage: string; isRTL: boolean }) {
+function SuccessState({
+  successMessage,
+  isRTL,
+  reducedEffects,
+}: {
+  successMessage: string;
+  isRTL: boolean;
+  reducedEffects: boolean;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -192,11 +211,15 @@ function SuccessState({ successMessage, isRTL }: { successMessage: string; isRTL
         {/* Outer glow */}
         <motion.div
           className="absolute inset-0 bg-white/20 rounded-full blur-xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0.3, 0.5],
-          }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          animate={
+            reducedEffects
+              ? undefined
+              : {
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0.3, 0.5],
+                }
+          }
+          transition={reducedEffects ? undefined : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
         />
         
         {/* Circle background */}
@@ -284,15 +307,23 @@ function SuccessState({ successMessage, isRTL }: { successMessage: string; isRTL
           <motion.div
             key={i}
             className="w-2 h-2 rounded-full bg-white/30"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.6, 0.3],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              delay: i * 0.2,
-            }}
+            animate={
+              reducedEffects
+                ? undefined
+                : {
+                    scale: [1, 1.2, 1],
+                    opacity: [0.3, 0.6, 0.3],
+                  }
+            }
+            transition={
+              reducedEffects
+                ? undefined
+                : {
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: i * 0.2,
+                  }
+            }
           />
         ))}
       </motion.div>
@@ -302,6 +333,7 @@ function SuccessState({ successMessage, isRTL }: { successMessage: string; isRTL
 
 export function Apply() {
   const { t, isRTL } = useLocale();
+  const reducedEffects = useReducedEffects();
   const sectionRef = useRef<HTMLElement>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -363,7 +395,7 @@ export function Apply() {
       ref={sectionRef}
       className="relative py-24 md:py-32 lg:py-40 bg-bg-primary overflow-hidden"
     >
-      <BackgroundPattern />
+      <BackgroundPattern reducedEffects={reducedEffects} />
 
       <motion.div className="relative max-w-3xl mx-auto px-6 lg:px-8" style={{ opacity }}>
         {/* Section header */}
@@ -421,14 +453,14 @@ export function Apply() {
             transition={{ delay: 0.2 }}
             className="mb-12 md:mb-16"
           >
-            <StepIndicator currentStep={currentStep} totalSteps={steps.length} isRTL={isRTL} />
+            <StepIndicator currentStep={currentStep} totalSteps={steps.length} isRTL={isRTL} reducedEffects={reducedEffects} />
           </motion.div>
         )}
 
         {/* Form container */}
         <AnimatePresence mode="wait" custom={direction}>
           {submitted ? (
-            <SuccessState key="success" successMessage={t.apply.success} isRTL={isRTL} />
+            <SuccessState key="success" successMessage={t.apply.success} isRTL={isRTL} reducedEffects={reducedEffects} />
           ) : (
             <motion.div
               key={currentStep}
@@ -492,8 +524,8 @@ export function Apply() {
                         <Button onClick={handleSubmit} className="group gap-2">
                           <span>{t.apply.steps.confirmation.submit}</span>
                           <motion.span
-                            animate={{ x: [0, 4, 0] }}
-                            transition={{ duration: 1.5, repeat: Infinity }}
+                            animate={reducedEffects ? undefined : { x: [0, 4, 0] }}
+                            transition={reducedEffects ? undefined : { duration: 1.5, repeat: Infinity }}
                           >
                             <Sparkles className="w-4 h-4" />
                           </motion.span>

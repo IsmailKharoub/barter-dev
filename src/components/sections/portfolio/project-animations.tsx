@@ -13,9 +13,10 @@ import { motion } from "framer-motion";
 interface ProjectAnimationProps {
   projectId: string;
   isHovered?: boolean;
+  shouldAnimate?: boolean;
 }
 
-const animationMap: Record<string, React.ComponentType<{ isHovered?: boolean }>> = {
+const animationMap: Record<string, React.ComponentType<{ isHovered?: boolean; shouldAnimate?: boolean }>> = {
   "agri-ml": AgriMLAnimation,
   "cross-border": CrossBorderAnimation,
   "mobility": MobilityAnimation,
@@ -24,22 +25,26 @@ const animationMap: Record<string, React.ComponentType<{ isHovered?: boolean }>>
   "learning": LearningAnimation,
 };
 
-export function ProjectAnimation({ projectId, isHovered = false }: ProjectAnimationProps) {
+export function ProjectAnimation({
+  projectId,
+  isHovered = false,
+  shouldAnimate = true,
+}: ProjectAnimationProps) {
   const AnimationComponent = animationMap[projectId];
 
   if (!AnimationComponent) {
-    return <DefaultAnimation isHovered={isHovered} />;
+    return <DefaultAnimation isHovered={isHovered} shouldAnimate={shouldAnimate} />;
   }
 
-  return <AnimationComponent isHovered={isHovered} />;
+  return <AnimationComponent isHovered={isHovered} shouldAnimate={shouldAnimate} />;
 }
 
-function DefaultAnimation({ isHovered }: { isHovered: boolean }) {
+function DefaultAnimation({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <div className="w-full h-full flex items-center justify-center bg-bg-secondary/50">
       <motion.div
-        className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary/30 to-accent-secondary/20 border border-accent-primary/40 flex items-center justify-center"
-        animate={isHovered ? { rotate: 360, scale: [1, 1.1, 1] } : {}}
+        className="w-10 h-10 rounded-xl bg-linear-to-br from-accent-primary/30 to-accent-secondary/20 border border-accent-primary/40 flex items-center justify-center"
+        animate={shouldAnimate && isHovered ? { rotate: 360, scale: [1, 1.1, 1] } : {}}
         transition={{ 
           rotate: { duration: 4, repeat: Infinity, ease: "linear" },
           scale: { duration: 1, repeat: Infinity }

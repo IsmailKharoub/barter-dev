@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { HeroContent } from "./hero-content";
+import { useReducedEffects } from "@/lib/hooks";
 
 // Radial dot pattern
 function DotPattern() {
@@ -19,7 +20,7 @@ function DotPattern() {
 }
 
 // Scroll indicator
-function ScrollIndicator() {
+function ScrollIndicator({ reducedEffects }: { reducedEffects: boolean }) {
   return (
     <motion.button
       onClick={() => {
@@ -32,8 +33,8 @@ function ScrollIndicator() {
     >
       <span className="text-xs tracking-widest uppercase">Scroll</span>
       <motion.div
-        animate={{ y: [0, 6, 0] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        animate={reducedEffects ? undefined : { y: [0, 6, 0] }}
+        transition={reducedEffects ? undefined : { duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-current">
           <path d="M10 4v12m0 0l-4-4m4 4l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -44,6 +45,7 @@ function ScrollIndicator() {
 }
 
 export function Hero() {
+  const reducedEffects = useReducedEffects();
   return (
     <section
       id="hero"
@@ -56,10 +58,10 @@ export function Hero() {
         <HeroContent />
       </div>
 
-      <ScrollIndicator />
+      <ScrollIndicator reducedEffects={reducedEffects} />
       
       {/* Bottom fade */}
-      <div className="absolute bottom-0 start-0 end-0 h-24 bg-gradient-to-t from-bg-primary to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 start-0 end-0 h-24 bg-linear-to-t from-bg-primary to-transparent pointer-events-none" />
     </section>
   );
 }

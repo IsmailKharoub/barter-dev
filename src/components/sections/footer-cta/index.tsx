@@ -3,9 +3,27 @@
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/providers";
 import { Button } from "@/components/ui/button";
+import { useReducedEffects } from "@/lib/hooks";
 
 // Animated rings - CSS-only alternative to 3D canvas
-function AnimatedRings() {
+function AnimatedRings({ reducedEffects }: { reducedEffects: boolean }) {
+  if (reducedEffects) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+        <div className="absolute w-[500px] h-[500px] rounded-full border border-accent-primary/10" />
+        <div className="absolute w-[400px] h-[400px] rounded-full border border-accent-primary/15" />
+        <div className="absolute w-[300px] h-[300px] rounded-full border-2 border-accent-primary/20" />
+        <div className="absolute w-32 h-32 rounded-full bg-accent-primary/10 blur-2xl opacity-40" />
+        <div className="absolute w-[350px] h-[350px]">
+          <div className="absolute top-0 start-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-primary shadow-lg shadow-accent-primary/50" />
+        </div>
+        <div className="absolute w-[450px] h-[450px]">
+          <div className="absolute top-0 start-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-accent-secondary shadow-lg shadow-accent-secondary/50" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
       {/* Outer ring */}
@@ -74,6 +92,7 @@ function Background() {
 
 export function FooterCta() {
   const { t, isRTL } = useLocale();
+  const reducedEffects = useReducedEffects();
   
   const handleApply = () => {
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" });
@@ -86,7 +105,7 @@ export function FooterCta() {
   return (
     <section className="relative py-32 md:py-40 bg-bg-primary overflow-hidden">
       <Background />
-      <AnimatedRings />
+      <AnimatedRings reducedEffects={reducedEffects} />
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         <motion.div

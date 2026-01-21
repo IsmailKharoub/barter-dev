@@ -2,14 +2,16 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useReducedEffects } from "@/lib/hooks";
 
 export function LaunchFastDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-50px" });
   const [phase, setPhase] = useState(0);
+  const reducedEffects = useReducedEffects();
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reducedEffects) return;
 
     const phases = [
       { delay: 0 },     // Initial
@@ -22,10 +24,55 @@ export function LaunchFastDemo() {
       { delay: 2400 },  // Footer
     ];
 
+    const timers: number[] = [];
     phases.forEach((p, i) => {
-      setTimeout(() => setPhase(i), p.delay);
+      timers.push(window.setTimeout(() => setPhase(i), p.delay));
     });
-  }, [isInView]);
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [isInView, reducedEffects]);
+
+  if (reducedEffects) {
+    return (
+      <div ref={containerRef} className="w-full h-full p-3 md:p-4 relative">
+        <div className="w-full h-full bg-[#0a0a0a] rounded-lg border border-white/10 overflow-hidden shadow-2xl">
+          <div className="h-5 bg-[#1a1a1a] flex items-center gap-1.5 px-2 border-b border-white/5">
+            <div className="w-2 h-2 rounded-full bg-red-500/70" />
+            <div className="w-2 h-2 rounded-full bg-yellow-500/70" />
+            <div className="w-2 h-2 rounded-full bg-green-500/70" />
+            <div className="flex-1 mx-4">
+              <div className="h-2.5 bg-white/10 rounded-full" />
+            </div>
+          </div>
+          <div className="p-3 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="w-6 h-6 rounded bg-white" />
+              <div className="flex gap-2">
+                <div className="h-1.5 w-6 bg-white/20 rounded" />
+                <div className="h-1.5 w-6 bg-white/20 rounded" />
+                <div className="h-1.5 w-6 bg-white/20 rounded" />
+              </div>
+            </div>
+            <div className="space-y-2 text-center">
+              <div className="h-4 w-3/4 mx-auto bg-white/20 rounded" />
+              <div className="h-2 w-1/2 mx-auto bg-white/10 rounded" />
+              <div className="h-6 w-24 mx-auto bg-white rounded" />
+            </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="bg-white/5 rounded p-2 border border-white/5">
+                  <div className="w-3 h-3 rounded bg-white/20 mb-1" />
+                  <div className="h-1 w-full bg-white/15 rounded" />
+                  <div className="h-1 w-2/3 bg-white/10 rounded mt-1" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="w-full h-full p-3 md:p-4 relative">

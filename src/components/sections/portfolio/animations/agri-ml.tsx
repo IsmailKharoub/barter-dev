@@ -10,11 +10,12 @@ const dataInputs = [
   { label: "Market", color: "#8B5CF6", delay: 0.3 },
 ];
 
-function DataStream({ label, color, delay, isHovered }: { 
+function DataStream({ label, color, delay, isHovered, shouldAnimate }: { 
   label: string; 
   color: string; 
   delay: number;
   isHovered: boolean;
+  shouldAnimate: boolean;
 }) {
   return (
     <motion.div
@@ -43,7 +44,7 @@ function DataStream({ label, color, delay, isHovered }: {
                 key={i}
                 className="absolute w-1 h-1 rounded-full"
                 style={{ backgroundColor: color, left: 0 }}
-                animate={{ x: [0, 40], opacity: [0, 1, 0] }}
+                animate={shouldAnimate ? { x: [0, 40], opacity: [0, 1, 0] } : undefined}
                 transition={{
                   duration: 0.8,
                   repeat: Infinity,
@@ -58,15 +59,15 @@ function DataStream({ label, color, delay, isHovered }: {
         <motion.div
           className="w-2 h-2 rounded-full ml-1"
           style={{ backgroundColor: color }}
-          animate={isHovered ? { scale: [1, 1.3, 1] } : {}}
-          transition={{ duration: 0.6, repeat: Infinity, delay: delay * 0.5 }}
+          animate={shouldAnimate && isHovered ? { scale: [1, 1.3, 1] } : {}}
+          transition={shouldAnimate ? { duration: 0.6, repeat: Infinity, delay: delay * 0.5 } : undefined}
         />
       </div>
     </motion.div>
   );
 }
 
-function MLModel({ isHovered }: { isHovered: boolean }) {
+function MLModel({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
       className="relative"
@@ -77,23 +78,23 @@ function MLModel({ isHovered }: { isHovered: boolean }) {
       {/* Outer glow */}
       <motion.div
         className="absolute inset-0 rounded-xl bg-accent-primary/20 blur-lg"
-        animate={isHovered ? { scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] } : {}}
-        transition={{ duration: 2, repeat: Infinity }}
+        animate={shouldAnimate && isHovered ? { scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] } : {}}
+        transition={shouldAnimate ? { duration: 2, repeat: Infinity } : undefined}
       />
       
       {/* Main model box */}
-      <div className="relative w-16 h-16 rounded-xl bg-gradient-to-br from-accent-primary/30 to-accent-secondary/20 border border-accent-primary/40 flex flex-col items-center justify-center gap-1 backdrop-blur-sm">
+      <div className="relative w-16 h-16 rounded-xl bg-linear-to-br from-accent-primary/30 to-accent-secondary/20 border border-accent-primary/40 flex flex-col items-center justify-center gap-1 backdrop-blur-sm">
         {/* Neural network dots */}
         <div className="flex gap-1">
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
               className="w-1.5 h-1.5 rounded-full bg-accent-primary/60"
-              animate={isHovered ? { 
+              animate={shouldAnimate && isHovered ? { 
                 opacity: [0.4, 1, 0.4],
                 scale: [0.8, 1.2, 0.8] 
               } : {}}
-              transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
+              transition={shouldAnimate ? { duration: 0.8, repeat: Infinity, delay: i * 0.15 } : undefined}
             />
           ))}
         </div>
@@ -105,11 +106,11 @@ function MLModel({ isHovered }: { isHovered: boolean }) {
             <motion.div
               key={i}
               className="w-1.5 h-1.5 rounded-full bg-accent-primary/60"
-              animate={isHovered ? { 
+              animate={shouldAnimate && isHovered ? { 
                 opacity: [0.4, 1, 0.4],
                 scale: [0.8, 1.2, 0.8] 
               } : {}}
-              transition={{ duration: 0.8, repeat: Infinity, delay: 0.3 + i * 0.15 }}
+              transition={shouldAnimate ? { duration: 0.8, repeat: Infinity, delay: 0.3 + i * 0.15 } : undefined}
             />
           ))}
         </div>
@@ -118,17 +119,17 @@ function MLModel({ isHovered }: { isHovered: boolean }) {
       {/* Processing ring */}
       <motion.div
         className="absolute inset-0 rounded-xl border-2 border-accent-primary/30"
-        animate={isHovered ? { 
+        animate={shouldAnimate && isHovered ? { 
           scale: [1, 1.15, 1], 
           opacity: [0.5, 0, 0.5] 
         } : {}}
-        transition={{ duration: 1.5, repeat: Infinity }}
+        transition={shouldAnimate ? { duration: 1.5, repeat: Infinity } : undefined}
       />
     </motion.div>
   );
 }
 
-function RiskOutput({ isHovered }: { isHovered: boolean }) {
+function RiskOutput({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <div className="flex flex-col items-start gap-2">
       {/* Risk Score Header */}
@@ -158,8 +159,8 @@ function RiskOutput({ isHovered }: { isHovered: boolean }) {
         {isHovered && (
           <motion.div
             className="absolute inset-y-0 w-4 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-            animate={{ x: [-20, 80] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            animate={shouldAnimate ? { x: [-20, 80] } : undefined}
+            transition={shouldAnimate ? { duration: 1.5, repeat: Infinity, ease: "linear" } : undefined}
           />
         )}
       </motion.div>
@@ -174,8 +175,8 @@ function RiskOutput({ isHovered }: { isHovered: boolean }) {
         <span className="text-lg font-mono text-success font-bold">78%</span>
         <motion.div
           className="flex items-center gap-1 px-2 py-0.5 bg-success/20 rounded-full"
-          animate={isHovered ? { scale: [1, 1.05, 1] } : {}}
-          transition={{ duration: 0.8, repeat: Infinity }}
+          animate={shouldAnimate && isHovered ? { scale: [1, 1.05, 1] } : {}}
+          transition={shouldAnimate ? { duration: 0.8, repeat: Infinity } : undefined}
         >
           <span className="text-[10px] font-mono text-success font-medium">APPROVED</span>
         </motion.div>
@@ -184,7 +185,7 @@ function RiskOutput({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-export function AgriMLAnimation({ isHovered = false }: AnimationProps) {
+export function AgriMLAnimation({ isHovered = false, shouldAnimate = true }: AnimationProps) {
   return (
     <div className="w-full h-full p-5 flex items-center justify-center gap-4 overflow-hidden">
       {/* Data inputs */}
@@ -196,15 +197,16 @@ export function AgriMLAnimation({ isHovered = false }: AnimationProps) {
             color={input.color}
             delay={input.delay}
             isHovered={isHovered}
+            shouldAnimate={shouldAnimate}
           />
         ))}
       </div>
 
       {/* ML Model */}
-      <MLModel isHovered={isHovered} />
+      <MLModel isHovered={isHovered} shouldAnimate={shouldAnimate} />
 
       {/* Output */}
-      <RiskOutput isHovered={isHovered} />
+      <RiskOutput isHovered={isHovered} shouldAnimate={shouldAnimate} />
     </div>
   );
 }

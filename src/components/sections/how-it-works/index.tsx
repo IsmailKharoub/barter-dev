@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useLocale } from "@/components/providers";
+import { useReducedEffects } from "@/lib/hooks";
 import { Button } from "@/components/ui/button";
 import {
   Ban,
@@ -103,6 +104,7 @@ function StepCard({
 
 export function HowItWorks() {
   const { t, isRTL } = useLocale();
+  const reducedEffects = useReducedEffects();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -211,8 +213,8 @@ export function HowItWorks() {
             <span>{t.howItWorks.cta}</span>
             <motion.span
               className={`inline-block ${isRTL ? "me-1 rotate-180" : "ms-1"}`}
-              animate={{ x: [0, 4, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+              animate={reducedEffects ? undefined : { x: [0, 4, 0] }}
+              transition={reducedEffects ? undefined : { duration: 1.5, repeat: Infinity }}
             >
               →
             </motion.span>

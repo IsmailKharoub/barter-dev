@@ -2,6 +2,7 @@
 
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useReducedEffects } from "@/lib/hooks";
 
 export function EcommerceDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -9,9 +10,10 @@ export function EcommerceDemo() {
   const [phase, setPhase] = useState(0);
   const [cartCount, setCartCount] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
+  const reducedEffects = useReducedEffects();
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reducedEffects) return;
     
     const phases = [
       { delay: 0 },      // 0: Store appears
@@ -30,17 +32,52 @@ export function EcommerceDemo() {
       { delay: 5800 },   // 13: Confetti!
     ];
 
+    const timers: number[] = [];
     phases.forEach((p, i) => {
-      setTimeout(() => {
+      timers.push(window.setTimeout(() => {
         setPhase(i);
         if (i === 8) setSelectedProduct(2);
         if (i === 10) setCartCount(1);
         if (i === 11) setSelectedProduct(null);
-      }, p.delay);
+      }, p.delay));
     });
-  }, [isInView]);
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [isInView, reducedEffects]);
 
   const showCheckout = phase >= 11;
+
+  if (reducedEffects) {
+    return (
+      <div ref={containerRef} className="w-full h-full p-4 md:p-6 relative">
+        <div className="w-full h-full bg-[#fafafa] rounded-lg border border-neutral-200 overflow-hidden shadow-2xl relative">
+          <div className="h-10 bg-white border-b border-neutral-100 px-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded bg-white border border-neutral-200" />
+              <div className="h-2 w-12 bg-neutral-300 rounded" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-8 bg-neutral-200 rounded" />
+              <div className="w-5 h-5 rounded bg-neutral-100 border border-neutral-200 flex items-center justify-center">
+                <span className="text-[8px] text-neutral-600">0</span>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="rounded-lg border border-neutral-200 bg-white p-3">
+                <div className="h-16 rounded bg-neutral-100 mb-2" />
+                <div className="h-2 w-3/4 bg-neutral-200 rounded" />
+                <div className="h-2 w-1/3 bg-neutral-200 rounded mt-1.5" />
+                <div className="h-6 w-20 bg-black/5 rounded mt-3" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="w-full h-full p-4 md:p-6 relative">

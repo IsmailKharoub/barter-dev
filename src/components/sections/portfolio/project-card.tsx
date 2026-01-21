@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { useReducedEffects } from "@/lib/hooks";
 import { ProjectAnimation } from "./project-animations";
 
 interface ProjectCardProps {
@@ -24,6 +25,10 @@ export function ProjectCard({
   index,
 }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const reducedEffects = useReducedEffects();
+  const animationRef = useRef<HTMLDivElement>(null);
+  const animationInView = useInView(animationRef, { margin: "-120px" });
+  const shouldAnimate = !reducedEffects && (isHovered || animationInView);
 
   return (
     <motion.article
@@ -45,9 +50,10 @@ export function ProjectCard({
 
       {/* Animation container */}
       <div
+        ref={animationRef}
         className="relative bg-bg-secondary overflow-hidden aspect-video"
       >
-        <ProjectAnimation projectId={id} isHovered={isHovered} />
+        <ProjectAnimation projectId={id} isHovered={isHovered} shouldAnimate={shouldAnimate} />
 
         {/* Category badge */}
         <motion.div

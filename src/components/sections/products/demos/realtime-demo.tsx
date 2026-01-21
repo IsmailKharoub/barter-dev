@@ -2,6 +2,7 @@
 
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useReducedEffects } from "@/lib/hooks";
 
 export function RealtimeDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -9,9 +10,10 @@ export function RealtimeDemo() {
   const [phase, setPhase] = useState(0);
   const [messages, setMessages] = useState<{ id: number; text: string; user: boolean }[]>([]);
   const [notifications, setNotifications] = useState<number[]>([]);
+  const reducedEffects = useReducedEffects();
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reducedEffects) return;
 
     const phases = [
       { delay: 0 },
@@ -23,8 +25,9 @@ export function RealtimeDemo() {
       { delay: 3000 },  // Final response
     ];
 
+    const phaseTimers: number[] = [];
     phases.forEach((p, i) => {
-      setTimeout(() => setPhase(i), p.delay);
+      phaseTimers.push(window.setTimeout(() => setPhase(i), p.delay));
     });
 
     // Simulate live messages
@@ -42,10 +45,42 @@ export function RealtimeDemo() {
     ];
 
     return () => {
+      phaseTimers.forEach(clearTimeout);
       msgTimers.forEach(clearTimeout);
       notifTimers.forEach(clearTimeout);
     };
-  }, [isInView]);
+  }, [isInView, reducedEffects]);
+
+  if (reducedEffects) {
+    return (
+      <div ref={containerRef} className="w-full h-full p-3 md:p-4 relative">
+        <div className="w-full h-full bg-[#0a0a0a] rounded-lg border border-white/10 overflow-hidden shadow-2xl flex">
+          <div className="w-12 bg-[#0f0f0f] border-r border-white/5 p-2 flex flex-col">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="w-full aspect-square rounded mb-2 bg-white/5 border border-white/10" />
+            ))}
+          </div>
+          <div className="flex-1 flex flex-col">
+            <div className="h-8 border-b border-white/5 px-3 flex items-center justify-between">
+              <div className="h-2 w-16 bg-white/10 rounded" />
+              <div className="h-2 w-10 bg-white/10 rounded" />
+            </div>
+            <div className="flex-1 p-3 space-y-2">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className={`max-w-[70%] rounded-lg px-2 py-1.5 border ${i % 2 === 0 ? "bg-white/5 border-white/10" : "bg-white/10 border-white/15 ml-auto"}`}>
+                  <div className="h-2 w-24 bg-white/10 rounded" />
+                </div>
+              ))}
+            </div>
+            <div className="h-10 border-t border-white/5 px-3 flex items-center gap-2">
+              <div className="flex-1 h-6 bg-white/5 rounded border border-white/10" />
+              <div className="h-6 w-10 bg-white rounded" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="w-full h-full p-3 md:p-4 relative">

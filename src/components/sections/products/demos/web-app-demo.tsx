@@ -2,14 +2,16 @@
 
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useReducedEffects } from "@/lib/hooks";
 
 export function WebAppDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
   const [phase, setPhase] = useState(0);
+  const reducedEffects = useReducedEffects();
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reducedEffects) return;
     
     const phases = [
       { delay: 0 },      // 0: Login screen
@@ -25,12 +27,58 @@ export function WebAppDemo() {
       { delay: 6200 },   // 10: Notifications ping
     ];
 
+    const timers: number[] = [];
     phases.forEach((p, i) => {
-      setTimeout(() => setPhase(i), p.delay);
+      timers.push(window.setTimeout(() => setPhase(i), p.delay));
     });
-  }, [isInView]);
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [isInView, reducedEffects]);
 
   const showDashboard = phase >= 4;
+
+  if (reducedEffects) {
+    return (
+      <div ref={containerRef} className="w-full h-full p-4 md:p-6 relative">
+        <div className="w-full h-full bg-[#0f0f0f] rounded-lg border border-border-default overflow-hidden shadow-2xl relative">
+          <div className="h-8 bg-[#111] border-b border-white/5 px-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded bg-white" />
+              <div className="h-1.5 w-14 bg-white/20 rounded" />
+            </div>
+            <div className="h-1.5 w-8 bg-white/10 rounded" />
+          </div>
+          <div className="p-4 flex items-center justify-center">
+            <div className="w-52 p-4 bg-white/5 rounded-lg border border-white/10">
+              <div className="flex justify-center mb-4">
+                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-white rounded" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div>
+                  <div className="text-[8px] text-white/40 mb-1">Email</div>
+                  <div className="h-6 bg-white/5 rounded border border-white/10 px-2 flex items-center">
+                    <span className="text-[8px] text-white/50 font-mono">user@company.co</span>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[8px] text-white/40 mb-1">Password</div>
+                  <div className="h-6 bg-white/5 rounded border border-white/10 px-2 flex items-center">
+                    <span className="text-[8px] text-white/40 tracking-widest">••••••••</span>
+                  </div>
+                </div>
+                <div className="h-7 bg-white rounded flex items-center justify-center">
+                  <span className="text-[9px] font-medium text-black">Sign In</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="w-full h-full p-4 md:p-6 relative">
@@ -291,7 +339,7 @@ function Dashboard({ phase }: { phase: number }) {
               {[35, 50, 40, 70, 55, 80, 45, 65, 75, 90, 60, 85].map((h, i) => (
                 <motion.div
                   key={i}
-                  className="flex-1 bg-gradient-to-t from-white to-white/60 rounded-t opacity-80"
+                  className="flex-1 bg-linear-to-t from-white to-white/60 rounded-t opacity-80"
                   initial={{ height: 0 }}
                   animate={phase >= 8 ? { height: `${h}%` } : {}}
                   transition={{ delay: 0.1 + i * 0.05, duration: 0.4, ease: "easeOut" }}

@@ -202,17 +202,17 @@ function ProductCard({
       transition={{ duration: 0.6, delay: index * 0.1 }}
     >
       {/* Animated demo area */}
-      <div className="aspect-[16/10] bg-bg-tertiary/50 relative overflow-hidden">
+      <div className="aspect-16/10 bg-bg-tertiary/50 relative overflow-hidden">
         <Demo />
         {/* Gradient overlay at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-bg-secondary/80 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-bg-secondary/80 to-transparent pointer-events-none" />
       </div>
 
       {/* Content */}
       <div className="p-6 md:p-8 relative">
         {/* Gradient overlay on hover */}
         <div
-          className={`absolute inset-0 bg-gradient-to-br ${colors.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+          className={`absolute inset-0 bg-linear-to-br ${colors.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
         />
 
         <div className="relative">

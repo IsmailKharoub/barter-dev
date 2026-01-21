@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useLocale } from "@/components/providers";
+import { useReducedEffects } from "@/lib/hooks";
 import { TradeCategory } from "./trade-category";
 import type { TradeCategoryKey } from "./trade-icons";
 
@@ -21,57 +22,61 @@ const categories: {
 ];
 
 // Animated background pattern - gradient mesh style
-function BackgroundPattern() {
+function BackgroundPattern({ reducedEffects }: { reducedEffects: boolean }) {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Gradient mesh blobs */}
-      <motion.div
-        className="absolute top-0 start-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)",
-        }}
-        animate={{
-          x: [0, 50, 0],
-          y: [0, 30, 0],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-      <motion.div
-        className="absolute bottom-0 end-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)",
-        }}
-        animate={{
-          x: [0, -50, 0],
-          y: [0, -30, 0],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-      <motion.div
-        className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[200px]"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%)",
-        }}
-        animate={{
-          scale: [1, 1.1, 1],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
+      {!reducedEffects && (
+        <>
+          <motion.div
+            className="absolute top-0 start-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)",
+            }}
+            animate={{
+              x: [0, 50, 0],
+              y: [0, 30, 0],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+          <motion.div
+            className="absolute bottom-0 end-1/4 w-[600px] h-[600px] rounded-full blur-[150px]"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)",
+            }}
+            animate={{
+              x: [0, -50, 0],
+              y: [0, -30, 0],
+            }}
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+          <motion.div
+            className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[200px]"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%)",
+            }}
+            animate={{
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        </>
+      )}
 
       {/* Radial fade */}
       <div
@@ -86,7 +91,7 @@ function BackgroundPattern() {
 }
 
 // Exchange symbol animation
-function ExchangeSymbol() {
+function ExchangeSymbol({ reducedEffects }: { reducedEffects: boolean }) {
   return (
     <motion.div
       className="relative w-20 h-20 mx-auto mb-8"
@@ -98,8 +103,8 @@ function ExchangeSymbol() {
       {/* Outer ring */}
       <motion.div
         className="absolute inset-0 rounded-full border-2 border-accent-primary/20"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        animate={reducedEffects ? undefined : { rotate: 360 }}
+        transition={reducedEffects ? undefined : { duration: 20, repeat: Infinity, ease: "linear" }}
       />
 
       {/* Inner elements */}
@@ -136,14 +141,14 @@ function ExchangeSymbol() {
       {/* Orbiting dots */}
       <motion.div
         className="absolute -top-1 start-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-primary shadow-lg shadow-accent-primary/50"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        animate={reducedEffects ? undefined : { rotate: 360 }}
+        transition={reducedEffects ? undefined : { duration: 8, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "50% calc(50% + 44px)" }}
       />
       <motion.div
         className="absolute -bottom-1 start-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent-secondary shadow-lg shadow-accent-secondary/50"
-        animate={{ rotate: -360 }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+        animate={reducedEffects ? undefined : { rotate: -360 }}
+        transition={reducedEffects ? undefined : { duration: 10, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "50% calc(50% - 44px)" }}
       />
     </motion.div>
@@ -225,6 +230,7 @@ function NoEquityBadge({ note }: { note: string }) {
 
 export function TradeTypes() {
   const { t, isRTL } = useLocale();
+  const reducedEffects = useReducedEffects();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -239,14 +245,14 @@ export function TradeTypes() {
       ref={sectionRef}
       className="relative py-24 md:py-32 lg:py-40 bg-bg-secondary overflow-hidden"
     >
-      <BackgroundPattern />
+      <BackgroundPattern reducedEffects={reducedEffects} />
 
       <motion.div className="relative" style={{ opacity }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {/* Section header */}
           <div className="text-center mb-16 lg:mb-20">
             {/* Exchange symbol */}
-            <ExchangeSymbol />
+            <ExchangeSymbol reducedEffects={reducedEffects} />
 
             {/* Eyebrow */}
             <motion.p

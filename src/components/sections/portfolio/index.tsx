@@ -3,10 +3,12 @@
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/providers";
 import { ProjectCard } from "./project-card";
+import { useReducedEffects } from "@/lib/hooks";
 
 export function Portfolio() {
   const { t, isRTL } = useLocale();
   const { projects, stats } = t.portfolio;
+  const reducedEffects = useReducedEffects();
 
   return (
     <section id="portfolio" className="py-24 md:py-32 lg:py-40 bg-bg-secondary relative overflow-hidden">
@@ -159,11 +161,11 @@ export function Portfolio() {
             viewport={{ once: true }}
             transition={{ delay: 0.5, type: "spring" }}
           >
-            <div className="w-full h-full rounded-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center">
+            <div className="w-full h-full rounded-xl bg-linear-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center">
               <motion.div
                 className="w-3 h-3 rounded-full bg-white"
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
+                animate={reducedEffects ? undefined : { scale: [1, 1.2, 1] }}
+                transition={reducedEffects ? undefined : { duration: 2, repeat: Infinity }}
               />
             </div>
           </motion.div>

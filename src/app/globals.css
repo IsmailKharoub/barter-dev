@@ -156,6 +156,33 @@ html.lenis body {
 }
 
 /* ================================
+   PERFORMANCE - REDUCED EFFECTS
+   ================================ */
+
+/* When we detect reduced effects (mobile/coarse pointer or Save-Data), remove the most expensive filters. */
+html[data-reduced-effects="true"] .backdrop-blur,
+html[data-reduced-effects="true"] .backdrop-blur-sm,
+html[data-reduced-effects="true"] .backdrop-blur-md,
+html[data-reduced-effects="true"] .backdrop-blur-lg,
+html[data-reduced-effects="true"] .backdrop-blur-xl,
+html[data-reduced-effects="true"] .backdrop-blur-2xl,
+html[data-reduced-effects="true"] .backdrop-blur-3xl {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html[data-reduced-effects="true"] .blur,
+html[data-reduced-effects="true"] .blur-sm,
+html[data-reduced-effects="true"] .blur-md,
+html[data-reduced-effects="true"] .blur-lg,
+html[data-reduced-effects="true"] .blur-xl,
+html[data-reduced-effects="true"] .blur-2xl,
+html[data-reduced-effects="true"] .blur-3xl,
+html[data-reduced-effects="true"] [class*="blur-["] {
+  filter: none !important;
+}
+
+/* ================================
    ACCESSIBILITY - FOCUS STYLES
    ================================ */
 

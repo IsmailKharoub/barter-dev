@@ -13,11 +13,13 @@ const participants = [
 function VideoTile({ 
   participant, 
   index, 
-  isHovered 
+  isHovered,
+  shouldAnimate,
 }: { 
   participant: typeof participants[0]; 
   index: number;
   isHovered: boolean;
+  shouldAnimate: boolean;
 }) {
   const isTeacher = participant.speaking;
   
@@ -30,13 +32,13 @@ function VideoTile({
       transition={{ delay: index * 0.1, type: "spring", stiffness: 300 }}
     >
       {/* Video placeholder */}
-      <div className="absolute inset-0 bg-gradient-to-br from-bg-secondary to-bg-tertiary">
+      <div className="absolute inset-0 bg-linear-to-br from-bg-secondary to-bg-tertiary">
         {/* Avatar */}
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div
             className="w-6 h-6 rounded-full bg-accent-primary/20 flex items-center justify-center"
-            animate={isHovered && isTeacher ? { scale: [1, 1.1, 1] } : {}}
-            transition={{ duration: 1, repeat: Infinity }}
+            animate={shouldAnimate && isHovered && isTeacher ? { scale: [1, 1.1, 1] } : {}}
+            transition={shouldAnimate ? { duration: 1, repeat: Infinity } : undefined}
           >
             <span className="text-xs">{isTeacher ? "👨‍🏫" : "👨‍🎓"}</span>
           </motion.div>
@@ -48,8 +50,8 @@ function VideoTile({
         <motion.div
           className="absolute inset-0 rounded-lg border-2 border-success"
           initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? [0, 1, 0] : 0.8 }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          animate={shouldAnimate ? { opacity: isHovered ? [0, 1, 0] : 0.8 } : { opacity: 0.8 }}
+          transition={shouldAnimate ? { duration: 1.5, repeat: Infinity } : undefined}
         />
       )}
 
@@ -60,16 +62,22 @@ function VideoTile({
             <motion.div
               key={i}
               className="w-0.5 bg-success rounded-full"
-              animate={{ 
-                height: isHovered 
-                  ? [2, 4 + Math.random() * 8, 2] 
-                  : [2, 6, 2]
-              }}
-              transition={{ 
-                duration: 0.3 + Math.random() * 0.2, 
-                repeat: Infinity,
-                delay: i * 0.05 
-              }}
+              animate={
+                shouldAnimate
+                  ? {
+                      height: isHovered ? [2, 4 + Math.random() * 8, 2] : [2, 6, 2],
+                    }
+                  : undefined
+              }
+              transition={
+                shouldAnimate
+                  ? {
+                      duration: 0.3 + Math.random() * 0.2,
+                      repeat: Infinity,
+                      delay: i * 0.05,
+                    }
+                  : undefined
+              }
             />
           ))}
         </div>
@@ -90,7 +98,7 @@ function VideoTile({
   );
 }
 
-function VideoGrid({ isHovered }: { isHovered: boolean }) {
+function VideoGrid({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
       className="absolute left-3 top-3 w-[45%]"
@@ -102,13 +110,13 @@ function VideoGrid({ isHovered }: { isHovered: boolean }) {
       <div className="flex items-center gap-1.5 mb-2">
         <motion.div
           className="flex items-center gap-1 px-2 py-0.5 bg-red-500/20 rounded-full"
-          animate={{ opacity: [1, 0.7, 1] }}
-          transition={{ duration: 1, repeat: Infinity }}
+          animate={shouldAnimate ? { opacity: [1, 0.7, 1] } : undefined}
+          transition={shouldAnimate ? { duration: 1, repeat: Infinity } : undefined}
         >
           <motion.div
             className="w-1.5 h-1.5 rounded-full bg-red-500"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 0.8, repeat: Infinity }}
+            animate={shouldAnimate ? { scale: [1, 1.2, 1] } : undefined}
+            transition={shouldAnimate ? { duration: 0.8, repeat: Infinity } : undefined}
           />
           <span className="text-[8px] font-mono text-red-400 font-bold">LIVE</span>
         </motion.div>
@@ -123,6 +131,7 @@ function VideoGrid({ isHovered }: { isHovered: boolean }) {
             participant={p} 
             index={i} 
             isHovered={isHovered} 
+            shouldAnimate={shouldAnimate}
           />
         ))}
       </div>
@@ -130,10 +139,10 @@ function VideoGrid({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function GameCanvas({ isHovered }: { isHovered: boolean }) {
+function GameCanvas({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
-      className="absolute right-3 top-3 bottom-3 w-[45%] bg-gradient-to-br from-accent-primary/10 via-success/5 to-accent-secondary/10 rounded-xl border border-accent-primary/30 overflow-hidden"
+      className="absolute right-3 top-3 bottom-3 w-[45%] bg-linear-to-br from-accent-primary/10 via-success/5 to-accent-secondary/10 rounded-xl border border-accent-primary/30 overflow-hidden"
       initial={{ x: 20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ delay: 0.3 }}
@@ -146,8 +155,8 @@ function GameCanvas({ isHovered }: { isHovered: boolean }) {
         </div>
         <motion.div
           className="px-1.5 py-0.5 bg-success/20 rounded text-[8px] font-mono text-success font-bold"
-          animate={isHovered ? { scale: [1, 1.1, 1] } : {}}
-          transition={{ duration: 0.5, repeat: Infinity }}
+          animate={shouldAnimate && isHovered ? { scale: [1, 1.1, 1] } : {}}
+          transition={shouldAnimate ? { duration: 0.5, repeat: Infinity } : undefined}
         >
           +100
         </motion.div>
@@ -170,13 +179,13 @@ function GameCanvas({ isHovered }: { isHovered: boolean }) {
             animate={{ 
               scale: 1, 
               opacity: 1,
-              y: isHovered ? [0, -8, 0] : 0,
-              rotate: isHovered ? [0, 10, -10, 0] : 0,
+              y: shouldAnimate && isHovered ? [0, -8, 0] : 0,
+              rotate: shouldAnimate && isHovered ? [0, 10, -10, 0] : 0,
             }}
             transition={{ 
               scale: { delay: 0.5 + item.delay, type: "spring" },
-              y: { duration: 2, repeat: Infinity, delay: item.delay },
-              rotate: { duration: 2, repeat: Infinity, delay: item.delay },
+              y: shouldAnimate ? { duration: 2, repeat: Infinity, delay: item.delay } : undefined,
+              rotate: shouldAnimate ? { duration: 2, repeat: Infinity, delay: item.delay } : undefined,
             }}
           >
             {item.emoji}
@@ -216,8 +225,8 @@ function GameCanvas({ isHovered }: { isHovered: boolean }) {
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.span
               className="text-lg font-bold text-accent-primary"
-              animate={isHovered ? { scale: [1, 1.1, 1] } : {}}
-              transition={{ duration: 0.5, repeat: Infinity }}
+              animate={shouldAnimate && isHovered ? { scale: [1, 1.1, 1] } : {}}
+              transition={shouldAnimate ? { duration: 0.5, repeat: Infinity } : undefined}
             >
               {isHovered ? "85" : "75"}%
             </motion.span>
@@ -237,8 +246,8 @@ function GameCanvas({ isHovered }: { isHovered: boolean }) {
               {["🥇", "🥈", "🥉"].map((medal, i) => (
                 <motion.span
                   key={i}
-                  animate={isHovered ? { y: [0, -2, 0] } : {}}
-                  transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
+                  animate={shouldAnimate && isHovered ? { y: [0, -2, 0] } : {}}
+                  transition={shouldAnimate ? { duration: 0.5, repeat: Infinity, delay: i * 0.1 } : undefined}
                 >
                   {medal}
                 </motion.span>
@@ -266,14 +275,14 @@ function ClassInfo() {
   );
 }
 
-export function LearningAnimation({ isHovered = false }: AnimationProps) {
+export function LearningAnimation({ isHovered = false, shouldAnimate = true }: AnimationProps) {
   return (
     <div className="w-full h-full relative overflow-hidden">
       {/* Video grid */}
-      <VideoGrid isHovered={isHovered} />
+      <VideoGrid isHovered={isHovered} shouldAnimate={shouldAnimate} />
 
       {/* Game canvas */}
-      <GameCanvas isHovered={isHovered} />
+      <GameCanvas isHovered={isHovered} shouldAnimate={shouldAnimate} />
 
       {/* Class info */}
       <ClassInfo />

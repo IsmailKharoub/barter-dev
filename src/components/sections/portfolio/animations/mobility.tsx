@@ -62,32 +62,34 @@ function PulseDot({
   color,
   delay,
   size = 10,
+  shouldAnimate,
 }: {
   x: number;
   y: number;
   color: string;
   delay: number;
   size?: number;
+  shouldAnimate: boolean;
 }) {
   return (
     <div className="absolute" style={{ left: `${x}%`, top: `${y}%` }}>
       <motion.div
         className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{ width: size, height: size, backgroundColor: color }}
-        animate={{ scale: [1, 1.08, 1] }}
-        transition={{ duration: 1.8, repeat: Infinity, delay }}
+        animate={shouldAnimate ? { scale: [1, 1.08, 1] } : undefined}
+        transition={shouldAnimate ? { duration: 1.8, repeat: Infinity, delay } : undefined}
       />
       <motion.div
         className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{ width: size, height: size, border: `2px solid ${color}` }}
-        animate={{ scale: [1, 2.4], opacity: [0.45, 0] }}
-        transition={{ duration: 2.2, repeat: Infinity, delay }}
+        animate={shouldAnimate ? { scale: [1, 2.4], opacity: [0.45, 0] } : undefined}
+        transition={shouldAnimate ? { duration: 2.2, repeat: Infinity, delay } : undefined}
       />
     </div>
   );
 }
 
-function RouteLayer({ isHovered }: { isHovered: boolean }) {
+function RouteLayer({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   const duration = isHovered ? 3.6 : 5.2;
 
   return (
@@ -117,8 +119,8 @@ function RouteLayer({ isHovered }: { isHovered: boolean }) {
         strokeWidth="2.2"
         strokeLinecap="round"
         strokeDasharray="14 86"
-        animate={{ strokeDashoffset: [100, 0] }}
-        transition={{ duration, repeat: Infinity, ease: "linear" }}
+        animate={shouldAnimate ? { strokeDashoffset: [100, 0] } : undefined}
+        transition={shouldAnimate ? { duration, repeat: Infinity, ease: "linear" } : undefined}
       />
 
       {/* Start / end nodes */}
@@ -145,17 +147,21 @@ function RouteLayer({ isHovered }: { isHovered: boolean }) {
         fill="rgba(255, 255, 255, 0.95)"
         stroke="rgba(16, 185, 129, 0.35)"
         strokeWidth="2"
-        animate={{
-          cx: routePoints.map((point) => point.x),
-          cy: routePoints.map((point) => point.y),
-        }}
-        transition={{ duration, repeat: Infinity, ease: "easeInOut" }}
+        animate={
+          shouldAnimate
+            ? {
+                cx: routePoints.map((point) => point.x),
+                cy: routePoints.map((point) => point.y),
+              }
+            : undefined
+        }
+        transition={shouldAnimate ? { duration, repeat: Infinity, ease: "easeInOut" } : undefined}
       />
     </svg>
   );
 }
 
-function StoryBar({ isHovered }: { isHovered: boolean }) {
+function StoryBar({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   const duration = isHovered ? 4.8 : 6.6;
 
   return (
@@ -166,8 +172,8 @@ function StoryBar({ isHovered }: { isHovered: boolean }) {
             <motion.div
               key={phase.label}
               className="flex-1"
-              animate={{ opacity: [0.35, 1, 1, 0.35] }}
-              transition={{ duration, repeat: Infinity, times: phase.times }}
+              animate={shouldAnimate ? { opacity: [0.35, 1, 1, 0.35] } : undefined}
+              transition={shouldAnimate ? { duration, repeat: Infinity, times: phase.times } : undefined}
             >
               <div className="flex items-center justify-center gap-2">
                 <span
@@ -190,8 +196,8 @@ function StoryBar({ isHovered }: { isHovered: boolean }) {
           <motion.div
             className="h-full w-1/3 rounded-full"
             style={{ background: "linear-gradient(90deg, rgba(16,185,129,0.9), rgba(255,255,255,0.9), rgba(99,102,241,0.9))" }}
-            animate={{ x: ["-40%", "200%"] }}
-            transition={{ duration, repeat: Infinity, ease: "linear" }}
+            animate={shouldAnimate ? { x: ["-40%", "200%"] } : undefined}
+            transition={shouldAnimate ? { duration, repeat: Infinity, ease: "linear" } : undefined}
           />
         </motion.div>
       </div>
@@ -199,7 +205,7 @@ function StoryBar({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function PhonePanel({ isHovered }: { isHovered: boolean }) {
+function PhonePanel({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   const duration = isHovered ? 4.8 : 6.6;
 
   return (
@@ -226,21 +232,19 @@ function PhonePanel({ isHovered }: { isHovered: boolean }) {
           </div>
 
           <div className="absolute inset-0">
-            <RouteLayer isHovered={isHovered} />
+            <RouteLayer isHovered={isHovered} shouldAnimate={shouldAnimate} />
           </div>
 
           {/* Phase label */}
           <motion.div
             className="absolute start-2 bottom-2 end-2 rounded-lg bg-bg-primary/55 border border-border-subtle px-2 py-1 backdrop-blur-sm"
-            animate={{ opacity: [0.55, 1, 0.55] }}
-            transition={{ duration: 1.6, repeat: Infinity }}
+            animate={shouldAnimate ? { opacity: [0.55, 1, 0.55] } : undefined}
+            transition={shouldAnimate ? { duration: 1.6, repeat: Infinity } : undefined}
           >
             <motion.div
               className="text-[10px] font-semibold tracking-wide text-white/90"
-              animate={{
-                opacity: [0, 1, 1, 0],
-              }}
-              transition={{ duration, repeat: Infinity }}
+              animate={shouldAnimate ? { opacity: [0, 1, 1, 0] } : undefined}
+              transition={shouldAnimate ? { duration, repeat: Infinity } : undefined}
             >
               Ride in progress
             </motion.div>
@@ -250,8 +254,8 @@ function PhonePanel({ isHovered }: { isHovered: boolean }) {
         {/* CTA */}
         <motion.div
           className="relative rounded-xl border border-emerald-400/30 bg-emerald-500/25 overflow-hidden"
-          animate={isHovered ? { scale: [1, 1.03, 1] } : {}}
-          transition={{ duration: 1.2, repeat: Infinity }}
+          animate={shouldAnimate && isHovered ? { scale: [1, 1.03, 1] } : {}}
+          transition={shouldAnimate ? { duration: 1.2, repeat: Infinity } : undefined}
         >
           <div className="flex items-center justify-between px-3 py-2">
             <span className="text-[10px] font-bold tracking-wider uppercase text-white">
@@ -259,8 +263,8 @@ function PhonePanel({ isHovered }: { isHovered: boolean }) {
             </span>
             <motion.div
               className="w-8 h-3 rounded-full bg-white/10"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.4, repeat: Infinity }}
+              animate={shouldAnimate ? { opacity: [0.5, 1, 0.5] } : undefined}
+              transition={shouldAnimate ? { duration: 1.4, repeat: Infinity } : undefined}
             />
           </div>
           <motion.div
@@ -269,8 +273,10 @@ function PhonePanel({ isHovered }: { isHovered: boolean }) {
               background:
                 "linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.16) 50%, transparent 100%)",
             }}
-            animate={{ x: ["-60%", "60%"] }}
-            transition={{ duration: isHovered ? 1.8 : 2.6, repeat: Infinity, ease: "linear" }}
+            animate={shouldAnimate ? { x: ["-60%", "60%"] } : undefined}
+            transition={
+              shouldAnimate ? { duration: isHovered ? 1.8 : 2.6, repeat: Infinity, ease: "linear" } : undefined
+            }
           />
         </motion.div>
       </div>
@@ -278,7 +284,7 @@ function PhonePanel({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function MetricsChips({ isHovered }: { isHovered: boolean }) {
+function MetricsChips({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
       className="absolute start-4 top-10 flex flex-col gap-2"
@@ -304,8 +310,8 @@ function MetricsChips({ isHovered }: { isHovered: boolean }) {
           <motion.span
             className="text-[11px] font-bold"
             style={{ color: stat.color }}
-            animate={isHovered ? { opacity: [1, 0.5, 1] } : {}}
-            transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+            animate={shouldAnimate && isHovered ? { opacity: [1, 0.5, 1] } : {}}
+            transition={shouldAnimate ? { duration: 1, repeat: Infinity, delay: i * 0.2 } : undefined}
           >
             {stat.value}
           </motion.span>
@@ -315,34 +321,34 @@ function MetricsChips({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function LegendMarkers() {
+function LegendMarkers({ shouldAnimate }: { shouldAnimate: boolean }) {
   return (
     <>
       {/* Avoid top-left area (category badge lives there) */}
-      <PulseDot x={28} y={18} color="#10B981" delay={0} size={9} />
-      <PulseDot x={58} y={22} color="#FFFFFF" delay={0.4} size={8} />
-      <PulseDot x={70} y={74} color="#6366F1" delay={0.8} size={9} />
+      <PulseDot x={28} y={18} color="#10B981" delay={0} size={9} shouldAnimate={shouldAnimate} />
+      <PulseDot x={58} y={22} color="#FFFFFF" delay={0.4} size={8} shouldAnimate={shouldAnimate} />
+      <PulseDot x={70} y={74} color="#6366F1" delay={0.8} size={9} shouldAnimate={shouldAnimate} />
     </>
   );
 }
 
-export function MobilityAnimation({ isHovered = false }: AnimationProps) {
+export function MobilityAnimation({ isHovered = false, shouldAnimate = true }: AnimationProps) {
   return (
     <div className="w-full h-full relative overflow-hidden bg-bg-secondary">
       <Backdrop />
 
       {/* Safe-area content to avoid the card's external overlays */}
       <div className="absolute inset-0">
-        <LegendMarkers />
+        <LegendMarkers shouldAnimate={shouldAnimate} />
 
         {/* Map route occupies the left/center; phone sits on the right */}
         <div className="absolute inset-0">
-          <RouteLayer isHovered={isHovered} />
+          <RouteLayer isHovered={isHovered} shouldAnimate={shouldAnimate} />
         </div>
 
-        <MetricsChips isHovered={isHovered} />
-        <PhonePanel isHovered={isHovered} />
-        <StoryBar isHovered={isHovered} />
+        <MetricsChips isHovered={isHovered} shouldAnimate={shouldAnimate} />
+        <PhonePanel isHovered={isHovered} shouldAnimate={shouldAnimate} />
+        <StoryBar isHovered={isHovered} shouldAnimate={shouldAnimate} />
       </div>
     </div>
   );

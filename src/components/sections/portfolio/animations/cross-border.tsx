@@ -58,7 +58,7 @@ function Backdrop() {
   );
 }
 
-function RouteArc({ isHovered }: { isHovered: boolean }) {
+function RouteArc({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   const duration = isHovered ? 2.6 : 3.8;
 
   return (
@@ -88,8 +88,8 @@ function RouteArc({ isHovered }: { isHovered: boolean }) {
         strokeWidth="2.2"
         strokeLinecap="round"
         strokeDasharray="14 90"
-        animate={{ strokeDashoffset: [100, 0] }}
-        transition={{ duration, repeat: Infinity, ease: "linear" }}
+        animate={shouldAnimate ? { strokeDashoffset: [100, 0] } : undefined}
+        transition={shouldAnimate ? { duration, repeat: Infinity, ease: "linear" } : undefined}
       />
 
       {/* Moving packet */}
@@ -98,11 +98,15 @@ function RouteArc({ isHovered }: { isHovered: boolean }) {
         fill="rgba(255,255,255,0.92)"
         stroke="rgba(16,185,129,0.35)"
         strokeWidth="2"
-        animate={{
-          cx: routePoints.map((p) => p.x),
-          cy: routePoints.map((p) => p.y),
-        }}
-        transition={{ duration, repeat: Infinity, ease: "easeInOut" }}
+        animate={
+          shouldAnimate
+            ? {
+                cx: routePoints.map((p) => p.x),
+                cy: routePoints.map((p) => p.y),
+              }
+            : undefined
+        }
+        transition={shouldAnimate ? { duration, repeat: Infinity, ease: "easeInOut" } : undefined}
       />
 
       {/* Endpoints */}
@@ -119,6 +123,7 @@ function TransferCard({
   tint,
   align,
   delay,
+  shouldAnimate,
 }: {
   label: string;
   currency: string;
@@ -126,6 +131,7 @@ function TransferCard({
   tint: string;
   align: "left" | "right";
   delay: number;
+  shouldAnimate: boolean;
 }) {
   const isRight = align === "right";
 
@@ -161,8 +167,8 @@ function TransferCard({
           <motion.div
             className="h-full rounded"
             style={{ background: `linear-gradient(90deg, ${tint}80, rgba(255,255,255,0.35))` }}
-            animate={{ x: ["-35%", "0%"] }}
-            transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+            animate={shouldAnimate ? { x: ["-35%", "0%"] } : undefined}
+            transition={shouldAnimate ? { duration: 2.6, repeat: Infinity, ease: "easeInOut" } : undefined}
           />
         </div>
         <div className="h-2 rounded bg-white/8 w-[82%]" />
@@ -171,7 +177,7 @@ function TransferCard({
   );
 }
 
-function Pipeline({ isHovered }: { isHovered: boolean }) {
+function Pipeline({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   const duration = isHovered ? 1.2 : 1.6;
 
   return (
@@ -188,8 +194,8 @@ function Pipeline({ isHovered }: { isHovered: boolean }) {
         <motion.div
           key={chip.label}
           className="px-3 py-1.5 rounded-xl border border-border-subtle bg-bg-primary/55 backdrop-blur-sm shadow-md"
-          animate={isHovered ? { y: [0, -2, 0] } : {}}
-          transition={{ duration: 1.6, repeat: Infinity, delay: i * 0.15 }}
+          animate={shouldAnimate && isHovered ? { y: [0, -2, 0] } : {}}
+          transition={shouldAnimate ? { duration: 1.6, repeat: Infinity, delay: i * 0.15 } : undefined}
         >
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: chip.tint }} />
@@ -199,8 +205,8 @@ function Pipeline({ isHovered }: { isHovered: boolean }) {
             <motion.div
               className="text-[10px] font-bold"
               style={{ color: chip.tint }}
-              animate={{ opacity: [0.6, 1, 0.6] }}
-              transition={{ duration, repeat: Infinity, delay: i * 0.25 }}
+              animate={shouldAnimate ? { opacity: [0.6, 1, 0.6] } : undefined}
+              transition={shouldAnimate ? { duration, repeat: Infinity, delay: i * 0.25 } : undefined}
             >
               {chip.value}
             </motion.div>
@@ -211,7 +217,7 @@ function Pipeline({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function StatusPill({ isHovered }: { isHovered: boolean }) {
+function StatusPill({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
       className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full border border-border-subtle bg-bg-primary/55 backdrop-blur-sm"
@@ -222,8 +228,8 @@ function StatusPill({ isHovered }: { isHovered: boolean }) {
       <div className="flex items-center gap-2">
         <motion.div
           className="w-2 h-2 rounded-full bg-success"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.65, 1, 0.65] }}
-          transition={{ duration: 1.2, repeat: Infinity }}
+          animate={shouldAnimate ? { scale: [1, 1.2, 1], opacity: [0.65, 1, 0.65] } : undefined}
+          transition={shouldAnimate ? { duration: 1.2, repeat: Infinity } : undefined}
         />
         <span className="text-[10px] font-semibold tracking-wider uppercase text-white/80">
           {isHovered ? "Settling" : "Ready"}
@@ -234,14 +240,14 @@ function StatusPill({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-export function CrossBorderAnimation({ isHovered = false }: AnimationProps) {
+export function CrossBorderAnimation({ isHovered = false, shouldAnimate = true }: AnimationProps) {
   return (
     <div className="w-full h-full relative overflow-hidden bg-bg-secondary">
       <Backdrop />
 
       {/* Keep content away from the top-left (portfolio badge) */}
       <div className="absolute inset-0 px-4 pt-10 pb-10">
-        <RouteArc isHovered={isHovered} />
+        <RouteArc isHovered={isHovered} shouldAnimate={shouldAnimate} />
 
         <div className="relative z-10 h-full flex items-center justify-between">
           <TransferCard
@@ -251,6 +257,7 @@ export function CrossBorderAnimation({ isHovered = false }: AnimationProps) {
             tint="#10B981"
             align="left"
             delay={0.1}
+            shouldAnimate={shouldAnimate}
           />
 
           <TransferCard
@@ -260,11 +267,12 @@ export function CrossBorderAnimation({ isHovered = false }: AnimationProps) {
             tint="#3B82F6"
             align="right"
             delay={0.18}
+            shouldAnimate={shouldAnimate}
           />
         </div>
 
-        <Pipeline isHovered={isHovered} />
-        <StatusPill isHovered={isHovered} />
+        <Pipeline isHovered={isHovered} shouldAnimate={shouldAnimate} />
+        <StatusPill isHovered={isHovered} shouldAnimate={shouldAnimate} />
       </div>
     </div>
   );

@@ -2,15 +2,17 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useReducedEffects } from "@/lib/hooks";
 
 export function CmsDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
   const [phase, setPhase] = useState(0);
   const [contentBlocks, setContentBlocks] = useState<string[]>([]);
+  const reducedEffects = useReducedEffects();
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reducedEffects) return;
     
     const phases = [
       { delay: 0 },      // 0: Editor appears
@@ -25,15 +27,50 @@ export function CmsDemo() {
       { delay: 6400 },   // 9: Distribution animation
     ];
 
+    const timers: number[] = [];
     phases.forEach((p, i) => {
-      setTimeout(() => {
+      timers.push(window.setTimeout(() => {
         setPhase(i);
         if (i === 2) setContentBlocks(["heading"]);
         if (i === 3) setContentBlocks(["heading", "text"]);
         if (i === 4) setContentBlocks(["heading", "text", "image"]);
-      }, p.delay);
+      }, p.delay));
     });
-  }, [isInView]);
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [isInView, reducedEffects]);
+
+  if (reducedEffects) {
+    return (
+      <div ref={containerRef} className="w-full h-full p-4 md:p-6 relative">
+        <div className="w-full h-full bg-[#0a0a0a] rounded-lg border border-white/10 overflow-hidden shadow-2xl">
+          <div className="h-8 bg-[#111] border-b border-white/5 px-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded bg-white" />
+              <div className="h-1.5 w-16 bg-white/20 rounded" />
+            </div>
+            <div className="px-2 py-1 rounded text-[8px] bg-white/10 text-white/60">Publish</div>
+          </div>
+          <div className="flex h-[calc(100%-2rem)]">
+            <div className="w-14 bg-[#0f0f0f] border-r border-white/5 p-2 space-y-2">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="w-full aspect-square rounded bg-white/10 border border-white/20" />
+              ))}
+            </div>
+            <div className="flex-1 p-3 bg-[#0f0f1f]">
+              <div className="h-2 w-16 bg-white/10 rounded mb-3" />
+              <div className="space-y-2">
+                <div className="h-8 rounded bg-white/5 border border-white/10" />
+                <div className="h-12 rounded bg-white/5 border border-white/10" />
+                <div className="h-16 rounded bg-white/5 border border-white/10" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="w-full h-full p-4 md:p-6 relative">

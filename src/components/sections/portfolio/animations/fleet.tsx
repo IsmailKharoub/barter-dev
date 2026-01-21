@@ -53,12 +53,14 @@ function Lane({
   status,
   isHovered,
   delay,
+  shouldAnimate,
 }: {
   y: number;
   tint: string;
   status: "verified" | "flagged";
   isHovered: boolean;
   delay: number;
+  shouldAnimate: boolean;
 }) {
   const travel = isHovered ? 72 : 60;
   const duration = isHovered ? 3.0 : 4.1;
@@ -80,8 +82,8 @@ function Lane({
               ? "linear-gradient(90deg, rgba(239,68,68,0.18), rgba(239,68,68,0.05))"
               : "linear-gradient(90deg, rgba(16,185,129,0.18), rgba(16,185,129,0.05))",
           }}
-          animate={{ opacity: [0.55, 0.9, 0.55] }}
-          transition={{ duration: 2.4, repeat: Infinity }}
+          animate={shouldAnimate ? { opacity: [0.55, 0.9, 0.55] } : undefined}
+          transition={shouldAnimate ? { duration: 2.4, repeat: Infinity } : undefined}
         />
 
         {/* Moving vehicle block */}
@@ -92,17 +94,25 @@ function Lane({
             borderColor: `${tint}55`,
             backgroundColor: `${tint}18`,
           }}
-          animate={{
-            x: [0, `${travel}%`, `${travel}%`],
-            scale: isHovered ? [1, 1.04, 1] : [1, 1.02, 1],
-          }}
-          transition={{
-            duration,
-            repeat: Infinity,
-            repeatDelay: 0.4,
-            delay: delay * 0.4,
-            ease: "easeInOut",
-          }}
+          animate={
+            shouldAnimate
+              ? {
+                  x: [0, `${travel}%`, `${travel}%`],
+                  scale: isHovered ? [1, 1.04, 1] : [1, 1.02, 1],
+                }
+              : undefined
+          }
+          transition={
+            shouldAnimate
+              ? {
+                  duration,
+                  repeat: Infinity,
+                  repeatDelay: 0.4,
+                  delay: delay * 0.4,
+                  ease: "easeInOut",
+                }
+              : undefined
+          }
         >
           <div className="absolute inset-0 rounded-xl bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.16),transparent_60%)]" />
           <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white/25" />
@@ -116,7 +126,7 @@ function Lane({
   );
 }
 
-function DocsPanel({ isHovered }: { isHovered: boolean }) {
+function DocsPanel({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
       className="absolute end-4 top-10 w-[clamp(140px,34%,230px)] rounded-2xl border border-border-subtle bg-bg-primary/55 backdrop-blur-sm p-3 shadow-xl"
@@ -130,8 +140,8 @@ function DocsPanel({ isHovered }: { isHovered: boolean }) {
         </div>
         <motion.div
           className="px-2 py-0.5 rounded-full border border-white/10 bg-white/5"
-          animate={isHovered ? { opacity: [0.7, 1, 0.7] } : {}}
-          transition={{ duration: 1.2, repeat: Infinity }}
+          animate={shouldAnimate && isHovered ? { opacity: [0.7, 1, 0.7] } : {}}
+          transition={shouldAnimate ? { duration: 1.2, repeat: Infinity } : undefined}
         >
           <span className="text-[10px] font-bold text-success">Verified</span>
         </motion.div>
@@ -154,8 +164,8 @@ function DocsPanel({ isHovered }: { isHovered: boolean }) {
             <motion.div
               className="w-2.5 h-2.5 rounded-full"
               style={{ backgroundColor: row.ok ? "#10B981" : "#EF4444" }}
-              animate={!row.ok && isHovered ? { opacity: [1, 0.4, 1] } : {}}
-              transition={{ duration: 0.7, repeat: Infinity }}
+              animate={shouldAnimate && !row.ok && isHovered ? { opacity: [1, 0.4, 1] } : {}}
+              transition={shouldAnimate ? { duration: 0.7, repeat: Infinity } : undefined}
             />
           </motion.div>
         ))}
@@ -164,7 +174,7 @@ function DocsPanel({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function AlertChip({ isHovered }: { isHovered: boolean }) {
+function AlertChip({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
       className="absolute start-4 top-10"
@@ -174,13 +184,17 @@ function AlertChip({ isHovered }: { isHovered: boolean }) {
     >
       <motion.div
         className="inline-flex items-center gap-2 rounded-full border border-red-500/25 bg-red-500/10 px-3 py-1.5 backdrop-blur-sm"
-        animate={isHovered ? { borderColor: ["rgba(239,68,68,0.25)", "rgba(239,68,68,0.6)", "rgba(239,68,68,0.25)"] } : {}}
-        transition={{ duration: 1.4, repeat: Infinity }}
+        animate={
+          shouldAnimate && isHovered
+            ? { borderColor: ["rgba(239,68,68,0.25)", "rgba(239,68,68,0.6)", "rgba(239,68,68,0.25)"] }
+            : {}
+        }
+        transition={shouldAnimate ? { duration: 1.4, repeat: Infinity } : undefined}
       >
         <motion.div
           className="w-2 h-2 rounded-full bg-red-500"
-          animate={{ opacity: [1, 0.45, 1] }}
-          transition={{ duration: 0.7, repeat: Infinity }}
+          animate={shouldAnimate ? { opacity: [1, 0.45, 1] } : undefined}
+          transition={shouldAnimate ? { duration: 0.7, repeat: Infinity } : undefined}
         />
         <span className="text-[10px] font-semibold tracking-wider uppercase text-red-200">
           Flag: GPS mismatch
@@ -190,7 +204,7 @@ function AlertChip({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-function StatusPill({ isHovered }: { isHovered: boolean }) {
+function StatusPill({ isHovered, shouldAnimate }: { isHovered: boolean; shouldAnimate: boolean }) {
   return (
     <motion.div
       className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-border-subtle bg-bg-primary/55 backdrop-blur-sm px-3 py-1.5"
@@ -201,8 +215,8 @@ function StatusPill({ isHovered }: { isHovered: boolean }) {
       <div className="flex items-center gap-2">
         <motion.div
           className="w-2 h-2 rounded-full bg-success"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.65, 1, 0.65] }}
-          transition={{ duration: 1.2, repeat: Infinity }}
+          animate={shouldAnimate ? { scale: [1, 1.2, 1], opacity: [0.65, 1, 0.65] } : undefined}
+          transition={shouldAnimate ? { duration: 1.2, repeat: Infinity } : undefined}
         />
         <span className="text-[10px] font-semibold tracking-wider uppercase text-white/80">
           {isHovered ? "Live tracking" : "Monitoring"}
@@ -214,14 +228,14 @@ function StatusPill({ isHovered }: { isHovered: boolean }) {
   );
 }
 
-export function FleetAnimation({ isHovered = false }: AnimationProps) {
+export function FleetAnimation({ isHovered = false, shouldAnimate = true }: AnimationProps) {
   return (
     <div className="w-full h-full relative overflow-hidden bg-bg-secondary">
       <Backdrop />
 
       {/* Safe padding: avoid top-left badge and bottom fade */}
       <div className="absolute inset-0 pt-10 pb-10">
-        <AlertChip isHovered={isHovered} />
+        <AlertChip isHovered={isHovered} shouldAnimate={shouldAnimate} />
 
         {/* Lanes + moving vehicles */}
         {lanes.map((lane, i) => (
@@ -232,11 +246,12 @@ export function FleetAnimation({ isHovered = false }: AnimationProps) {
             status={lane.status}
             isHovered={isHovered}
             delay={0.12 + i * 0.08}
+            shouldAnimate={shouldAnimate}
           />
         ))}
 
-        <DocsPanel isHovered={isHovered} />
-        <StatusPill isHovered={isHovered} />
+        <DocsPanel isHovered={isHovered} shouldAnimate={shouldAnimate} />
+        <StatusPill isHovered={isHovered} shouldAnimate={shouldAnimate} />
       </div>
     </div>
   );

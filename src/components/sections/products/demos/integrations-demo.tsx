@@ -2,15 +2,17 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useReducedEffects } from "@/lib/hooks";
 
 export function IntegrationsDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-50px" });
   const [phase, setPhase] = useState(0);
   const [dataFlowing, setDataFlowing] = useState(false);
+  const reducedEffects = useReducedEffects();
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reducedEffects) return;
 
     const phases = [
       { delay: 0 },
@@ -21,12 +23,17 @@ export function IntegrationsDemo() {
       { delay: 3000 },  // Success state
     ];
 
+    const timers: number[] = [];
     phases.forEach((p, i) => {
-      setTimeout(() => setPhase(i), p.delay);
+      timers.push(window.setTimeout(() => setPhase(i), p.delay));
     });
 
-    setTimeout(() => setDataFlowing(true), 1600);
-  }, [isInView]);
+    timers.push(window.setTimeout(() => setDataFlowing(true), 1600));
+
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [isInView, reducedEffects]);
 
   const apis = [
     { name: "Stripe", color: "violet", position: "top-2 left-1/2 -translate-x-1/2" },
@@ -34,6 +41,28 @@ export function IntegrationsDemo() {
     { name: "AWS", color: "orange", position: "bottom-2 left-1/2 -translate-x-1/2" },
     { name: "Slack", color: "purple", position: "top-1/2 left-2 -translate-y-1/2" },
   ];
+
+  if (reducedEffects) {
+    return (
+      <div ref={containerRef} className="w-full h-full p-3 md:p-4 relative">
+        <div className="w-full h-full bg-[#0a0a0a] rounded-lg border border-white/10 overflow-hidden shadow-2xl relative">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+                <span className="text-[8px] font-bold text-black">API</span>
+              </div>
+            </div>
+          </div>
+          <div className="absolute top-3 left-3 right-3 flex justify-between text-[8px] text-white/40 font-mono">
+            <span>Stripe</span>
+            <span>Twilio</span>
+            <span>AWS</span>
+            <span>Slack</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="w-full h-full p-3 md:p-4 relative">

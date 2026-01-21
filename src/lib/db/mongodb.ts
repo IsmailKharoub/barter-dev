@@ -33,6 +33,7 @@ export async function connectToDatabase() {
     
     return db;
   } catch (error) {
+    dbLogger.error("Database connection failed", error);
     console.error("[MongoDB] ❌ Connection failed:");
     console.error("[MongoDB] Error:", error instanceof Error ? error.message : String(error));
     console.error("[MongoDB] Stack:", error instanceof Error ? error.stack : "no stack");

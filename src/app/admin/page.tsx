@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { isAuthenticated } from "@/lib/auth/admin";
 import AdminDashboard from "./components/admin-dashboard";
+import { FileText } from "lucide-react";
 
 export const metadata = {
   title: "Admin Dashboard - Barter",

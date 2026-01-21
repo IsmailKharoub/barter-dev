@@ -153,6 +153,18 @@ export default function ApplicationDetail({ applicationId }: { applicationId: st
     setShowEmailModal(true);
   };
 
+  // Lock body scroll when email modal is open
+  useEffect(() => {
+    if (showEmailModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showEmailModal]);
+
   const fetchApplication = async () => {
     setLoading(true);
     try {
@@ -403,7 +415,7 @@ export default function ApplicationDetail({ applicationId }: { applicationId: st
               </div>
 
               {/* Modal Body */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              <div className="flex-1 overflow-y-auto overscroll-contain p-6 space-y-4">
                 {/* Template Selector */}
                 <div>
                   <label className="block text-sm font-medium text-fg-primary mb-2">

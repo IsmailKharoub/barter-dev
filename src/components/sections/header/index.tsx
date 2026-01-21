@@ -16,7 +16,7 @@ function Logo() {
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
       >
         <Image
-          src="/brand/logo-bw.png"
+          src="/brand/logo-bw-trim.png"
           alt="Barter Dev"
           width={40}
           height={40}

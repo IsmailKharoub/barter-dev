@@ -56,11 +56,8 @@ export const applicationSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   website: z
     .string()
+    .max(200, "Website must be less than 200 characters")
     .optional()
-    .refine(
-      (val) => !val || val === "" || /^https?:\/\/.+/.test(val),
-      "Please enter a valid URL starting with http:// or https://"
-    )
     .transform((val) => val || ""),
   additionalInfo: z.string().max(1000, "Additional info must be less than 1000 characters").optional(),
 
